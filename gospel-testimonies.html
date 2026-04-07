@@ -1737,12 +1737,22 @@ const TTS = {
 
   pickVoice(lang) {
     const cand = this.voices.filter(v =>
-      v.lang.toLowerCase().includes(
-        lang.toLowerCase().replace('zh-','')
-      )
+      v.lang.toLowerCase().startsWith(lang.toLowerCase())
     );
-    return cand.find(v => v.name.includes('Google')) || cand[0] || null;
+
+    // 先找 Google voice
+    let voice = cand.find(v => v.name.includes('Google'));
+
+    // 如果沒有 Google，就找 Apple 常見的好聽 voice
+    if (!voice) {
+      const applePreferred = ['Ting-Ting', 'Sin-Ji', 'Mei-Jia', 'Liang-Liang']; // Apple 常見中文 voice
+      voice = cand.find(v => applePreferred.includes(v.name));
+    }
+
+    // 如果還是沒有，就用第一個
+    return voice || cand[0] || null;
   },
+
 
   cancel() {
     this.synth.cancel();
