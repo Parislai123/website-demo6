@@ -1723,7 +1723,7 @@ const TTS = {
   // 各語言舒適語速（字/秒感覺）
   rateByLang: {
     'zh-HK': 0.9,   // 粵語：聲調密，慢少少
-    'zh-CN': 0.95,   // 普通話：可稍快
+    'zh-CN': 0.95,  // 普通話：可稍快
     'zh-TW': 0.95
   },
 
@@ -1740,19 +1740,23 @@ const TTS = {
       v.lang.toLowerCase().startsWith(lang.toLowerCase())
     );
 
-    // 先找 Google voice
-    let voice = cand.find(v => v.name.includes('Google'));
+    let voice = null;
 
-    // 如果沒有 Google，就找 Apple 常見的好聽 voice
-    if (!voice) {
-      const applePreferred = ['Ting-Ting', 'Sin-Ji', 'Mei-Jia', 'Liang-Liang']; // Apple 常見中文 voice
+    // 判斷是否 iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+    if (isIOS) {
+      // iOS → 用 Apple Preferred voices
+      const applePreferred = ['Ting-Ting', 'Mei-Jia', 'Sin-Ji', 'Liang-Liang'];
       voice = cand.find(v => applePreferred.includes(v.name));
+    } else {
+      // Android / 其他 → 先找 Google voice
+      voice = cand.find(v => v.name.includes('Google'));
     }
 
     // 如果還是沒有，就用第一個
     return voice || cand[0] || null;
   },
-
 
   cancel() {
     this.synth.cancel();
@@ -1763,6 +1767,7 @@ if (TTS.synth) {
   TTS.synth.onvoiceschanged = () => TTS.refresh();
   TTS.refresh();
 }
+
 
 /* ========= 4. 彈窗內容渲染器 (Unified Renderers) ========= */
 
