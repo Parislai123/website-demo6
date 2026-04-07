@@ -96,8 +96,8 @@ html.menu-open .fab-wrap {
   width: 20px;
   height: 20px;
   background-color: currentColor; /* 顏色由 CSS 控制 */
-  -webkit-mask: url("icons/hamburger-open.svg") center/contain no-repeat;
-  mask: url("icons/hamburger-open.svg") center/contain no-repeat;
+  -webkit-mask: url("../icons/hamburger-open.svg") center/contain no-repeat;
+  mask: url("../icons/hamburger-open.svg") center/contain no-repeat;
 
 }
 .hamburger-icon .icon-close{ 
@@ -105,8 +105,8 @@ html.menu-open .fab-wrap {
   width: 20px;
   height: 20px;
   background-color: currentColor;
-  -webkit-mask: url("icons/hamburger-close.svg") center/contain no-repeat;
-  mask: url("icons/hamburger-close.svg") center/contain no-repeat;
+  -webkit-mask: url("../icons/hamburger-close.svg") center/contain no-repeat;
+  mask: url("../icons/hamburger-close.svg") center/contain no-repeat;
 
 }
 
@@ -160,7 +160,7 @@ html.menu-open .fab-wrap {
   content: "";
   position: absolute;
   inset: 0;
-  background: url("img/logo.svg")
+  background: url("../img/logo.svg")
     center 90% / 90% auto no-repeat;
   opacity: 0.02;
   filter: grayscale(100%);
@@ -317,7 +317,7 @@ html.menu-open .fab-wrap {
   pointer-events: none; /* 讓點擊穿透到 a 標籤 */
   transition: transform 0.2s ease;
   flex-shrink: 0;
-  background: url("icons/arrow-right.svg") center/18px 18px no-repeat;
+  background: url("../icons/arrow-right.svg") center/18px 18px no-repeat;
   opacity: 0.55;
 }
 
@@ -351,7 +351,7 @@ html.menu-open .fab-wrap {
   height: 100px;
 
   aspect-ratio: auto;      
-  background: url("img/logoFull.png") center / contain no-repeat;
+  background: url("../img/logoFull.png") center / contain no-repeat;
   display: block;
   margin: 0 auto;
   /* box-shadow: 0 8px 20px rgba(0,0,0,.05); */
