@@ -1,0 +1,2414 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>聚會/活動 | 香港基督教磐石教會</title>
+
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+
+  <!-- Core styles -->
+  <link rel="stylesheet" href="../assets/css/shared.css">
+  <link rel="stylesheet" href="../assets/css/main.css">
+
+  <!-- menu bar -->
+  <link rel="stylesheet" href="../assets/css/menu.css">
+  <link rel="stylesheet" href="../assets/css/mobile-menu.css">
+
+    
+  <!-- JS -->
+  <!-- Core scripts -->
+  <script src="../assets/js/main.js"></script>
+
+  <!-- Partials loader -->
+  <script src="../assets/js/include-partials.js"></script>
+
+  <!-- Widget -->
+  <script src="../assets/js/widget_msgbox_scrolltop.js" defer></script>
+
+
+  <style>
+
+    :root{
+
+      /* Pop up header 高度/字體：只改呢幾個值就得 */
+      --modalHeaderPadTop: 8px;
+      --modalHeaderPadBottom: 2px;
+      --modalTitleSize: 34px;
+      --modalTagLetterSpacing: 2px;
+
+    }
+
+    .grid{display:grid;gap:24px;margin-bottom:60px; grid-auto-rows: auto;align-items: center;} /* 所有置頂: align-items: start; */
+    .grid-4{grid-template-columns:repeat(4,1fr)}
+    .grid-3{grid-template-columns:repeat(3,1fr)}
+
+
+    /* ===================================================
+      定期聚會
+    =================================================== */
+    .fixedList{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 36px 48px;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 766px){
+      .fixedList{
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+    }
+
+    .fixedItem {
+      position: relative;
+      padding: 24px 24px; /* 稍微增加內邊距，讓文字更有呼吸感 */
+      border-radius: 20px; /* 圓角稍微加大一點點會更現代 */
+      cursor: default;
+
+      /* 1. 背景：改用微弱的漸變，模擬光線從左上角射入 */
+      background: linear-gradient(
+        135deg, 
+        rgba(255, 255, 255, 0.6) 0%, 
+        rgba(255, 255, 255, 0.3) 100%
+      );
+      
+      /* 2. 模糊度：從 3px 提升到 8px~10px，玻璃質感會更厚實、高級 */
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+
+      /* 3. 邊框：這是層次感的關鍵！使用更細緻的邊框 */
+      /* 頂部稍微亮一點，模擬高光 */
+      border: 1px solid rgba(255, 255, 255, 0.4); 
+
+      /* 4. 陰影：使用「雙層陰影」法 */
+      box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.03), /* 環境散光 */
+        0 2px 4px rgba(0, 0, 0, 0.02);   /* 近處投影 */
+
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .fixedItem:hover {
+      /* Hover 時背景稍微加亮 */
+      background: rgba(255, 255, 255, 0.75);
+      
+      /* 增加模糊度 */
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+
+      /* 5. Hover 陰影：讓它真的「浮起來」 */
+      box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.06), 
+        inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+
+      transform: translateY(-4px); /* 向上位移多一點點，動態感更強 */
+    }
+
+    .fixedItem:hover h3{
+      color: rgba(0,0,0,.9);
+      letter-spacing: .2px;
+    }
+
+    .fixedItem:focus-visible{
+      outline: none;
+      box-shadow:
+        0 0 0 3px rgba(255,255,255,.9),
+        0 0 0 6px rgba(0,0,0,.08);
+    }
+    /* ===== 頻率標籤（主要視覺 anchor） ===== */
+    .fixedTag{
+      display:inline-block;
+      margin-bottom: 8px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .6px;
+      color: var(--color-accent);
+      background: rgba(255,107,74,.12);
+    }
+
+    .fixedTag.muted{
+      opacity: .6;
+    }
+
+    /* ===== 文字區 ===== */
+    .fixedInfo h3{
+      margin: 0 0 6px;
+      font-size: 20px;
+      font-weight: 700;
+      transition: color .28s ease;
+      color: var(--text);
+    }
+
+    .fixedInfo p{
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .fixedInfo .special{
+      margin: 0;
+      font-size: 12px;
+      color: #CC0000;
+      line-height: 1.6;
+      font-weight: bold;
+    }
+
+    /* ===================================================
+      其他聚會
+    =================================================== */
+    .otherMeetupsContext{
+      text-align: center;
+      padding-bottom: 30px;
+      font-size: 20px;
+      color: var(--text);
+    }
+    .card{
+      background:var(--white-warm); border-radius:var(--radius-lg);
+      padding:6px; /* 白邊厚度 */
+      transition:.4s var(--ease);
+      box-shadow:0 4px 20px rgba(0,0,0,.02);
+      border:1px solid rgba(0,0,0,.02);
+      position:relative;
+      overflow:hidden;
+    }
+    .card:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 18px 40px rgba(0,0,0,.08);
+    }
+
+    .posterDrawer{
+      position:absolute;
+      left: 12px;
+      bottom: 12px;
+      right: auto;        
+      width: auto;
+      max-width: 100%;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      box-shadow: 0 6px 18px rgba(0,0,0,.06);
+      pointer-events: none;
+    }
+
+    .posterDrawer .pd-title{
+      margin:0;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.25;
+    }
+
+    .posterDrawer .pd-hint{
+      margin:6px 0 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      line-height: 1.35;
+
+      /* 最多兩行，避免貼紙太大 */
+      display: -webkit-box;
+      line-clamp: 2;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      opacity: .65;  
+    }
+    @media (max-width: 560px){
+      .posterDrawer{
+        left:5px;
+        top: 5px;
+        bottom:auto;
+        max-width: 92%;
+        padding: 4px 10px;
+        background: rgba(255,255,255,.28);
+      }
+
+      .posterDrawer .pd-title{
+        font-size: 12px;
+        line-height: 1.3;
+        font-weight: 600; 
+        color: var(--text);
+      }
+
+      .posterDrawer .pd-hint{
+        display: none;
+      }
+    }
+
+
+    .img-container{
+      position:relative;
+      width:100%;
+      overflow:hidden;
+      border-radius:calc(var(--radius-lg) - 6px);
+      background: rgba(0,0,0,0.03);
+    }
+    .img-container.ratio-3x4{ aspect-ratio:3/4;} /* max-height: clamp(320px, 40vw, 380px); */
+    .img-container.ratio-16x12{ aspect-ratio:16/12;}
+
+    .img-container img{
+      width:100%;
+      height: 100%;
+      object-fit:cover;
+      display:block;
+      cursor:zoom-in;
+      transition:.5s;
+    }
+    .card:hover .img-container img{transform:scale(1.05)}
+
+    /*hover 時不要 zoom-in cursor */
+    #ActivitiesGrid .img-container img{
+      cursor: default; 
+    }
+
+    .card-dl-btn{
+      position:absolute;right:14px;bottom:14px;
+      width:32px;height:32px;border-radius:50%;
+      background:rgba(255,255,255,.75);
+      backdrop-filter:blur(6px);
+      display:flex;align-items:center;justify-content:center;
+      color:var(--text);
+      box-shadow:0 6px 14px rgba(0,0,0,.12);
+      cursor:pointer;z-index:10;
+      transition:opacity .25s ease, transform .25s ease, background .25s ease, color .25s ease;
+      opacity:0;transform:translateY(6px);
+      user-select:none;
+    }
+    .img-container:hover .card-dl-btn,
+    .card:hover .card-dl-btn{opacity:1;transform:translateY(0)}
+    .card-dl-btn:hover{background:var(--color-accent);color:#fff}
+    @media (hover:none){ .card-dl-btn{opacity:1;transform:none} }
+    @media (max-width: 560px){
+      .card-dl-btn{
+        bottom: 10px;
+        right: 10px;
+      }
+    }
+
+    .card-info{padding:18px 12px 20px}
+    .card-title{
+      margin-top: 6px;   /* 拉開同圖片距離 */
+      margin-bottom: 10px;
+      font-size: 18px;   /* 保持而家大小 */
+      font-weight:700;
+      line-height: 1.35;
+    }
+
+    /* Lightbox */
+    .modal-overlay{
+      position:fixed;inset:0;background:rgba(0,0,0,.9);
+      backdrop-filter:blur(10px);
+      z-index: 4000;display:none;align-items:center;justify-content:center;
+      opacity:0;transition:.3s;
+      padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+    }
+    .modal-overlay.active{display:flex;opacity:1}
+
+    .lightbox-content{
+      position:relative;
+      width:min(980px, 92vw);
+      max-height:92vh;
+      text-align:center;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+
+    .lightbox-frame{
+      position:relative;
+      display:inline-block;
+      max-width:100%;
+      max-height:82vh;
+    }
+
+    .lightbox-img{
+      max-width:100%;
+      max-height:82vh;
+      border-radius:12px;
+      box-shadow:0 20px 50px rgba(0,0,0,.5);
+      display:block;
+      transition:opacity .22s ease;
+    }
+
+    #lightbox .lightbox-frame{
+      opacity: 0;
+      transform: translateY(14px) scale(.985);
+      filter: blur(2px);
+      transition:
+        transform 260ms cubic-bezier(.165,.84,.44,1),
+        opacity 220ms ease,
+        filter 260ms cubic-bezier(.165,.84,.44,1);
+      will-change: transform, opacity, filter;
+    }
+    #lightbox.ready .lightbox-frame{
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+    #lightbox.closing .lightbox-frame{
+      opacity: 0;
+      transform: translateY(18px) scale(.965);
+      filter: blur(3px);
+    }
+    #lightbox.closing .close-modal{
+      opacity: 0 !important;
+      transform: rotate(-12deg) scale(.92) !important;
+      pointer-events: none !important;
+    }
+    #lightbox.ready .close-modal:hover{
+      background:rgba(255,255,255,.35);
+      transform: rotate(90deg) scale(1);
+    }
+
+    .lb-loading{
+      position:absolute;
+      inset:0;
+      border-radius:12px;
+      background: rgba(255,255,255,.06);
+      backdrop-filter: blur(2px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .18s ease;
+    }
+    .lb-loading::before{
+      content:"";
+      width:46px;
+      height:46px;
+      border-radius:50%;
+      border:4px solid rgba(255,255,255,.25);
+      border-top-color: rgba(255,255,255,.90);
+      animation: lbSpin .85s linear infinite;
+    }
+    @keyframes lbSpin{ to{ transform: rotate(360deg); } }
+
+    .close-modal{
+      position:absolute;
+      right:16px;
+      top:16px;
+      width:44px;height:44px;
+      border:0;outline:0;
+      appearance:none;-webkit-appearance:none;
+      background:rgba(255,255,255,.22);
+      border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;
+      color:var(--white-100);
+      user-select:none;
+      -webkit-tap-highlight-color:transparent;
+      transition:background .25s,transform .25s,box-shadow .25s,opacity .22s ease;
+      z-index:5;
+
+      opacity:0;
+      transform:scale(.92);
+      pointer-events:none;
+    }
+    .modal-overlay.ready .close-modal{
+      opacity:1;
+      transform:scale(1);
+      pointer-events:auto;
+    }
+    .modal-overlay.ready .close-modal:hover{
+      background:rgba(255,255,255,.35);
+      transform:rotate(90deg) scale(1);
+    }
+    .close-modal:focus-visible{
+      box-shadow:0 0 0 4px rgba(255,255,255,.25);
+    }
+    .modal-overlay.loading .lb-loading{ opacity:1; }
+    .modal-overlay.loading .lightbox-img{ opacity:0; }
+    .modal-overlay.ready .lb-loading{ opacity:0; }
+    .modal-overlay.ready .lightbox-img{ opacity:1; }
+
+    /* Full modal */
+    .full-modal{
+      position:fixed;inset:0;background:var(--bg);z-index:3000;
+      display:none;flex-direction:column;
+      overflow:hidden;
+      max-width:100%;
+      height:100vh;
+    }
+    .full-modal.active{display:flex;animation:slideUp .45s var(--ease)}
+    @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+
+    .modal-scroll{
+      flex:1 1 auto;
+      min-height:0;
+      overflow-y:auto;
+      overflow-x:hidden;
+      -webkit-overflow-scrolling:touch;
+      overscroll-behavior:contain;
+      padding-bottom: env(safe-area-inset-bottom);
+      max-width:100%;
+      width:100%;
+    }
+
+    .full-modal-header{
+      padding: var(--modalHeaderPadTop) 0 var(--modalHeaderPadBottom);
+      text-align:center;
+      position:relative;
+      flex:0 0 auto;
+      max-width:100%;
+    }
+    .act-tag{
+      font-weight:800;
+      letter-spacing: var(--modalTagLetterSpacing);
+      color:var(--color-accent);
+    }
+    .act-title{
+      font-size: var(--modalTitleSize);
+      margin: 10px 0;
+      font-weight:900;
+      line-height:1.15;
+    }
+
+    /* Modal裡面的返回button */
+    .back-btn{
+      position: fixed;
+      top: calc(18px + env(safe-area-inset-top));
+      left: calc(18px + env(safe-area-inset-left));
+
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+
+      background: transparent;          /* 無背景 */
+      box-shadow: none;                 /* 無浮起感 */
+      border: none;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: rgba(0,0,0,.65);           /* 柔和，不死黑 */
+      cursor: pointer;
+      z-index: 3100;
+
+      transition:
+        background .2s ease,
+        color .2s ease,
+        transform .2s ease;
+    }
+
+    /* hover / focus 才輕輕提示 */
+    .back-btn:hover,
+    .back-btn:focus-visible{
+      background: rgba(0,0,0,.05);      /* 非白底，而是淡灰提示 */
+      color: rgba(0,0,0,.85);
+    }
+
+    /* 不要再 scale，避免太 App */
+    .back-btn:hover{
+      transform: none;
+    }
+
+    .gallery-container{max-width:1240px;margin:0 auto;padding:0 24px}
+    .gallery-container, .recap-hero, .gallery-grid-more, .more-head{max-width:100%}
+    .grid,.gallery-grid-more{min-width:0}
+
+    /* g-item selection */
+    .g-item{position:relative;border-radius:18px;overflow:hidden;background: rgba(0,0,0,0.03)}
+    .g-item img{width:100%;display:block}
+
+    /* dl-mini */
+    .dl-mini{
+      position:absolute;right:12px;bottom:12px;
+      width:32px;height:32px;border-radius:50%;
+      background:rgba(255,255,255,.78);
+      backdrop-filter:blur(6px);
+      display:flex;align-items:center;justify-content:center;
+      color:rgba(0,0,0,.75);
+      box-shadow:0 6px 14px rgba(0,0,0,.14);
+      cursor:pointer;z-index:7;
+      opacity:0;transform:translateY(6px);
+      transition:.2s;user-select:none;
+    }
+    .g-item:hover .dl-mini{opacity:1;transform:none}
+    .dl-mini:hover{background:var(--color-accent);color:#fff}
+    @media (hover:none){ .dl-mini{opacity:1;transform:none} }
+    
+    @media (max-width: 560px){
+      .dl-mini{
+        width:28px;
+        height:28px;
+        right:10px;
+        bottom:10px;
+      }
+
+      .dl-mini svg{
+        width:16px;
+        height:16px;
+      }
+    }
+ 
+    /* Hero */
+    .recap-hero{position:relative;border-radius:26px;overflow:hidden;margin-bottom:14px;box-shadow:0 18px 45px rgba(0,0,0,.08);background:#000;margin-top: 10px;}
+    .recap-hero .g-item{border-radius:26px}
+    .hero-stage{position:relative;height:360px;overflow:hidden;}
+    .hero-stage img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
+    .hero-low{filter: blur(16px); transform: scale(1.06); opacity: .85;}
+    .hero-high{opacity:0; transition: opacity .35s ease;}
+    .hero-stage.ready .hero-high{opacity:1;}
+    .recap-overlay{position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,0) 20%, rgba(0,0,0,.58) 90%);pointer-events:none;z-index:3;}
+    /* 1. 容器定位：左圖的邊距看起來大約是 24px-30px，比 18px 寬一點 */
+    .recap-meta {
+      position: absolute;
+      left: 30px;
+      bottom: 30px;
+      color: var(--white-100);
+      z-index: 4;
+      pointer-events: none;
+      max-width: 80%;
+      text-align: left;
+    }
+    /* 3. 描述文字：稍微縮小並靠攏標題 */
+    .recap-summary {
+      margin-top: 2px;     /* 讓它緊貼標題 */
+      font-size: 18px;
+      font-weight: 400;
+      opacity: 0.8;        /* 稍微再淡一點，突出標題 */
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    /* 4. Chips：左圖的 Chip 背景更黑、更沉 */
+    .hero-chips {
+      display: flex; 
+      gap: 8px; 
+      margin-top: 20px;    /* 與上方文字拉開明顯距離 */
+      flex-wrap:wrap;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.2); 
+      border: 1px solid rgba(255, 255, 255, 0.1); /* 極淡的邊框 */
+      backdrop-filter: blur(10px);
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-weight: 400;
+      font-size: 13px;
+      color: var(--white-100);
+    }
+
+    .chip svg {
+      width: 14px;
+      height: 14px;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 560px){
+      .recap-meta{ left:16px; bottom:16px; max-width:92%; }
+      .recap-summary{ font-size:14px; line-height:1.5; }
+      .chip{ font-size:12px; padding:5px 10px; }
+    }
+    
+    /* ===================================================
+    精選時刻（文字版）：Brand Lab 短段落式
+    目的：Hero 與「更多相片」之間的緩衝
+    =================================================== */
+    /* Moments */
+    /* 精選時刻（閱讀舒適 max-width） */
+    .moments {
+      max-width: 900px;           /* 稍微放寬一點點 */
+      margin: 60px auto 80px;    /* 增加上下間距 (左圖的留白非常多) */
+      padding: 0 24px;
+      text-align: center;
+      position: relative;
+    }
+
+    /* 內文：模仿左圖的大引言風格 */
+    .moments-quote {
+      font-size: 20px;           /* 顯著放大字體 */
+      line-height: 2;            /* 增加行高，讓閱讀更輕鬆 */
+      font-weight: 500;
+      color: var(--muted);
+      opacity: .82;
+      margin: 0 auto 32px;       /* 下方留空間給分隔線 */
+      text-align: center;
+      font-style: italic;
+      /*word-break: keep-all;       防止標點符號掉到下一行 */
+      white-space: normal;       /* 保留換行 */
+    }
+
+    /* 新增：底部的裝飾短線 (左圖中間那條灰線) */
+    .moments-divider {
+      width: 40px;
+      height: 2px;
+      background-color: #eee;    /* 極淺灰 */
+      margin: 0 auto;
+      border-radius: 2px;
+    }
+
+    /* Mobile：針對手機版縮小字體 */
+    @media (max-width: 560px) {
+      .moments {
+        margin: 40px auto 50px;
+      }
+      .moments-quote {
+        font-size: 16px;         /* 手機版不要太大，否則會斷行太嚴重 */
+        line-height: 1.8;
+      }
+    }
+
+    /* More photos */
+    .more-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:14px 0 12px;max-width:100%}
+    .more-head h3{margin:0;font-size:18px;font-weight:900;letter-spacing:.6px;color:var(--text);}
+    .more-head .hint{font-size:12px;font-weight:800;color:rgba(0,0,0,.45);white-space:nowrap}
+    .gallery-grid-more{display:grid;gap:14px;grid-template-columns: repeat(4, 1fr);max-width:100%;}
+    @media (max-width: 1000px){ .gallery-grid-more{ grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 640px){ .gallery-grid-more{ grid-template-columns: repeat(2, 1fr); } }
+    /* 1️⃣ 相框（容器）鎖定比例 */
+    .gallery-grid-more .g-item{
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      border-radius: 18px;
+      background: rgba(0,0,0,.03);
+    }
+
+    /* 2️⃣ 圖片負責「填滿」 */
+    .gallery-grid-more .g-item img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;   /* 關鍵 */
+      display: block;
+      cursor:pointer;transition:.35s ease
+    }
+    .gallery-grid-more .g-item:hover img{transform:scale(1.02)}
+
+
+ /* =========================================================
+   Testimonials (FINAL MERGED VERSION)
+   Scope: Activity modal only
+   Uses original classes / IDs
+========================================================= */
+    .testimonial-section{background:rgba(255,255,255,0.5);padding:80px 0;margin-top:80px}
+    .testimonial-section h2{
+      justify-content: center;
+      text-align: center;
+      margin-bottom:40px;
+    }
+    /* =====================
+      Grid（#testimonialGrid）
+    ===================== */
+    .testimonial-section #testimonialGrid{
+      position: relative;
+      width: min(1180px, 92vw);
+      margin: 0 auto;
+      display: grid;
+      gap: 24px;
+      padding: 6px 0 0;
+    }
+
+    /* =====================
+      Card（.quote-card）
+    ===================== */
+    .testimonial-section .quote-card{
+      background:#fff;
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 32px 32px 32px 6px;
+      padding: 30px 32px 26px;
+      min-height: 160px;
+      box-shadow: var(--shadow-soft, 0 12px 28px rgba(0,0,0,.08));
+      position: relative;
+      overflow: hidden;
+
+      will-change: transform, opacity, filter;
+      transition:
+        transform .22s cubic-bezier(.16,.84,.24,1),
+        filter .22s cubic-bezier(.16,.84,.24,1),
+        opacity .22s cubic-bezier(.16,.84,.24,1);
+    }
+
+    .testimonial-section .quote-card::before{
+      content:"“";
+      position:absolute;
+      left: 18px;
+      top: 10px;
+      font-family: serif;
+      font-size: 64px;
+      color: rgba(0,0,0,.12);
+    }
+
+    /* =====================
+      Text / Author
+    ===================== */
+    .testimonial-section .quote-text{
+      margin: 0 0 18px;
+      font-size: 16px;
+      line-height: 1.85;
+      font-weight: 650;
+      color: rgba(0,0,0,.72);
+    }
+
+    .testimonial-section .quote-author{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size: 13px;
+      font-weight: 750;
+      color: rgba(0,0,0,.52);
+    }
+
+    /* 小圓點（作者前） */
+    .testimonial-section .quote-author::before{
+      content:"";
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background: var(--color-accent);
+      display:inline-block;
+    }
+
+    /* =====================
+      Focus / Dim
+    ===================== */
+    .testimonial-section .quote-card.is-focus{
+      transform: scale(1.01);
+    }
+
+    .testimonial-section .quote-card.is-dim{
+      opacity: .92;
+    }
+
+    /* =====================
+      Dots（#testimonialPager）
+    ===================== */
+    .testimonial-section #testimonialPager{
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .testimonial-section #testimonialPager button{
+      width:6px;
+      height:6px;
+      border-radius:999px;
+      border:0;
+      background: rgba(0,0,0,.22);
+      padding:0;
+      cursor:pointer;
+      position:relative;
+      outline:none;
+      transition:
+        transform .18s ease,
+        background .18s ease,
+        width .18s ease,
+        opacity .18s ease;
+    }
+
+    .testimonial-section #testimonialPager button.active{
+      background: var(--color-accent);
+      transform: scale(1.15);
+      width:14px;
+      opacity:1;
+    }
+
+    .testimonial-section #testimonialPager button:not(.active){
+      opacity:.85;
+    }
+
+    /* Ripple */
+    .testimonial-section #testimonialPager button::after{
+      content:"";
+      position:absolute;
+      inset:-10px;
+      border-radius:999px;
+      /* fallback */
+      background-color: rgba(var(--color-accent), 0.35);
+      /* 新瀏覽器支援 color-mix 時會覆蓋 fallback */
+      background: color-mix(in srgb, var(--color-accent) 35%, transparent);
+      transform: scale(.2);
+      opacity:0;
+      pointer-events:none;
+    }
+
+    .testimonial-section #testimonialPager button.ripple::after{
+      animation: testimonialDotRipple 520ms cubic-bezier(.2,.9,.2,1) both;
+    }
+
+    @keyframes testimonialDotRipple{
+      0%   { transform: scale(.25); opacity: .55; }
+      70%  { transform: scale(1.05); opacity: .18; }
+      100% { transform: scale(1.2); opacity: 0; }
+    }
+
+    /* =====================
+      Set 轉場動畫（出 / 入）
+    ===================== */
+    @keyframes testimonialOut{
+      from{ opacity:1; transform: translateY(0) scale(1); filter: blur(0); }
+      to  { opacity:0; transform: translateY(10px) scale(.985); filter: blur(2px); }
+    }
+
+    @keyframes testimonialIn{
+      from{ opacity:0; transform: translateY(14px) scale(.985); filter: blur(3px); }
+      to  { opacity:1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+
+    .testimonial-section #testimonialGrid.is-leaving .quote-card{
+      animation: testimonialOut 220ms cubic-bezier(.2,.9,.2,1) both;
+    }
+
+    .testimonial-section #testimonialGrid.is-entering .quote-card{
+      animation: testimonialIn 520ms cubic-bezier(.16,.84,.24,1) both;
+      animation-delay: calc(var(--i) * 70ms);
+    }
+
+    .testimonial-section #testimonialGrid.is-locked{
+      pointer-events:none;
+    }
+
+    /* =====================
+      Responsive 微調
+    ===================== */
+    @media (max-width: 640px){
+      .testimonial-section .quote-card{
+        padding: 28px 26px 24px;
+      }
+    }
+
+    /* =====================
+      Reduced Motion
+    ===================== */
+    @media (prefers-reduced-motion: reduce){
+      .testimonial-section #testimonialGrid.is-leaving .quote-card,
+      .testimonial-section #testimonialGrid.is-entering .quote-card{
+        animation:none !important;
+      }
+      .testimonial-section #testimonialPager button.ripple::after{
+        animation:none !important;
+      }
+    }
+
+/****************************************************************************/
+
+    /* =====================
+      Others
+    ===================== */
+    .toast{
+      position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+      background:rgba(0,0,0,.78);color:var(--white-100);padding:10px 14px;border-radius:999px;
+      font-size:13px;font-weight:900;display:none;z-index:9000;backdrop-filter:blur(8px);
+      box-shadow:0 14px 36px rgba(0,0,0,.25)
+    }
+    .toast.show{display:block}
+
+    #activityModal .gallery-container{
+      max-width: 1120px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    html.no-smooth-scroll{
+      scroll-behavior: auto !important;
+    }
+
+    @media (max-width: 1200px){
+      #activityModal .gallery-container{ max-width: 960px; }
+    }
+    @media (max-width: 640px){
+      #activityModal .gallery-container{ max-width: 100%; }
+    }
+
+    @media (max-width: 900px){
+      .grid-4{grid-template-columns:repeat(2,1fr)}
+      .grid-3{grid-template-columns:repeat(2,1fr)}
+      .hero-stage{height:320px}
+    }
+    @media (max-width: 560px){
+      .wrap{padding:0 16px}
+      .gallery-container{padding:0 16px}
+      .grid-3{grid-template-columns:1fr}
+      .hero-stage{height:260px}
+      .back-btn{
+        width: 36px;
+        height: 36px;
+      }
+
+      .back-btn svg{
+        width: 18px;
+        height: 18px;
+        stroke-width: 2.2;
+      }
+
+      .btn-ghost,.btn-solid{
+        flex:1 1 0;
+        padding:8px 10px;
+        font-size:12px;
+        border-radius:999px;
+        white-space:nowrap;
+      }
+
+      :root{
+        --modalHeaderPadTop: 3px;
+        --modalHeaderPadBottom: 1px;
+        --modalTitleSize: 24px;
+      }
+    }
+
+/* =====================================================
+   當 full-modal 或 lightbox 開啟時
+   阻止 main 撐高 document（隱藏最外層 scrollbar）
+===================================================== */
+
+body.theme-event.modal-open
+main[data-barba="container"] {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+  </style>
+
+</head>
+
+<body class="theme-event" data-barba="wrapper">
+    <!-- 這是你的全站通用 SVG 容器 -->
+  <div id="global-watermark" class="watermark-overlay"></div>  
+  <div id="site-menu"></div>
+
+      <!-- HERO -->
+    <section class="hero-section" style="--hero-photo: url('/assets/img/sectionHero_services-events.jpg');">
+      <div class="content-wrapper">
+        <div class="title-group">
+          <span class="en-shadow">Meeting</span>  
+          <h1 class="zh-title">聚會 / 活動</h1>  
+        </div>
+        <p class="description">
+          透過敬拜、祈禱與團契的機會，讓弟兄姊妹在信仰與生活中彼此支持，共享屬靈成長。
+        </p>
+      </div>
+    </section>
+
+  <main data-barba="container" data-barba-namespace="event">
+    <section class="section section--compact section-visual sticky">
+      <div class="container">
+        <div class="section-title theme-peach">
+          <!-- 裝飾泡泡 -->
+          <div class="particle p1"></div>
+          <div class="particle p2"></div>
+          <div class="particle p3"></div>
+          <div class="particle p4"></div>
+
+          <div class="text-content">
+            <span class="text-main">定期</span>
+            <span class="text-sub">聚會</span>
+            <span class="diamond"></span>
+          </div>
+        </div>        
+
+        <div class="fixedList">
+          <div class="fixedItem">
+            <span class="fixedTag">每週</span>
+            <div class="fixedInfo">
+              <h3>主日崇拜</h3>
+              <p>週日  早上十一時正｜<span class="special">聖餐主日 · 第一個主日</span></p>
+            </div>
+          </div>
+
+          <div class="fixedItem">
+            <span class="fixedTag">每週</span>
+            <div class="fixedInfo">
+              <h3>週三祈禱會</h3>
+              <p>週三  晚上七時半｜線上聚會</p>
+            </div>
+          </div>
+
+          <div class="fixedItem">
+            <span class="fixedTag">每週</span>
+            <div class="fixedInfo">
+              <h3>週六祈禱會</h3>
+              <p>週六  晚上七時半｜線上聚會</p>
+            </div>
+          </div>
+
+          <div class="fixedItem">
+            <!-- <span class="fixedTag muted">每週</span> -->
+             <span class="fixedTag">每週</span>
+            <div class="fixedInfo">
+              <h3>Agape小組</h3>
+              <p>主日｜各小組自行安排線上聚會</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--compact section-push">
+      <div class="container">
+        <div class="section-title theme-lavender reveal">
+          <!-- 裝飾泡泡 -->
+          <div class="particle p1"></div>
+          <div class="particle p2"></div>
+          <div class="particle p3"></div>
+          <div class="particle p4"></div>
+
+          <div class="text-content">
+            <span class="text-main">其他聚會/</span>
+            <span class="text-sub">活動</span>
+            <span class="diamond"></span>
+          </div>
+        </div>        
+
+        <p class="otherMeetupsContext">請弟兄姊妹留意本堂 WhatsApp 群組 – 有關教會最新資訊和代禱消息。</p>
+
+        <div class="grid grid-3" id="otherMeetupsGrid"></div>
+        <div class="pager" id="otherMeetupsPager">
+          <div class="pagerNums" id="otherMeetupsPagerNums"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- <section class="section section--compact">
+      <div class="container">
+        <div class="section-title theme-mint reveal">
+          -->
+          <!-- 裝飾泡泡 -->
+           <!-- 
+          <div class="particle p1"></div>
+          <div class="particle p2"></div>
+          <div class="particle p3"></div>
+          <div class="particle p4"></div>
+
+          <div class="text-content">
+            <span class="text-main">活動</span>
+            <span class="text-sub">回顧</span>
+            <span class="diamond"></span>
+          </div>
+        </div>        
+
+        <div class="grid grid-3" id="ActivitiesGrid"></div>
+        <div class="pager" id="activityPager">
+          <div class="pagerNums" id="activityPagerNums"></div>
+        </div>
+      </div>      
+    </section> -->
+
+  </main>
+  
+    <!-- Lightbox -->
+    <div class="modal-overlay" id="lightbox" role="dialog" aria-modal="true" aria-label="圖片預覽">
+      <div class="lightbox-content">
+        <div class="lightbox-frame" aria-busy="true">
+          <button class="close-modal" onclick="closeLightbox()" aria-label="Close">
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+              <line x1="2" y1="2" x2="14" y2="14" stroke="currentColor" stroke-width="2"/>
+              <line x1="14" y1="2" x2="2" y2="14" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </button>
+
+          <div class="lb-loading" aria-hidden="true"></div>
+          <img src="" class="lightbox-img" id="lightboxImg" alt="preview">
+        </div>
+      </div>
+    </div>
+  <!-- Full modal -->
+  <div class="full-modal" id="activityModal" role="dialog" aria-modal="true" aria-label="活動相簿">
+    <button class="back-btn" onclick="closeActivity()" aria-label="返回">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+    </button>
+
+    <div class="full-modal-header">
+      <small id="actTag" class="act-tag"></small>
+      <h1 id="actTitle" class="act-title"></h1>
+    </div>
+
+    <div class="modal-scroll" id="modalScroll">
+      <div class="gallery-container" id="galleryContent"></div>
+
+      <div class="testimonial-section">
+        <div class="wrap">
+          <h2>弟兄姐妹的分享</h2>
+          <div class="grid grid-3" id="testimonialGrid"></div>
+          <div id="testimonialPager" class="testimonial-dots" aria-label="感言分頁"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div id="site-footer"></div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ARIA live region：令 toast 對 screen reader 更友好 -->
+  <div id="ariaLive" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <script>
+    /* ============================
+       page state + slice render + pagerNums 生成
+    ============================ */
+    let meetupsPage = 1;
+    let activityPage = 1;
+
+    // grid-4：一頁 4（剛好一行）
+    // grid-3：一頁 6（兩行）
+    const MEETUPS_PAGE_SIZE = 6;   
+    const ACTIVITY_PAGE_SIZE = 6;    
+
+    // 共用 pager renderer
+    function renderNumberPager({ numsId, wrapperId, totalPages, currentPage, onGo }) {
+      const nums = document.getElementById(numsId);
+      const wrap = document.getElementById(wrapperId);
+      if (!nums) return;
+
+      if (wrap) wrap.style.display = (totalPages <= 1) ? 'none' : 'flex';
+      nums.innerHTML = '';
+      if (totalPages <= 1) return;
+
+      for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'pageNum' + (i === currentPage ? ' active' : '');
+        btn.textContent = i;
+
+        btn.addEventListener('click', () => {
+          // onGo 係 function name string，例如 "gomeetupsPage"
+          if (typeof window[onGo] === 'function') {
+            window[onGo](i);
+          }
+        });
+
+        nums.appendChild(btn);
+      }
+    }
+
+
+
+    /* ============================
+       Body Scroll Lock
+    ============================ */
+    // Design decision:
+    // Use a counter (not boolean) to support nested modals
+    // (e.g. Lightbox opened inside Activity Modal).
+    let __bodyLockCount = 0;
+
+    // Preserve scroll position to avoid jump on mobile Safari.
+    // Do NOT replace with simple overflow:hidden.
+    function lockBodyScroll(){
+      if(__bodyLockCount === 0){
+        const y = window.scrollY || 0;
+        document.body.dataset.scrollY = String(y);
+        document.body.classList.add('modal-open');
+        document.body.style.top = `-${y}px`;
+      }
+      __bodyLockCount++;
+    }
+    function unlockBodyScroll(){
+      __bodyLockCount = Math.max(0, __bodyLockCount - 1);
+      if(__bodyLockCount !== 0) return;
+
+      const y = parseInt(document.body.dataset.scrollY || '0', 10);
+
+      document.documentElement.classList.add('no-smooth-scroll');
+
+      document.body.classList.remove('modal-open');
+      document.body.style.top = '';
+      window.scrollTo(0, y);
+
+      requestAnimationFrame(() => {
+        document.documentElement.classList.remove('no-smooth-scroll');
+      });
+    }
+
+    /* ============================
+       Toast + ARIA live region（新增）
+    ============================ */
+    let toastTimer=null;
+    const __toastOnceKeys = new Set();
+
+    function showToast(msg){
+      const t=document.getElementById('toast');
+      t.textContent=msg;
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+
+      // ARIA live：令 screen reader 會讀出 toast 內容
+      const live = document.getElementById('ariaLive');
+      if(live){
+        live.textContent = '';
+        // 用下一 frame/微任務確保能觸發讀出
+        requestAnimationFrame(()=>{ live.textContent = msg; });
+      }
+    }
+    function toastOnce(key, msg){
+      if(__toastOnceKeys.has(key)) return;
+      __toastOnceKeys.add(key);
+      showToast(msg);
+      setTimeout(()=>__toastOnceKeys.delete(key), 3000);
+    }
+
+    /* ============================
+       Offline fallback（新增）
+    ============================ */
+    function isOffline(){
+      return (typeof navigator !== 'undefined') && navigator && navigator.onLine === false;
+    }
+
+    window.addEventListener('offline', () => {
+      showToast('你而家似乎冇網絡連線（Offline），圖片會暫時用替代圖顯示');
+    });
+
+    window.addEventListener('online', () => {
+      showToast('網絡已恢復（Online）。如有需要可重新開啟圖片／刷新頁面再試');
+    });
+
+ 
+
+    /* ============================
+       Placeholder + image error handling
+    ============================ */
+    // Two placeholder themes:
+    // - light: cards / grid
+    // - dark: lightbox / hero (dark backdrop)
+    const PLACEHOLDER_LIGHT = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900">
+        <rect width="100%" height="100%" fill="#f2f2f2"/>
+        <g fill="none" stroke="#c9c9c9" stroke-width="10">
+          <rect x="140" y="140" width="920" height="620" rx="36"/>
+          <path d="M240 620 L460 440 L620 560 L800 380 L980 560" />
+          <circle cx="430" cy="340" r="50"/>
+        </g>
+        <text x="50%" y="86%" text-anchor="middle" font-size="34" fill="#9a9a9a">
+          圖片載入失敗
+        </text>
+      </svg>
+    `);
+
+    const PLACEHOLDER_DARK = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900">
+        <rect width="100%" height="100%" fill="#111"/>
+        <g fill="none" stroke="#666" stroke-width="10">
+          <rect x="140" y="140" width="920" height="620" rx="36"/>
+          <path d="M240 620 L460 440 L620 560 L800 380 L980 560" />
+          <circle cx="430" cy="340" r="50"/>
+        </g>
+        <text x="50%" y="86%" text-anchor="middle" font-size="34" fill="#bbb">
+          圖片載入失敗
+        </text>
+      </svg>
+    `);
+
+    function applyPlaceholder(imgEl, theme='light'){
+      if(!imgEl || imgEl.dataset.fallbackApplied === '1') return;
+      imgEl.dataset.fallbackApplied = '1';
+      imgEl.removeAttribute('srcset');
+      imgEl.src = (theme === 'dark') ? PLACEHOLDER_DARK : PLACEHOLDER_LIGHT;
+      imgEl.style.objectFit = 'contain';
+      imgEl.style.background = (theme === 'dark') ? '#111' : '#f2f2f2';
+    }
+
+    function bindImgErrorHandlers(container, theme='light', toastKey='imgfail'){
+      if(!container) return;
+      container.querySelectorAll('img').forEach(img=>{
+        if(img.__errBound) return;
+        img.__errBound = true;
+        img.addEventListener('error', ()=>{
+          applyPlaceholder(img, theme);
+
+          // Offline fallback：離線就用另一個提示
+          if(isOffline()){
+            toastOnce('offline-img', '你而家似乎冇網絡連線（Offline），圖片已用替代圖顯示');
+          }else{
+            toastOnce(toastKey, '有部分圖片載入失敗，已以替代圖顯示');
+          }
+        });
+      });
+    }
+
+    /* ============================
+       Focus management (Activity + Lightbox)
+    ============================ */
+    let __lastFocusActivity = null;
+    let __lastFocusLightbox = null;
+
+    /* Download single (improved) */
+    async function downloadImg(url, filename='brand-lab-photo.jpg'){
+      try{
+        const abs = new URL(url, window.location.href);
+
+        // 同源：直接用 <a download>（最穩，亦最符合「使用者點擊」的 gesture）
+        if(abs.origin === window.location.origin){
+          const a = document.createElement('a');
+          a.href = abs.href;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          return;
+        }
+
+        // 非同源：嘗試 CORS fetch -> blob
+        const resp = await fetch(abs.href, { mode:'cors' });
+        const blob = await resp.blob();
+        const objUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = objUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(()=>URL.revokeObjectURL(objUrl), 1500);
+      }catch(e){
+        // 最後 fallback：開新 tab（某些站/瀏覽器不允許強制下載）
+        const a = document.createElement('a');
+        a.href = url;
+        a.target = "_blank";
+        a.rel = "noopener";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        showToast('如未自動下載，請在新頁長按圖片儲存');
+      }
+    }
+
+    /* ============================
+       Lightbox
+    ============================ */
+    function openLightbox(src){
+      const lb = document.getElementById('lightbox');
+      const img = document.getElementById('lightboxImg');
+      const frame = lb.querySelector('.lightbox-frame');
+      const closeBtn = lb.querySelector('.close-modal');
+
+      __lastFocusLightbox = document.activeElement;
+
+      lb.classList.remove('ready');
+      lb.classList.add('loading');
+      frame?.setAttribute('aria-busy','true');
+
+      lb.classList.add('active');
+
+      // === 隱藏 menu bar 和 widget ===
+      // UX rule:
+      // Lightbox should be distraction-free.
+      // Global UI (menu / widgets) must be hidden.
+     UIVisibility.hideAll();
+
+
+      lockBodyScroll();
+
+      // Focus trap：Lightbox 開啟後 Tab 只喺 lightbox 內
+      ModalFocus.activateFocusTrap(lb, closeBtn);
+
+      img.removeAttribute('src');
+      img.dataset.fallbackApplied = '0';
+
+      img.onerror = () => {
+        applyPlaceholder(img, 'dark');
+
+        if(isOffline()){
+          toastOnce('offline-lb', '似乎冇網絡，已用替代圖顯示');
+        }else{
+          toastOnce('lightboxfail', '圖片載入失敗，已顯示替代圖');
+        }
+
+        lb.classList.remove('loading');
+        lb.classList.add('ready');
+        frame?.setAttribute('aria-busy','false');
+        requestAnimationFrame(()=>closeBtn?.focus({preventScroll:true}));
+      };
+
+      const pre = new Image();
+      pre.onload = () => {
+        img.src = src;
+
+        requestAnimationFrame(() => {
+          lb.classList.remove('loading');
+          lb.classList.add('ready');
+          frame?.setAttribute('aria-busy','false');
+          closeBtn?.focus({preventScroll:true});
+        });
+      };
+      pre.onerror = () => {
+        applyPlaceholder(img, 'dark');
+
+        if(isOffline()){
+          toastOnce('offline-lb', '似乎冇網絡，已用替代圖顯示');
+        }else{
+          toastOnce('lightboxfail', '圖片載入失敗，已顯示替代圖');
+        }
+
+        lb.classList.remove('loading');
+        lb.classList.add('ready');
+        frame?.setAttribute('aria-busy','false');
+        requestAnimationFrame(()=>closeBtn?.focus({preventScroll:true}));
+      };
+      pre.src = src;
+    }
+
+    function closeLightbox(){
+      const lb = document.getElementById('lightbox');
+      const img = document.getElementById('lightboxImg');
+      const frame = lb.querySelector('.lightbox-frame');
+
+      if(lb.classList.contains('closing')) return;
+
+      lb.classList.add('closing');
+
+      const done = () => {
+        unlockBodyScroll();
+
+        // === 恢復 menu bar 和 widget ===
+        // 注意：這裡要判斷，如果 Activity Modal 還開著，就不應該恢復（除非你想在 Modal 裡也看到 Menu）
+        // IMPORTANT:
+        // If Activity Modal is still open, do NOT restore global UI.
+        const am = document.getElementById('activityModal');
+        if (!am.classList.contains('active')) {
+          UIVisibility.show();
+        }
+
+
+        requestAnimationFrame(() => {
+          lb.classList.remove('active','ready','loading','closing');
+          img.removeAttribute('src');
+          img.onerror = null;
+
+          // 關閉 lightbox：先解除 lightbox trap
+          ModalFocus.deactivateFocusTrap();
+
+          ModalFocus.restoreFocus(__lastFocusLightbox);
+          __lastFocusLightbox = null;
+
+          // 如果 activity modal 仲開緊，重新啟動 activity trap（Tab 仍只喺 modal 內）
+          const am = document.getElementById('activityModal');
+          if(am.classList.contains('active')){
+            const backBtn = am.querySelector('.back-btn');
+            ModalFocus.activateFocusTrap(am, backBtn);
+          }
+        });
+      };
+
+      const fallback = setTimeout(done, 360);
+
+      const onEnd = (e) => {
+        if(e.propertyName === 'opacity'){
+          clearTimeout(fallback);
+          done();
+        }
+      };
+
+      if(frame){
+        frame.addEventListener('transitionend', onEnd, { once:true });
+      }else{
+        clearTimeout(fallback);
+        done();
+      }
+    }
+
+    document.getElementById('lightbox').onclick=function(e){
+      if(e.target===this) closeLightbox();
+    }
+
+    /* ESC close (Lightbox / Activity modal) */
+    document.addEventListener('keydown', (e)=>{
+      if(e.key !== 'Escape') return;
+
+      const lb = document.getElementById('lightbox');
+      if(lb.classList.contains('active')) closeLightbox();
+
+      const modal = document.getElementById('activityModal');
+      if(modal.classList.contains('active')) closeActivity();
+    });
+
+    /* ============================
+       首頁卡片資料
+    ============================ */
+    //其他聚會
+    const OTHER_MEETUPS = [
+      { id: 1, thumb:"../assets/events/OTHER_MEETUPS_thumb_1.jpg", full:"../assets/events/OTHER_MEETUPS_full_1.jpg", alt:"Poster",
+          title:"Good Friday 受難日默想聚會",
+          hint:"教會活動 · 2024年3月20日"
+      },
+      { id: 2, thumb:"../assets/events/OTHER_MEETUPS_thumb_2.jpg", full:"../assets/events/OTHER_MEETUPS_full_2.jpg", alt:"Poster",
+          title:"教會同樂日",
+          hint:"教會活動 · 2024年3月30日"
+      },
+      { id: 3, thumb:"../assets/events/OTHER_MEETUPS_thumb_3.jpg", full:"../assets/events/OTHER_MEETUPS_full_3.jpg", alt:"Poster",
+          title:"中秋節愛筵",
+          hint:"教會活動 · 2024年9月14日" 
+      },
+      { id: 4, thumb:"../assets/events/OTHER_MEETUPS_thumb_4.jpg", full:"../assets/events/OTHER_MEETUPS_full_4.jpg", alt:"Poster",
+          title:"平安夜 佳音夜",
+          hint:"教會活動 · 2024年12月24日" 
+      },
+      { id: 5, thumb:"../assets/events/OTHER_MEETUPS_thumb_5.jpg", full:"../assets/events/OTHER_MEETUPS_full_5.jpg", alt:"Poster",
+          title:"聖誕崇拜暨聚餐",
+          hint:"佈道聚會 · 2024年12月25日" 
+      },
+      { id: 6, thumb:"../assets/events/OTHER_MEETUPS_thumb_6.jpg", full:"../assets/events/OTHER_MEETUPS_full_6.jpg", alt:"Poster",
+          title:"25週年感恩慶典聖誕餐會",
+          hint:"教會活動 · 2025年12月25日" 
+      }
+    ];
+
+    //精彩活動
+    const OUR_ACTIVITIES = [
+      {
+        id: 1,
+        title: "2024年平安夜 佳音夜",
+        folder: "../assets/galley/g1",
+
+        thumb: "thumb.jpg",
+        full: "cover.jpg",
+
+        moments: [
+          {
+            subtitle: [
+              "2024年的平安夜，我們在太子街頭報佳音。",
+              "在我們的社區中頌唱詩歌，大聲宣講平安的福音，用歌聲、用舌頭齊聲讚美神的大能和奇妙，唱進人靈魂的深深處。"
+            ]
+          }
+        ],
+
+
+        date: "2024-12-24",
+        location: "太子",
+        recapSummary: "這是充滿感恩、感動的一晚。",
+        
+        //活動感言
+        testimonials: [
+          { text:"「感恩今年能夠參加教會的報佳音活動，在報佳音過程中感受到人群中快樂的人不多，但當他們聽到我們唱聖誕歌曲時，有不少途人停下腳步駐足觀看，而不論小孩或成年人看到聖誕老人時更明顯興奮，因為他們知道聖誕老人是帶來歡樂及禮物，報佳音對途人來說可能只是感受一刻節日氣氛，但對我們弟兄姊妹來說，內心卻為到那些未認識福音的人而難過，我們也希望他們能夠認識耶穌及得著生命中最寶貴的禮物。」", author:"— 麗霞" },
+          { text:"「一開始唱第一站時已很喜樂，然後看著圍觀的街坊，又想哭，很感動我們終於可以走出去對街坊唱頌主耶穌，也很感動看到圍觀的人對神持開放態度，至少願意停下來聽。同時，在過程中我也感受到極深的平安，雖然是在街上，但感覺就像在教會唱詩敬拜一樣，只是沒有了那四面牆，我覺得，當我們弟兄姊妹聚在一起，這就是教會，教會不是建築物，這個道理牧師曾說過很多遍，而我在報佳音當晚真實體會到了。」", author:"— Rachel" },
+          { text:"「途人的反應比自己想像的，更加正面，他們都帶著笑容去回應我們，喜樂地接受我們預備的禮物，感覺到他們的滿足和善意，使自己於日後再次報佳音，充滿動力和信心；並對自己日後傳福音有著正面的影響，相信神的權能必能引領我們去成就一切，使教會復興；並盼望將福音傳遍太子，旺角的街坊，並途人和內地的遊客，於他們的內心撒下信主的種子。」", author:"— Rubio" },
+          { text:"「經歷完三年多的疫情，首次可以和弟兄姊妹到街上唱詩歌報佳音，感到份外珍貴和開心！我們在街上唱詩歌，有街坊駐足觀看，坐在巴士上的乘客也熱情地向我們揮手，真是窩心！從他們的身體語言很感受到他們聽到報佳音及收到聖誕禮物的喜悅。因為耶穌，讓好多陌生的關係，瞬間被燃點起來真是奇妙！希望這佳音的好信息能安慰和溫暖每一個需要被觸動的心靈。」", author:"— Phoebe" },
+          { text:"「感謝天父給我們這次報佳音的機會。可以透過詩歌去與陌生人分享神對我們的愛與祂的權能，實在好可貴；弟兄姊妹不分彼此，同心預備和練習，實在好開心。途人們的駐足聆聽、揮手互動或接受禮物時的喜悅笑容，全是意想不到的反應，這鼓勵了自己要突破過去很多「不可能」的思想框架，只需隨着聖靈的引導去傳福音，神必會工作。」", author:"— Mary" }
+        ]
+      }
+    ];
+
+    const ICON_DL = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+    `; 
+
+    /* meta.date */
+    const ICON_CAL = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="4" width="18" height="18" rx="3"></rect>
+        <line x1="16" y1="2.5" x2="16" y2="6"></line>
+        <line x1="8" y1="2.5" x2="8" y2="6"></line>
+        <line x1="3" y1="10" x2="21" y2="10"></line>
+      </svg>
+    `;
+
+    /* meta.location */
+    const ICON_PIN = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 21s7-4.5 7-11a7 7 0 0 0-14 0c0 6.5 7 11 7 11z"></path>
+        <circle cx="12" cy="10" r="2.4"></circle>
+      </svg>
+    `;
+    
+    // 活動回顧
+    function renderActivities(){
+      const grid = document.getElementById("ActivitiesGrid");
+      if(!grid) return;
+
+
+      //  1) 先排序（date desc；若 date 相同再用 id desc）
+      const sorted = OUR_ACTIVITIES.slice().sort(
+        (a,b) => (b.date || '').localeCompare(a.date || '') || (b.id - a.id)
+      );
+
+      // 2) totalPages 改用 sorted.length
+      const totalPages = Math.max(1, Math.ceil(sorted.length / ACTIVITY_PAGE_SIZE));
+      if (activityPage > totalPages) activityPage = totalPages;
+
+      // 3) items 改用 sorted.slice
+      const items = sorted.slice(
+        (activityPage - 1) * ACTIVITY_PAGE_SIZE,
+        activityPage * ACTIVITY_PAGE_SIZE
+      );
+
+      grid.innerHTML = items.map(a => `
+        <div class="card reveal">
+          <div class="img-container ratio-16x12">
+            <img src="${fileUrl(a, a.thumb)}" alt="Activity" loading="lazy">
+          </div>
+
+          <div class="card-info">
+            <div class="card-title">${a.title}</div>
+            <span class="readMore" role="button" tabindex="0"
+              data-action="open-recap" data-id="${a.id}">
+              了解更多 <span class="arrow">→</span>
+            </span>
+          </div>
+        </div>
+      `).join("");
+
+      bindImgErrorHandlers(grid, 'light', 'imgfail');
+      if (window.initReveal) window.initReveal();
+
+      renderNumberPager({
+        numsId: 'activityPagerNums',
+        wrapperId: 'activityPager',
+        totalPages,
+        currentPage: activityPage,
+        onGo: 'goActivityPage'
+      });
+    }
+
+    window.goActivityPage = function(p){
+      activityPage = p;
+      renderActivities();
+    };
+    
+
+    // 其他聚會
+    //// 1. 插入 card.reveal
+    function renderOtherMeetups(){
+      const grid = document.getElementById("otherMeetupsGrid");
+      if(!grid) return;
+
+      // 1) 先排序（id desc）
+      const sorted = OTHER_MEETUPS.slice().sort((a,b) => b.id - a.id);
+
+      // 2) totalPages 改用 sorted.length
+      const totalPages = Math.max(1, Math.ceil(sorted.length / MEETUPS_PAGE_SIZE));
+      if (meetupsPage > totalPages) meetupsPage = totalPages;
+
+      // 3) items 改用 sorted.slice
+      const items = sorted.slice(
+        (meetupsPage - 1) * MEETUPS_PAGE_SIZE,
+        meetupsPage * MEETUPS_PAGE_SIZE
+      );
+
+      // 先插入 HTML，不加比例 class
+      grid.innerHTML = items.map(item => `
+        <div class="card reveal">
+          <div class="img-container">
+            <img src="${item.thumb}" alt="${item.alt}" loading="lazy"
+              data-action="lightbox" data-full="${item.full}">
+            <div class="card-dl-btn" title="下載圖片"
+              data-action="download" data-url="${item.full}" data-filename="brand-lab-${item.id}.jpg">
+              ${ICON_DL}
+            </div>
+            <div class="posterDrawer" aria-hidden="true">
+              <p class="pd-title">${item.title || ''}</p>
+              <p class="pd-hint">${item.hint || ''}</p>
+            </div>
+          </div>
+        </div>
+      `).join("");
+
+      // 插入後再判斷比例
+      grid.querySelectorAll('.img-container img').forEach(img => {
+        img.onload = () => {
+          const container = img.closest('.img-container');
+          if (img.naturalWidth > img.naturalHeight) {
+            container.classList.add('ratio-16x12'); // 橫版
+          } else {
+            container.classList.add('ratio-3x4');   // 直版
+          }
+        };
+        img.onerror = () => {
+          const container = img.closest('.img-container');
+          container.classList.add('ratio-3x4'); // fallback
+        };
+      });
+
+      bindImgErrorHandlers(grid, 'light', 'imgfail');
+      if (window.initReveal) window.initReveal();
+
+      renderNumberPager({
+        numsId: 'otherMeetupsPagerNums',
+        wrapperId: 'otherMeetupsPager',
+        totalPages,
+        currentPage: meetupsPage,
+        onGo: 'gomeetupsPage'
+      });
+    }
+
+    window.gomeetupsPage = function(p){
+      meetupsPage = p;
+      renderOtherMeetups();
+    };  
+
+    // 活動回顧
+    function fileUrl(act, filename){
+      return `${act.folder}/${filename}`;
+    }
+
+    // 只供顯示的相片清單載入（不涉及相簿下載/選取下載）
+    // 會讀取 ../assets/galley/gX/files.json
+    async function loadGalleryList(act){
+      const manifestUrl = `${act.folder}/files.json`;
+      const resp = await fetch(manifestUrl, { cache: "no-cache" });
+      if(!resp.ok) throw new Error(`Cannot load ${manifestUrl}`);
+
+      const data = await resp.json();
+
+      // 兼容不同 key；你目前 files.json 用 "download"（我們當作顯示清單用）
+      const list =
+        (Array.isArray(data.gallery) && data.gallery) ||
+        (Array.isArray(data.images)  && data.images)  ||
+        (Array.isArray(data.files)   && data.files)   ||
+        (Array.isArray(data.download)&& data.download) ||
+        [];
+
+      return list.map(name => `${act.folder}/${name}`);
+    }
+
+    // 
+    function bindCardEvents(){
+      document.addEventListener("click", (e) => {
+        const el = e.target.closest("[data-action]");
+        if(!el) return;
+
+        const action = el.dataset.action;
+
+        if(action === "lightbox"){
+          openLightbox(el.dataset.full);
+          return;
+        }
+
+        if(action === "download"){
+          // 下載圓形按鈕恢復功能
+          const url = el.dataset.url;
+          const filename = el.dataset.filename || "brand-lab-photo.jpg";
+          if(url) downloadImg(url, filename);
+          return;
+        }
+
+        if(action === "open-recap"){
+          openActivityRecap(el.dataset.id);
+          return;
+        }
+      });
+    }
+
+    /* ============================
+       活動資訊
+    ============================ */
+
+/* ============================
+   Testimonials
+============================ */
+  const TestimonialState = {
+    page: 0,
+    perPage: 3,
+    timer: null
+  };
+
+  let __currentTestimonials = [];  // 當前活動用邊一組
+
+  const checkReducedMotion = () =>
+    window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // setTestimonialsFor： 直接從活動物件取
+  function setTestimonialsFor(activityId){
+    const section = document.querySelector('#activityModal .testimonial-section');
+    const grid = document.getElementById('testimonialGrid');
+    const dots = document.getElementById('testimonialPager');
+    const id = Number(activityId);   
+    const act = OUR_ACTIVITIES.find(x => x.id === id) || {};
+    __currentTestimonials = Array.isArray(act.testimonials) ? act.testimonials : [];
+
+    if(!__currentTestimonials || __currentTestimonials.length === 0){
+      if(section) section.style.display = 'none';
+      if(grid) grid.innerHTML = '';
+      if(dots) dots.innerHTML = '';
+      stopTestimonialAutoplay();
+      return;
+    }
+
+    if(section) section.style.display = '';
+
+    TestimonialState.perPage = calcTestimonialPerPage();
+    TestimonialState.page = 0;
+    renderTestimonials(0);
+
+    const totalPages = pageCount();
+    if(dots) dots.style.display = (totalPages <= 1) ? 'none' : '';
+
+    if (totalPages > 1) startTestimonialAutoplay();
+    else stopTestimonialAutoplay();
+  }
+
+function calcTestimonialPerPage(){
+  // 直接沿用 grid-3 / grid-2 / 1 欄的 responsive 思路
+  const w = window.innerWidth;
+  // 原本：>900 用 3 欄；<=900 2 欄；<=560 1 欄 
+  let cols = 3;
+  if(w <= 900) cols = 2;
+  if(w <= 560) cols = 1;
+  const rows = 1; // 更新版想要 1 行
+  return cols * rows;
+}
+
+function pageCount(){
+  return Math.max(1, Math.ceil(__currentTestimonials.length / TestimonialState.perPage));
+}
+
+function testimonialCardHTML(t, i){
+  return `
+    <div class="quote-card" style="--i:${i}">
+      <div class="quote-text">${t.text}</div>
+      <div class="quote-author">${t.author}</div>
+    </div>
+  `;
+}
+
+function triggerDotRipple(btn){
+  if(checkReducedMotion()) return; 
+  btn.classList.remove('ripple');
+  void btn.offsetWidth; 
+  btn.classList.add('ripple');
+  setTimeout(() => btn.classList.remove('ripple'), 560);
+}
+
+function buildDots(){
+  const dotsWrap = document.getElementById('testimonialPager');
+  if(!dotsWrap) return;
+
+  const total = pageCount();
+  if(dotsWrap.children.length === total) return;
+
+  dotsWrap.innerHTML = '';
+  for(let i=0;i<total;i++){
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-label', `第 ${i+1} 組`);
+    b.addEventListener('click', () => {
+      triggerDotRipple(b);
+      stopTestimonialAutoplay();
+      transitionToTestimonialPage(i);
+      startTestimonialAutoplay();
+    });
+    dotsWrap.appendChild(b);
+  }
+}
+
+function setActiveDot(){
+  const dotsWrap = document.getElementById('testimonialPager');
+  if(!dotsWrap) return;
+  Array.from(dotsWrap.children).forEach((d,i) => {
+    const active = (i === TestimonialState.page);
+    d.classList.toggle('active', active);
+    d.setAttribute('aria-current', active ? 'true' : 'false');
+  });
+}
+
+/* focus：每行中間卡片突出（cols=1 就唔做） */
+function applyFocus(){
+  const grid = document.getElementById('testimonialGrid');
+  if(!grid) return;
+
+  const w = window.innerWidth;
+  let cols = 3;
+  if(w <= 900) cols = 2;
+  if(w <= 560) cols = 1;
+  const rows = 2;
+
+  const cards = Array.from(grid.querySelectorAll('.quote-card'));
+  cards.forEach(c => c.classList.remove('is-focus','is-dim'));
+
+  if(cols <= 1) return;
+
+  const middleCol = (cols % 2 === 1) ? Math.floor(cols/2) : (cols/2 - 1);
+  const focusIdx = new Set();
+  for(let r=0;r<rows;r++){
+    const idx = r*cols + middleCol;
+    if(idx < cards.length) focusIdx.add(idx);
+  }
+  cards.forEach((c,i) => {
+    if(focusIdx.has(i)) c.classList.add('is-focus');
+    else c.classList.add('is-dim');
+  });
+}
+
+/* 無動畫 render（初次 / reduced motion） */
+function renderTestimonials(page=0){
+  const grid = document.getElementById('testimonialGrid');
+  if(!grid) return;
+
+  TestimonialState.perPage = calcTestimonialPerPage();
+  const totalPages = pageCount();
+  TestimonialState.page = (page + totalPages) % totalPages;
+
+  const start = TestimonialState.page * TestimonialState.perPage;
+  const slice = __currentTestimonials.slice(start, start + TestimonialState.perPage);
+
+  grid.innerHTML = slice.map((t, i) => testimonialCardHTML(t, i)).join('');
+  buildDots();
+  setActiveDot();
+  applyFocus();
+}
+
+/* 有動畫 set 轉場 */
+function transitionToTestimonialPage(next){
+  const grid = document.getElementById('testimonialGrid');
+  if(!grid) return;
+
+  TestimonialState.perPage = calcTestimonialPerPage();
+  const totalPages = pageCount();
+  const nextPage = (next + totalPages) % totalPages;
+
+  if(checkReducedMotion()){
+    renderTestimonials(nextPage);
+    return;
+  }
+
+  grid.classList.add('is-locked','is-leaving');
+
+  setTimeout(() => {
+    TestimonialState.page = nextPage;
+
+    const start = TestimonialState.page * TestimonialState.perPage;
+    const slice = __currentTestimonials.slice(start, start + TestimonialState.perPage);
+
+    grid.innerHTML = slice.map((t, i) => testimonialCardHTML(t, i)).join('');
+    buildDots();
+    setActiveDot();
+
+    grid.classList.remove('is-leaving');
+    void grid.offsetHeight; // reflow
+    grid.classList.add('is-entering');
+
+    const totalIn = 520 + (Math.max(0, TestimonialState.perPage-1) * 70) + 20;
+    setTimeout(() => {
+      grid.classList.remove('is-entering','is-locked');
+      applyFocus();
+    }, totalIn);
+
+  }, 220);
+}
+
+/* autoplay：只要 modal 開啟就播；關閉就停 */
+// UX principle:
+// Testimonials autoplay only when user is focused on the modal.
+function startTestimonialAutoplay(){
+  stopTestimonialAutoplay();
+  if(checkReducedMotion()) return; 
+  if(pageCount() <= 1) return;
+  TestimonialState.timer = setInterval(() => {
+    transitionToTestimonialPage(TestimonialState.page + 1);
+  }, 5200);
+}
+
+function stopTestimonialAutoplay(){
+  if(TestimonialState.timer){
+    clearInterval(TestimonialState.timer);
+    TestimonialState.timer = null;
+  }
+}
+
+    /* ============================
+       Recap state
+    ============================ */
+
+    const RecapState = {
+      title:'',
+      allItems:[],
+      page: 1,
+      perPage: 8
+    };
+
+    function safeName(s){
+      return String(s || 'album').trim()
+        .replace(/[\\/:*?"<>|]/g,'_')
+        .replace(/\s+/g,'_')
+        .slice(0,80);
+    }
+
+    function getPerPage(){
+      const w = window.innerWidth;
+      if(w > 1000) return 8;
+      return 6;
+    }
+
+    /* Modal 更多相片：每張加回圓形下載按鈕（dl-mini） */
+    function gItemHTML(full, thumb, name){
+      return `
+        <div class="g-item" data-full="${full}" data-name="${name}">
+          <div class="dl-mini" title="下載此圖"
+            data-action="download"
+            data-url="${full}"
+            data-filename="${name}">
+            ${ICON_DL}
+          </div>
+
+          <img src="${thumb}" alt="photo" loading="lazy">
+        </div>
+      `;
+    }
+
+    /* Gallery delegation（下載按鈕優先，其餘點圖開 Lightbox） */
+    // Reason:
+    // Prevent accidental lightbox open when user intends to download.
+    function bindGalleryDelegation(){
+      const box = document.getElementById('galleryContent');
+      if(!box || box.__bound) return;
+      box.__bound = true;
+
+      box.addEventListener('click', (e) => {
+        // 1) 如果點到下載圓形按鈕：下載
+        const dlBtn = e.target.closest('[data-action="download"]');
+        if(dlBtn){
+          e.stopPropagation();
+          const url = dlBtn.dataset.url;
+          const filename = dlBtn.dataset.filename || 'brand-lab-photo.jpg';
+          if(url) downloadImg(url, filename);
+          return;
+        }
+
+        // 2) 其他地方：點到 g-item 就開 lightbox
+        const item = e.target.closest('.g-item');
+        if(!item) return;
+        openLightbox(item.dataset.full);
+      });
+    }
+
+    // Progressive image loading:
+    // Low-res first to stabilize layout,
+    // then swap to full-res when ready.
+    function progressiveHero(stageEl, lowUrl, fullUrl){
+      const lowImg = stageEl.querySelector('.hero-low');
+      const highImg = stageEl.querySelector('.hero-high');
+
+      if(lowImg){
+        lowImg.onerror = () => {
+          applyPlaceholder(lowImg, 'dark');
+          if(isOffline()) toastOnce('offline-hero','而家似乎冇網絡，封面圖已用替代圖顯示');
+          else toastOnce('herofail', '有部分圖片載入失敗，已以替代圖顯示');
+        };
+      }
+      if(highImg){
+        highImg.onerror = () => {
+          applyPlaceholder(highImg, 'dark');
+          if(isOffline()) toastOnce('offline-hero','你而家似乎冇網絡，封面圖已用替代圖顯示');
+          else toastOnce('herofail', '有部分圖片載入失敗，已以替代圖顯示');
+          stageEl.classList.add('ready');
+        };
+      }
+
+      lowImg.src = lowUrl;
+
+      const img = new Image();
+      img.onload = () => {
+        highImg.src = fullUrl;
+        stageEl.classList.add('ready');
+      };
+      img.onerror = () => {
+        applyPlaceholder(highImg, 'dark');
+        if(isOffline()) toastOnce('offline-hero','而家似乎冇網絡，封面圖已用替代圖顯示');
+        else toastOnce('herofail', '有部分圖片載入失敗，已以替代圖顯示');
+        stageEl.classList.add('ready');
+      };
+      img.src = fullUrl;
+    }
+
+    function renderMorePage(){
+      const grid = document.getElementById('moreGrid');
+      const pager = document.getElementById('morePager');
+      const nums = document.getElementById('morePagerNums');
+      if(!grid || !pager || !nums) return;
+
+      RecapState.perPage = getPerPage();
+      const total = RecapState.allItems.length;
+      const totalPages = Math.max(1, Math.ceil(total / RecapState.perPage));
+      RecapState.page = Math.min(Math.max(1, RecapState.page), totalPages);
+
+      const start = (RecapState.page - 1) * RecapState.perPage;
+      const end = Math.min(start + RecapState.perPage, total);
+      const slice = RecapState.allItems.slice(start, end);
+
+      grid.innerHTML = slice.map((u, idx)=>{
+        const name = `${safeName(RecapState.title)}_${String(start+idx+1).padStart(2,'0')}.jpg`;
+        return gItemHTML(u, u, name);
+      }).join('');
+
+      // 用現成的數字 pager（同「其他聚會／活動回顧」一致）
+      renderNumberPager({
+        numsId: 'morePagerNums',
+        wrapperId: 'morePager',
+        totalPages,
+        currentPage: RecapState.page,
+        onGo: 'gotoMorePage'
+      });
+
+      bindImgErrorHandlers(grid, 'light', 'imgfail');
+    }
+
+    function gotoMorePage(p){
+      RecapState.page = p;
+      renderMorePage();
+    }
+    window.gotoMorePage = gotoMorePage;
+
+
+    ///
+    function escTxt(s){
+      return String(s ?? '')
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'",'&#39;');
+    }
+
+    // subtitle 允許：string / string[] / 內含 \n 的 string
+    // 目標：最多 2 行
+    function normalizeSubtitle(subtitle, maxLines = 2){
+      if(subtitle == null) return [];
+
+      // 1) array：直接當作每行
+      if(Array.isArray(subtitle)){
+        return subtitle
+          .map(s => String(s ?? '').trim())
+          .filter(Boolean)
+          .slice(0, maxLines);
+      }
+
+      // 2) string：支援 \n 分行
+      const raw = String(subtitle).trim();
+      if(!raw) return [];
+      return raw
+        .split(/\r?\n+/)          // 允許使用 \n 分兩行
+        .map(s => s.trim())
+        .filter(Boolean)
+        .slice(0, maxLines);
+    }
+
+    // 將 moments 轉成「一段 quote」(每個 item 最多 2 行)
+    // - 不再依賴 title
+    // - 用 <br> 把兩行顯示出來
+    function momentsToQuote(momentsData){
+      if(!Array.isArray(momentsData) || momentsData.length === 0) return '';
+
+      return momentsData.map(m => {
+        const lines = normalizeSubtitle(m?.subtitle, 2)
+          .map(line => escTxt(line));
+
+        if(lines.length === 0) return '';
+
+        // 兩行：用 <br>；一行：直接顯示
+        return lines.join('<br>');
+      }).filter(Boolean).join('<br><br>'); // 多個 moments item 之間隔一行
+    }
+
+
+    async function openActivityRecap(activityId){
+      const modal = document.getElementById('activityModal');
+      const gallery = document.getElementById('galleryContent');
+      const scroller = document.getElementById('modalScroll');
+
+      __lastFocusActivity = document.activeElement;
+
+      const act = OUR_ACTIVITIES.find(x => x.id === Number(activityId)) || {};
+      if (!act.folder) {
+        console.warn('Activity folder missing:', activityId, act);
+        showToast('此活動暫未設定相簿資料');
+        return;
+      }
+      const title = act.title || '活動回顧';
+      const meta  = { date: act.date || '—', location: act.location || '—' };
+
+      const recapSummary = act.recapSummary || '';
+      const momentsData = Array.isArray(act.moments) ? act.moments : [];
+
+      RecapState.title = title;
+      RecapState.page = 1;
+
+      // 補回「更多相片」資料來源（只用作顯示）
+      try{
+        RecapState.allItems = await loadGalleryList(act);
+      }catch(e){
+        console.warn(e);
+        RecapState.allItems = [];
+        showToast('未能載入更多相片清單（files.json）');
+      }
+
+      document.getElementById('actTitle').textContent = title;
+      const tagEl = document.getElementById('actTag');
+      if(tagEl){ tagEl.style.display = 'none'; tagEl.textContent = ''; }
+
+      // hero 圖：用你本地檔案
+      const heroFull = fileUrl(act, act.full);
+      const heroLow  = fileUrl(act, act.thumb);
+
+ 
+      const momentsQuoteHTML = (momentsToQuote(momentsData) || '').trim();
+      
+      gallery.innerHTML = `
+        <div class="recap-hero">
+          <div class="g-item" data-full="${heroFull}" data-name="${safeName(title)}_hero.jpg">
+            <div class="hero-stage" id="heroStage">
+              <img class="hero-low" alt="placeholder">
+              <img class="hero-high" alt="hero">
+            </div>
+
+            <div class="recap-overlay"></div>
+            <div class="recap-meta">
+              ${recapSummary ? `<div class="recap-summary">${recapSummary}</div>` : ''}
+              <div class="hero-chips">
+                <span class="chip">${ICON_CAL}<span>${meta.date}</span></span>
+                <span class="chip">${ICON_PIN}<span>${meta.location}</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 文字版精選時刻：作為 Hero 與「更多相片」之間的緩衝 -->
+        <section class="moments" aria-label="精選時刻">
+          <div class="moments-quote">
+            ${momentsQuoteHTML || '今次活動的精選時刻，我哋會慢慢補上。'}
+          </div>
+
+          <!-- 裝飾短線 -->
+          <div class="moments-divider"></div>
+        </section>
+
+        <div class="more-head">
+          <h3>更多相片</h3>
+        </div>
+        <div class="gallery-grid-more" id="moreGrid"></div>
+        
+        <!-- 改成數字 pager 結構 -->
+        <div class="pager" id="morePager">
+          <div class="pagerNums" id="morePagerNums"></div>
+        </div>
+
+      `;
+
+      // progressiveHero 改用你本地 thumb/cover
+      progressiveHero(document.getElementById('heroStage'), heroLow, heroFull);
+
+      bindGalleryDelegation();
+      renderMorePage();
+
+      setTestimonialsFor(activityId);
+      startTestimonialAutoplay();
+
+      // 開 Activity modal 時：關閉選取下載 UI
+      modal.style.display = 'flex';
+      requestAnimationFrame(() => modal.classList.add('active'));
+
+      lockBodyScroll();
+      if(scroller) scroller.scrollTop = 0;
+
+      UIVisibility.hideAll(); 
+
+      requestAnimationFrame(() => {
+        const backBtn = modal.querySelector('.back-btn');
+        backBtn?.focus({preventScroll:true});
+        ModalFocus.activateFocusTrap(modal, backBtn);
+      });
+
+      bindImgErrorHandlers(gallery, 'light', 'imgfail');
+    }
+
+
+    function closeActivity(){
+      stopTestimonialAutoplay(); // 新增：關閉就停 timer
+      const modal=document.getElementById('activityModal');
+      modal.classList.remove('active');
+
+      setTimeout(()=>{
+        modal.style.display='none';
+        unlockBodyScroll();
+
+        // === 恢復 menu bar 和 widget ===
+        UIVisibility.show();
+
+
+        // 關閉活動 modal：解除 focus trap
+        ModalFocus.deactivateFocusTrap();
+
+        ModalFocus.restoreFocus(__lastFocusActivity);
+        __lastFocusActivity = null;
+      },450);
+    }
+    window.openActivityRecap = openActivityRecap;
+    window.closeActivity = closeActivity;
+
+    window.addEventListener('resize', () => {
+      const modal = document.getElementById('activityModal');
+      if(modal.classList.contains('active')){
+        renderMorePage();
+
+        // 如果當前活動有 testimonials，先 render 再決定 autoplay/dots
+        if(__currentTestimonials && __currentTestimonials.length > 0){
+          renderTestimonials(TestimonialState.page);
+          const dots = document.getElementById('testimonialPager');
+          const totalPages = pageCount();
+          if(dots) dots.style.display = (totalPages <= 1) ? 'none' : '';
+          if(totalPages > 1) startTestimonialAutoplay();
+          else stopTestimonialAutoplay();
+        }
+      }
+    });
+
+    /* ============================
+       啟動
+    ============================ */
+    function initEventPage() {
+      renderOtherMeetups();
+      renderActivities();
+
+      setTimeout(() => {
+        const reveals = document.querySelectorAll('.reveal');
+        reveals.forEach(el => {
+          el.classList.add('in');
+          el.style.opacity = "1";
+          el.style.transform = "translateY(0)";
+        });
+        if (window.initReveal) window.initReveal();
+      }, 200);
+
+      bindCardEvents();
+
+      // 鍵盤支援：Enter / Space 觸發 readMore
+      if (!window.__readMoreKeyBound) {
+        window.__readMoreKeyBound = true;
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+
+          const el = document.activeElement;
+          if (el && el.classList && el.classList.contains('readMore') && el.dataset.action) {
+            e.preventDefault();
+            el.click();
+          }
+        });
+      }
+    }
+
+    // 確保執行
+    if (document.readyState === 'complete') {
+      initEventPage();
+    } else {
+      window.addEventListener('load', initEventPage);
+    }
+
+  </script>
+</body>
+</html>    

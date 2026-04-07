@@ -1,0 +1,379 @@
+/* Scope note:
+   menu.css handles desktop header navigation only
+   Mobile drawer styles live in mobile-menu.css
+*/
+/* Structural dependency:
+   Selectors here are tightly coupled with menu.html markup
+   Refactor both together if needed
+*/
+/* Spacing rhythm:
+   Fixed gaps maintain visual consistency across screen sizes
+*/
+
+/* =================================================
+   Desktop menu header
+   DEFAULT = COMPACT（所有內頁 / 一般狀態）
+   HERO 只在 landing page 用 html.is-hero 控制
+================================================= */
+/* Layering intent:
+   Header stays below modals and overlays
+   Do not raise z-index without checking modal behavior
+*/
+#hero-header,
+#site-menu #hero-header {
+  width: 100%;
+  padding: 8px 64px;              
+
+  position: fixed;
+  display: flex;
+  top: 0;
+  left: 0;                         /* 固定定位更穩 */
+  z-index: 9999;                   /* 避免內容/transition 壓過 menu */
+
+  align-items: center;
+  gap: 18px;
+
+  /* DEFAULT（Compact）視覺 */
+  background: rgba(255,255,255,.82);
+  border-bottom: 1px solid rgba(0,0,0,.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  /* Hero → Compact transition */
+  transition:
+    padding 260ms ease,
+    background 260ms ease,
+    backdrop-filter 260ms ease,
+    border-bottom-color 260ms ease;
+}
+
+/* HERO（landing page 初始狀態）：header 透明 + 更大 padding
+   - 只有 landing page 會有 html.is-hero
+   - 未 scroll 前（沒有 hero-scrolled）才套用
+*/
+html.is-hero:not(.hero-scrolled) #site-menu #hero-header{
+  padding: 40px 100px;             /* ← Hero spacing */
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom-color: transparent;
+}
+
+/* =================================================
+   Logo
+================================================= */
+/* ---- Header logo container：唯一控制點 ---- */
+#hero-header .logo-container{
+  width: 72px;
+  height: 72px;
+  flex: 0 0 72px;
+  display: grid;
+  place-items: center;
+  transition: width 260ms ease, height 260ms ease, flex-basis 260ms ease;
+}
+
+#hero-header .logo-container a{
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+/* ---- Logo visual ---- */
+#hero-header .logo{
+  width: 100%;
+  height: 85%;
+  background: url("/assets/img/logo.png") center / contain no-repeat;
+  display: block;
+}
+#hero-header .logo:hover {
+  transform: translateY(-2px); 
+}
+/* 陰影 */
+/* #hero-header .logo-container{
+  box-shadow: 0 8px 20px rgba(0,0,0,.05);
+} */
+
+/* ---- HERO 初始（landing 未 scroll）更大 ---- */
+html.is-hero:not(.hero-scrolled) #hero-header .logo-container{
+  height: 68px;
+  width: auto;
+  aspect-ratio: auto;      
+}
+
+/* ---- 已 scroll（縮細） ---- */
+html.is-hero.hero-scrolled #hero-header .logo-container{
+  height: 48px;
+  width: auto;
+  aspect-ratio: auto;      
+}
+
+
+/* =================================================
+   Menu list
+   DEFAULT = 右對齊（compact）
+================================================= */
+/* Layout choice:
+   Flex is used for predictable horizontal flow
+   with unknown item count.
+*/
+#site-menu .menu-items {
+  display: flex;
+  align-items: center;
+
+  width: auto;                       /* DEFAULT：不再佔滿 */
+  margin: 0 0 0 auto;                /* DEFAULT：推到右邊 */
+  justify-content: flex-end;         /* DEFAULT：靠右 */
+  gap: clamp(20px, 2.2vw, 26px);     /* DEFAULT：自適應 gap */
+
+  list-style: none;
+  padding: 0;
+
+  transition: gap 260ms ease;
+}
+
+/* HERO 初始（landing 未 scroll）：menu 置中 + 佔滿 */
+html.is-hero:not(.hero-scrolled) #site-menu .menu-items{
+  width: 100%;
+  margin-left: 0;
+  justify-content: center;
+  gap: 50px;                         /* ← Hero gap */
+}
+
+/* Menu text (keep legacy commented block) */
+#site-menu .menu-item ul{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+
+/* ===============================
+   MENU BASE
+================================ */
+
+#site-menu .menu-item a{
+  text-decoration: none;
+  font-weight: 650;                  /* DEFAULT 用 compact 字重 */
+  font-size: 14px;
+  color: rgba(31,31,31,.82);
+
+  letter-spacing: 1px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+
+  padding: 8px 12px;                 /* DEFAULT 用 compact padding */
+  line-height: 1.3;                 /* DEFAULT 用 compact 行高 */
+
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+
+  /* 文字互動只保留顏色與透明度 */
+  transition:
+    color .25s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity .25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* HERO 初始（landing 未 scroll）：用返你原本的「Hero 字重 / padding」 */
+html.is-hero:not(.hero-scrolled) #site-menu .menu-item a{
+  font-weight: 750;
+  padding: 10px 20px;
+  line-height: normal; /* 讓 hero 更鬆動，如你想固定可刪 */
+}
+
+/* Hover：文字輕微變化（唔搶戲） */
+/* Interaction tone:
+   Hover states are subtle to avoid competing with page content.
+*/
+#site-menu .menu-item a:hover{
+  color: var(--color-accent);
+  opacity: 0.9;
+  transform: translateY(-0.5px);     /* DEFAULT：輕微 lift（你原本 compact hover） */
+}
+
+/* HERO 初始：可不 lift（避免 hero header 太多跳動）—如你想保留 lift 可刪 */
+html.is-hero:not(.hero-scrolled) #site-menu .menu-item a:hover{
+  transform: none;
+}
+@media (min-width: 768px) and (max-width: 1024px){
+  html.is-hero:not(.hero-scrolled) #site-menu .menu-items{
+    gap: 24px; /* max: 24px */
+  }
+}
+
+/* ===============================
+   SOFT BUBBLE (BASE)
+   DEFAULT（compact）不顯示 bubble
+   HERO 初始才顯示 bubble
+================================ */
+
+#site-menu .menu-item a::before{
+  content: none;                     /* DEFAULT：完全無氣泡 */
+}
+
+/* HERO 初始：恢復 bubble */
+html.is-hero:not(.hero-scrolled) #site-menu .menu-item a::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  z-index: -1;
+
+  background: rgba(255,255,255,.16);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+
+  opacity: 0;
+  transform: scale(0.96); /* 幾乎察覺唔到，但有「呼吸感」 */
+
+  transition:
+    opacity .28s ease,
+    transform .28s ease,
+    backdrop-filter .28s ease;
+}
+
+/* Hover：氣泡「更實一點」 */
+html.is-hero:not(.hero-scrolled) #site-menu .menu-item a:hover::before{
+  opacity: 1;
+  transform: scale(1);
+  backdrop-filter: blur(5px);
+}
+
+/* ===============================
+   ACTIVE (CURRENT PAGE)
+================================ */
+
+#site-menu .menu-item a[aria-current="page"]{
+  transition: none;
+  background: var(--color-accent);
+  color: var(--white-100);
+  border-color: rgba(255,90,60,.12);
+  padding: 8px 14px; /* 比其他 item 大少少，但唔好太肥（你原本 compact active） */
+}
+
+/* HERO 初始 active：用返你原本 hero padding（更醒目一點） */
+html.is-hero:not(.hero-scrolled) #site-menu .menu-item a[aria-current="page"]{
+  padding: 10px 20px;
+}
+
+/* Active 狀態不再顯示 hover 氣泡（避免重疊） */
+#site-menu .menu-item a[aria-current="page"]::before{
+  content: none;
+}
+
+/* active 時同時關 hover 效果 */
+#site-menu .menu-item a[aria-current="page"]:hover{
+  opacity: 1;
+  color: var(--white-100);
+}
+
+/* =================================================
+ MENU DROP + FOCUS (Last 30% sharp)
+================================================= */
+
+/* Default：menu items 永遠可見（避免任何時刻消失） */
+#site-menu .menu-item{
+  opacity: 1;
+  transform: none;
+  filter: none;
+  will-change: transform, filter, opacity;
+}
+
+/* Only when menu-animate：才套用隱藏初始狀態 + 動畫 */
+#site-menu.menu-animate .menu-item{
+  opacity: 0;
+  transform: translateY(-60vh); /* 完全在 screen 外 */
+  filter: blur(8px);
+
+  animation-name: menuDropFocus;
+  animation-duration: 900ms;
+  animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  animation-fill-mode: both;
+  animation-iteration-count: 1;
+}
+
+/* Stagger（左 → 右） */
+#site-menu.menu-animate .menu-item:nth-child(1){ animation-delay: 0ms; }
+#site-menu.menu-animate .menu-item:nth-child(2){ animation-delay: 120ms; }
+#site-menu.menu-animate .menu-item:nth-child(3){ animation-delay: 240ms; }
+#site-menu.menu-animate .menu-item:nth-child(4){ animation-delay: 360ms; }
+#site-menu.menu-animate .menu-item:nth-child(5){ animation-delay: 480ms; }
+#site-menu.menu-animate .menu-item:nth-child(6){ animation-delay: 600ms; }
+
+/* =================================================
+ KEYFRAMES：最後 30%（70% → 100%）才變清晰
+================================================= */
+@keyframes menuDropFocus {
+  /* 0%：完全在畫面外 */
+  0%{
+    opacity: 0;
+    transform: translateY(-60vh);
+    filter: blur(8px); /* 修正你原本 blur(px) typo */
+  }
+
+  /* 70%：基本落到位，但仍然 blur */
+  70%{
+    opacity: 1;
+    transform: translateY(-18px); /* 留少少距離 */
+    filter: blur(2px);
+  }
+
+  /* 100%：最後 30% 快速對焦 */
+  100%{
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+
+/* 無障礙（減少動畫） */
+@media (prefers-reduced-motion: reduce){
+  #site-menu .menu-item{
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    animation: none !important;
+  }
+}
+
+/* =================================================
+  Responsive padding (你原本有 max-width:1200px 的 compact padding)
+  default 已是 compact，所以保留這段（原樣）
+================================================= */
+
+@media (max-width: 1200px){
+  #site-menu #hero-header{
+    padding: 10px 40px;
+  }
+
+  /* Hero 初始在中型 desktop 的 padding 也可跟住收（可選，但一致性更好） */
+  html.is-hero:not(.hero-scrolled) #site-menu #hero-header{
+    padding: 34px 60px;
+  }
+}
+
+/* =================================================
+ 防止 drop animation 期間 padding 跳動
+================================================= */
+
+html.is-hero:not(.hero-scrolled) #site-menu.menu-animate #hero-header{
+  padding: 40px 100px;
+}
+
+/* =================================================
+ MOBILE ONLY — HIDE DESKTOP MENU
+================================================= */
+/* Responsive responsibility:
+   Desktop menu visibility is reduced on small screens;
+   interaction is delegated to mobile drawer
+*/
+@media screen and (max-width: 1020px) {
+  /* Hide desktop menu when entering mobile */
+  #hero-header,
+  #site-menu #hero-header {
+    display: none;
+  }
+}

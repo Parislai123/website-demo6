@@ -1,0 +1,2077 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>關於我們 | 香港基督教磐石教會</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+
+  <!-- Core styles -->
+  <link rel="stylesheet" href="../assets/css/shared.css">
+  <link rel="stylesheet" href="../assets/css/main.css">
+
+  <!-- menu bar -->
+  <link rel="stylesheet" href="../assets/css/menu.css">
+  <link rel="stylesheet" href="../assets/css/mobile-menu.css">
+
+    
+  <!-- JS -->
+  <!-- Core scripts -->
+  <script src="../assets/js/main.js"></script>
+
+  <!-- Partials loader -->
+  <script src="../assets/js/include-partials.js"></script>
+
+  <!-- Widget -->
+  <script src="../assets/js/widget_msgbox_scrolltop.js" defer></script>
+
+  <style>
+    /* =========================================================
+      Design Tokens
+    ========================================================= */
+    :root{
+
+      --shadow: 0 14px 36px rgba(0,0,0,.10);
+      --shadow2: 0 8px 20px rgba(0,0,0,.08);
+
+      --about-accent:  #FF5A3C; /* coral */
+      --about-accent2: #1F7A8C; /* teal */
+      --about-accent3: #6C5CE7; /* purple */
+      --about-accent4: #F7B500; /* gold */
+
+      /* --ease-out: cubic-bezier(.2,.8,.2,1); */
+
+      /* ===== Milestone (Timeline) 專用變數：避免覆蓋全域 ===== */
+      --ms-accent-color: #6366f1;
+      --ms-accent-shadow: rgba(99, 102, 241, 0.2);
+      --ms-bg-color: #F8F7F4;
+      --ms-text-main: #1e293b;
+      --ms-text-muted: #94a3b8;
+      --active-index: 0;
+      --total-steps: 3;
+
+      /* 背景色塊初始顏色 (Milestone blobs) */
+      --blob1-color: #fda4af;
+      --blob2-color: #93c5fd;
+      --blob3-color: #ddd6fe;
+
+      /* ===== Mission/Vision 專用變數：避免覆蓋全域 ===== */
+      --mv-bg:#F8FAFC;
+      --mv-card: rgba(255,255,255,.7);
+      --mv-cardBorder: rgba(255,255,255,.9);
+      --mv-text:#1e293b;
+      --mv-muted:#64748b;
+      --mv-shadow: 0 20px 50px rgba(0,0,0,.05);
+      --mv-radius:40px;
+      --mv-ease:cubic-bezier(.34, 1.56, 0.64, 1);
+      --mv-orbSize:300px;
+      --mv-itemRadius:125px;
+
+      /* ===== Line System (Mission/Vision defaults) ===== */
+      --line-color-muted: rgba(148,163,184,.45);
+      --line-color-muted-soft: rgba(148,163,184,.30);
+
+      --line-static-width: 2px;
+      --line-static-opacity: .8;
+      --line-static-dash: 4 6;
+
+      --line-active-width: 2px;
+      --line-active-opacity: .95;
+      --line-active-dash: none;
+
+      /* ===== Name List Control ===== */
+      --cardsGap: 20px;
+      --namesColGap: 28px;
+      --namesRowGap: 10px;
+
+      --rowsPerCol: 4; /* 每欄最多 4 人 */
+    }
+
+    /* =========================================================
+      Sections
+    ========================================================= */
+    .card{
+      background: var(--surface);
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: 0 1px 0 rgba(0,0,0,.03);
+      transition: transform .22s var(--ease-out), box-shadow .22s var(--ease-out);
+      transform: translateY(0);
+      position: relative;
+      overflow: hidden;
+    }
+    .card:hover{ transform: translateY(-6px); box-shadow: var(--shadow2); }
+
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .grid3{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    /* =========================================================
+     Milestone section
+    ========================================================= */
+    @media (min-width: 1225px) and (max-width: 1340px) {
+      #milestone {
+        min-height: min(108vh, 900px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+    }
+    
+    .content-section {
+      text-align: center;
+      margin: 0 auto 40px;
+      transition: all 0.5s ease;
+      padding: 0 20px;
+      z-index: 10;
+      position: relative;
+    }
+
+    /* Milestone 文字容器：預設可動畫 */
+    #content{
+      transition: opacity .35s ease, transform .35s ease;
+      will-change: opacity, transform;
+    }
+
+    /* 切換時的「淡出」狀態 */
+    #content.is-swapping{
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    /* 尊重減少動畫偏好 */
+    @media (prefers-reduced-motion: reduce){
+      #content{ transition: none; }
+      #content.is-swapping{ opacity: 1; transform: none; }
+    }
+
+    .year-title {
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--ms-text-main);
+      margin-bottom: 8px;
+      letter-spacing: -1px;
+      text-shadow:
+        0 1px 0 rgba(255,255,255,0.7),  
+        0 4px 12px rgba(15,23,42,0.14); 
+    }
+
+    .desc-text {
+      position: relative;
+      width: 70%;
+      margin: 0 auto;
+      /* fallback */
+      color: rgba(var(--ms-text-main), 0.85);
+      /* 新瀏覽器支援 color-mix 時會覆蓋 */
+      color: color-mix(in srgb, var(--ms-text-main) 85%, transparent);
+      line-height: 1.6;
+      font-size: 18px;
+      text-shadow: 0 1px 0 rgba(255,255,255,.5);
+      text-align: justify;
+    }
+
+    .timeline-container {
+      position: relative;
+      width: 88%;
+      height: 100px;
+      z-index: 10;
+      margin: 0 auto;
+    }
+
+    .timeline-track-wrapper {
+      position: relative;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .track-bg {
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background: rgba(226, 232, 240, 0.6);
+     
+    }
+
+    .track-progress {
+      position: absolute;
+      height: 3px;
+      background: var(--ms-accent-color);
+      border-radius: 2px;
+      width: calc((var(--active-index) / var(--total-steps)) * 100%);
+      transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.5s ease;
+      z-index: 1;
+    }
+
+    .dots-container {
+      position: absolute;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      z-index: 2;
+    }
+
+    .dot-item {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      background: #cbd5e1;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .dot.active {
+      background: var(--ms-accent-color);
+      transform: scale(1.2);
+    }
+
+    .dot-label {
+      position: absolute;
+      top: 30px;
+      white-space: nowrap;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ms-text-muted);
+      transition: all 0.3s ease;
+    }
+
+    .dot-item.active .dot-label {
+      color: var(--ms-text-main);
+      transform: translateY(2px) scale(1.1);
+    }
+
+    
+    /* ---------- One-time hint pulse (only one dot at a time) ---------- */
+    .dot-item.hint:not(.active) .dot{
+      position: relative;
+    }
+
+    /* 外圈脈衝：細、慢、低干擾（比 MV 更克制） */
+    .dot-item.hint:not(.active) .dot::after{
+      content:"";
+      position:absolute;
+      inset:-7px;
+      border-radius:50%;
+      background-color: rgba(var(--ms-accent-color), 0.42); /* fallback */
+      background: color-mix(in srgb, var(--ms-accent-color) 42%, transparent);
+      opacity:0;
+      transform: scale(.85);
+      animation: msDotPulse 2.8s ease-out infinite;
+      pointer-events:none;
+    }
+
+    @keyframes msDotPulse{
+      0%   { opacity:0;   transform:scale(.85); }
+      25%  { opacity:.33; }
+      60%  { opacity:.12; transform:scale(1.45); }
+      100% { opacity:0;   transform:scale(1.65); }
+    }
+
+    /* active dot 唔需要 pulse（已經係焦點） */
+    .dot-item.active .dot::after{
+      animation:none;
+    }
+
+    /* 尊重減少動畫偏好 */
+    @media (prefers-reduced-motion: reduce){
+      .dot-item.hint:not(.active) .dot::after{
+        animation:none;
+      }
+    }
+
+    /* hint dot 本體微微亮一點，但不 scale（更 calm） */
+    .dot-item.hint:not(.active) .dot{
+      background-color: #aebed0; /* fallback */
+      background: color-mix(in srgb, var(--ms-accent-color) 35%, #cbd5e1);
+    }
+
+    .active-thumb{
+      position: absolute;
+      left: calc((var(--active-index) / var(--total-steps)) * 100%);
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 36px;
+      height: 36px;
+
+      /* 外圈 */
+      background: white;
+      border: 1.5px dashed var(--ms-accent-shadow);
+      border-radius: 50%;
+
+      box-shadow: none;
+      z-index: 3;
+      pointer-events: none;
+
+      /* 穩定置中 pseudo-element */
+      display: grid;
+      place-items: center;
+
+      transition: left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.5s ease;
+    }
+
+    /* 中心 icon（用 SVG mask） */
+    .active-thumb::after{
+      content:'';
+      width: 18px;   
+      height: 18px;
+      display: block;
+      background: var(--ms-accent-color);
+      -webkit-mask: url("../assets/icons/milestone.svg") center / contain no-repeat;
+              mask: url("../assets/icons/milestone.svg") center / contain no-repeat;
+      border-radius: 0;
+      transform: translateY(-0.5px);
+    }
+
+
+    .thumb-glow {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      background: var(--ms-accent-shadow);
+      border-radius: 50%;
+      filter: blur(6px);
+      z-index: -1;
+    }
+
+    @media (max-width: 480px) {
+      .year-title { font-size: 36px; }
+      .timeline-container { max-width: 320px; }
+      .bg-blobs .blob { filter: blur(50px); opacity: 0.4; }
+    }
+
+ /* =========================================================
+   MV Layout & Container Settings
+   ========================================================= */
+
+    /* Base Desktop & General */
+    .mv {
+        margin: 0 auto;
+        padding: 60px 0; /* 增加上下留白提升質感 */
+    }
+
+    .container.mv {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        padding-top:0;
+    }
+
+    /* Responsive Container Width */
+    @media (min-width: 1200px) and (max-width: 1340px) {
+        .container.mv {
+            max-width: 1280px; /* 標準桌面寬度 */
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+    }
+        @media (min-width: 1341px) {
+        .container.mv {
+            max-width: 1280px; /* 標準桌面寬度 */
+            padding-left: 40px;
+            padding-right: 40px;
+        }
+    }
+
+    @media (min-width: 1600px) {
+        .container.mv {
+            max-width: 1440px; /* 大螢幕封頂寬度 */
+        }
+    }
+
+    /* Tablet (Portrait & Landscape) */
+    @media (max-width: 1199px) {
+        .mv {
+            padding: 40px 30px 0;
+        }
+    }
+
+    /* Mobile */
+    @media (max-width: 420px) {
+        .mv {
+            padding: 32px 14px 0;
+        }
+    }
+
+    /* =========================================================
+      Grid & Row System
+      ========================================================= */
+
+    /* Mobile + Tablet Portrait (Single Column) */
+    .mv .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 48px; /* 增加卡片間距 */
+    }
+
+    /* Tablet Landscape */
+    @media (min-width: 1024px) and (max-width: 1199px) {
+        .mv .grid {
+            gap: 40px;
+        }
+    }
+
+    /* Desktop (Side by Side) */
+    @media (min-width: 1200px) {
+        .mv .grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+    }
+
+    .mv .row {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 40px;
+    }
+
+    @media (min-width: 768px) {
+        .mv .row {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center; /* 垂直居中 */
+        }
+        .mv .row.reverse {
+            flex-direction: row-reverse;
+        }
+    }
+
+    /* Desktop Specific Proportions */
+    @media (min-width: 1200px) and (max-width: 1340px) {
+        .mv .row {
+            gap: 0; /* 使用百分比間距更具彈性 */
+            justify-content: space-between;
+        }
+        .mv .orbit {
+            flex: 0 0 48%; 
+        }
+        .mv .content {
+            flex: 0 0 52%; /* 剩餘空間給文字 */
+        }
+    }
+    @media (min-width: 1341px) {
+        .mv .row {
+            gap: 5%; /* 使用百分比間距更具彈性 */
+            justify-content: space-between;
+        }
+        .mv .orbit {
+            flex: 0 0 60%; 
+        }
+        .mv .content {
+            flex: 0 0 55%; /* 剩餘空間給文字 */
+        }
+    }
+    /* =========================================================
+      Header & Pills
+      ========================================================= */
+    .mv .mv-header {
+        text-align: center;
+        margin-bottom: 40px; /* 增加標題與下方卡片的間距 */
+    }
+
+    .mv .mv-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 16px;
+        border-radius: 999px;
+        background: var(--white-100);
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, .03);
+        margin-bottom: 12px;
+    }
+
+    .mv .mv-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #f43f5e;
+        animation: mvPillPulse 2s infinite;
+    }
+
+    @keyframes mvPillPulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.6); opacity: .35; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .mv .mv-pill span {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: var(--mv-muted);
+        text-transform: uppercase;
+    }
+
+    .mv .mv-title {
+        font-size: clamp(28px, 4vw, 42px); 
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+    }
+
+    /* =========================================================
+      Card & Orbit Styling
+      ========================================================= */
+    .mv .mv-card {
+        background: var(--mv-card);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--mv-cardBorder);
+        border-radius: var(--mv-radius);
+        box-shadow: var(--mv-shadow);
+        padding: 40px; /* 增加內縮，更顯精緻 */
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* mv card header  */
+    .mv .mv-card-title.simple {
+        font-size: 24px;
+        font-weight: 900;
+        letter-spacing: .2px;
+        margin: 0 0 16px;
+        color: #0f172a;
+    }
+
+    .mv .orbit {
+        width: var(--mv-orbSize);
+        height: var(--mv-orbSize);
+        position: relative;
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Desktop Orbit Adjustments */
+    @media (min-width: 1200px) and (max-width: 1340px) {
+        .mv .mv-card .orbit[data-type="mission"] {
+            transform: scale(0.88); /* 桌面版不縮小，保持視覺張力 */
+            transform-origin: left;
+        }
+        .mv .mv-card .orbit[data-type="vision"] {
+            transform: scale(0.88); 
+            transform-origin: right;
+        }
+    }
+        @media (min-width: 1341px) {
+        .mv .mv-card .orbit[data-type="mission"] {
+            transform: scale(1); /* 桌面版不縮小，保持視覺張力 */
+            transform-origin: center;
+        }
+        .mv .mv-card .orbit[data-type="vision"] {
+            transform: scale(1); 
+            transform-origin: center;
+        }
+    }
+
+    /* Mission / Vision Line Spec */
+    .mv .orbit[data-type="mission"] {
+        --line-static-opacity: .35;
+        --line-static-dash: 4 8;
+        --line-active-width: 2px;
+        --line-active-opacity: .9;
+        --line-active-dash: 4 4;
+    }
+
+    .mv .orbit[data-type="vision"] {
+        --line-static-opacity: .9;
+        --line-static-dash: 4 6;
+        --line-active-width: 1.8px;
+        --line-active-opacity: .95;
+        --line-active-dash: none;
+    }
+
+    /* =========================================================
+      Visual Elements (Nebula, Paths, Center)
+      ========================================================= */
+    .mv .nebula {
+        position: absolute;
+        inset: 10%;
+        border-radius: 50%;
+        background: var(--conic);
+        filter: blur(40px);
+        opacity: .3;
+        animation: rotateNebula 15s linear infinite;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    @keyframes rotateNebula {
+        from { transform: rotate(0deg) scale(1); }
+        50% { transform: rotate(180deg) scale(1.1); }
+        to { transform: rotate(360deg) scale(1); }
+    }
+
+    .mv .glass-orbit {
+        position: absolute;
+        width: calc(var(--mv-itemRadius) * 2);
+        height: calc(var(--mv-itemRadius) * 2);
+        border-radius: 50%;
+        border: 1px solid rgba(148, 163, 184, .15);
+        background: radial-gradient(circle at center, rgba(255, 255, 255, .2) 0%, transparent 70%);
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    .mv .orbit[data-type="vision"][data-mode="B"] .glass-orbit { opacity: 0; }
+
+    .mv .guide-svg, .mv .vision-guide-svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        pointer-events: none;
+        opacity: var(--line-static-opacity);
+    }
+
+    .mv .guide-path, .mv .vision-guide-path {
+        fill: none;
+        stroke: var(--line-color-muted-soft);
+        stroke-width: var(--line-static-width);
+        stroke-linecap: round;
+        stroke-dasharray: var(--line-static-dash);
+    }
+
+    .mv .connector-svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 4;
+        pointer-events: none;
+    }
+
+    .mv .connector-line {
+        stroke-width: var(--line-active-width);
+        stroke-dasharray: var(--line-active-dash);
+        stroke-linecap: round;
+        opacity: var(--line-active-opacity);
+        filter: drop-shadow(0 4px 10px rgba(15, 23, 42, .10));
+        transition: all .5s var(--mv-ease);
+    }
+
+    .mv .orbit:hover .connector-line {
+        transition: none;
+        opacity: 1;
+    }
+
+    .mv .center {
+        position: absolute;
+        z-index: 10;
+        width: 90px;
+        height: 90px;
+        border-radius: 28px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(150, 140, 180);
+        box-shadow: 0 18px 35px rgba(0, 0, 0, .08), inset 0 0 0 1px rgba(255, 255, 255, .35);
+    }
+    .mv .orbit .center{
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .mv .center.dark { background: #5581e9; }
+    .mv .centerText .kicker { font-size: 10px; font-weight: 800; opacity: .5; letter-spacing: 1px; text-align: center; color: rgba(255, 255, 255, .7); }
+    .mv .centerText .main { font-size: 16px; font-weight: 800; margin-top: 2px; text-align: center; color: #fff; }
+
+    /* =========================================================
+      Items & Buttons
+      ========================================================= */
+    .mv .item {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 78px;
+        height: 78px;
+        z-index: 15;
+    }
+
+    .mv .mv-btn {
+        width: 100%;
+        height: 100%;
+        aspect-ratio: 1 / 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        border-radius: 20px;
+        border: 1px solid #f1f5f9;
+        background: var(--white-100);
+        box-sizing: border-box;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .mv .mv-btn .icon-box {
+        width: 20px;
+        height: 20px;
+        margin-top: 6px;
+        margin-bottom: 6px;
+        color: var(--mv-muted);
+        transition: .25s;
+        background: transparent !important;
+        box-shadow: none;
+    }
+
+    .mv .mv-btn span {
+        font-size: 12px;
+        line-height: 1.4;
+        font-weight: 600;
+        margin-top: auto;
+        margin-bottom: 4px;
+        color: var(--mv-muted);
+        transition: .25s;
+        white-space: pre-line;
+        text-align: center;
+    }
+
+    .mv .item.active .mv-btn {
+        background: var(--about-accent-light);
+        border-color: var(--about-accent-border);
+        box-shadow: 0 14px 28px var(--about-accent-shadow);
+    }
+
+    .mv .item.active .icon-box, .mv .item.active .mv-btn span {
+        color: var(--about-accent-main);
+    }
+
+    /* Animations for active/hint states */
+    @keyframes shadowPulse-solid {
+        0% { transform: scale(1); box-shadow: 0 14px 28px var(--about-accent-shadow); }
+        45% { transform: scale(1.045); box-shadow: 0 18px 34px var(--about-accent-shadow), 0 0 0 10px color-mix(in srgb, var(--about-accent-main) 12%, transparent); }
+        100% { transform: scale(1); box-shadow: 0 14px 28px var(--about-accent-shadow); }
+    }
+
+    .mv .item.hint .mv-btn {
+        animation: shadowPulse-solid 3.0s cubic-bezier(.34, 1.56, 0.64, 1) infinite;
+    }
+
+    .mv .mv-btn:hover {
+        transform: translateZ(0) scale(1.08) translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    }
+
+    /* =========================================================
+      Content Typography
+      ========================================================= */
+    .mv .content {
+        flex: 1;
+        min-width: 0;
+        max-width: 100%;
+        padding-top: 50px;
+    }
+
+    /* control .mv .badge & .mv .ctitle */
+    .mv .head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .mv .badge {
+        width: 38px;
+        height: 38px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        color: var(--white-100);
+        background: linear-gradient(135deg, var(--gradA), var(--gradB));
+        flex-shrink: 0;
+    }
+
+    /* sub header */
+    .mv .ctitle {
+        font-size: clamp(1.125rem, 1.2vw + 0.8rem, 1.375rem);   /* 桌面版內容標題放大 */
+        font-weight: 700;
+        margin: 0;
+        color: #0f172a;
+        line-height: 1.3;
+    }
+
+    .mv .content p {
+        font-size: clamp(0.875rem, 0.5vw + 0.75rem, 1rem);
+        line-height: 1.8;
+        color: var(--mv-muted);
+        margin: 0;
+        max-width: 100%;
+        white-space: pre-line;
+        text-align: justify;
+    }
+
+
+    /* =========================================================
+      Responsive
+      ========================================================= */
+      /* Large tablet / desktop */
+      @media (min-width: 768px) {   
+      /* Mission標題：增加標題下方空白 */
+      .mv .grid > .mv-card:nth-of-type(1) .mv-card-title.simple{
+        margin-bottom: 24px;
+      }
+      /* Vision標題：減少標題下方空白 */
+      .mv .grid > .mv-card:nth-of-type(2) .mv-card-title.simple{
+        margin-bottom: 8px;
+      }
+      /* Vision內容列：溫和上移 */
+      .mv .grid > .mv-card:nth-of-type(2) .row.reverse{
+        margin-top: -18px;   
+        margin-bottom: 18px; 
+      }
+    }
+
+    /* Large mobile / small tablet */
+    @media (min-width: 421px) and (max-width: 767px){
+      .mv .content{
+        max-width: 380px;
+      }
+
+      .mv .row{
+        gap: 32px;
+      }
+    }
+
+    /* mobile */
+    @media (max-width: 420px) {
+        .mv .row { align-items: center; gap: 28px; }
+        .mv .content { width: 100%; max-width: 320px; margin: 0 auto; text-align: center; }
+        .mv .head { justify-content: center; }
+        .mv .content p { text-align: justify; text-align-last: left; }
+    }
+
+    @media (max-width: 420px) and (orientation: portrait) {
+      /* Mobile portrait：因為 orbit 疊得較低，需額外上移 */
+        .mv #visionOrbit { margin-top: -48px; margin-bottom: 28px; }
+        .mv .mv-card .orbit { transform: scale(0.85); }
+    }
+
+/* Icons */
+.mv .icon { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* 確保 svg-icon 的 100% 有參照 */
+.mv .icon-box{
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+}
+
+.mv .svg-icon { display: block; fill: none; stroke: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; width: 24px; height: 24px; }
+
+    /* Mobile Landscape Fix */
+    @media (max-height: 420px) and (orientation: landscape) {
+        .mv .mv-card .row, .mv .mv-card .row.reverse {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center;
+            gap: 24px;
+        }
+        .mv .mv-card .orbit {
+            flex: 0 0 240px;
+            max-width: 240px;
+            transform: scale(0.8);
+        }
+        .mv .mv-card .content { flex: 1; }
+        .mv { padding-top: 16px !important; padding-bottom: 16px !important; }
+        .mv #visionOrbit { margin-top: 0 !important; margin-bottom: 0 !important; }
+    }
+
+
+
+    /* =========================================================
+      理念 section
+    ========================================================= */
+    /* 主區塊 */
+    .principle-section {
+      position: relative;
+      width: 100%;
+      padding: 45px 20px 100px 20px;
+      display: flex;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    /* 右側白色弧形背景 */
+    .principle-section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 65%;
+      height: 100%;
+      margin-right: -20px;
+      background-color: var(--white-82);
+      border-radius: 500px 0 0 500px;
+      z-index: -1;
+    }
+
+    .principle-container {
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 60px;
+      padding-left: 70px;
+    }
+
+    /* 左側 Quote 卡片 */
+    .quote-card {
+      position: relative;
+      overflow: hidden;   /* 防止裝飾溢出 */
+      flex: 1.1;
+      background-color: var(--about-accent3);
+      padding: 16px 45px;
+      border-radius: 40px;
+      color: var(--white-warm);
+      box-shadow: 0 20px 40px rgba(125, 102, 217, 0.2);
+    }
+    /* .quote-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-40%); 
+      width: 218px;
+      height: 99px;
+      background: url("../assets/img/deco-02.svg") no-repeat center / contain;
+      opacity: 0.3;
+    }
+    .quote-card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-10%); 
+      width: 183px;
+      height: 649px;
+      background: url("../assets/img/deco-02.svg") no-repeat center / contain;
+      opacity: 0.3;
+    } */
+    .quote-text {
+      font-size: 1rem;
+      line-height: 1.8;
+      font-style: italic;
+      font-weight: 300;
+      opacity: 0.92;
+      text-align: justify;
+    }
+
+    /* 右側說明文字 */
+    .content-side {
+      flex: 1;
+    }
+
+    .principle-description {
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 1.3rem;
+      text-align: justify;
+    }
+
+    @media (max-width: 1023px) {
+      .principle-container {
+        flex-direction: column;
+        text-align: center;
+        padding-left: 0;
+        }
+        
+      .content-side {
+        order: 1;   /* 先顯示 */
+      }
+
+      .quote-card {
+        order: 2;   /* 後顯示 */
+      }
+
+      .principle-section {
+          padding: 0 48px;
+      }
+      .principle-section::before {
+        background-color:transparent;
+      }
+      .principle-description {
+          font-size: 1.2rem;
+      }   
+      .quote-text {
+        font-size: 0.9rem;
+      }
+    }
+     @media (max-width: 640px) {
+      .principle-section {
+        padding: 0 20px;
+      }
+      .quote-card {
+        padding: 15px 30px;
+      }
+      .principle-description {
+        font-size: 1.1rem;
+      }   
+      .quote-text {
+        font-size: 0.8rem;
+      }
+      
+    }
+    /* =========================================================
+      Name List
+    ========================================================= */
+    .title{
+      font-size:28px;
+      font-weight:800;
+      margin:0 0 36px;
+      padding-left:14px;
+      position:relative;
+    }
+    .title::before{
+      content:"";
+      position:absolute;
+      left:0; top:.2em;
+      width:4px; height:1.1em;
+      border-radius:999px;
+      background:var(--accent);
+    }
+
+    .sectionDesc{
+      text-align: center;
+      padding: 0 0 20px;
+    }
+    
+    /* 預設：兩組並排 */
+    .groups{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--cardsGap);
+      justify-content:center;
+    }
+
+    /* JS 會加上 .is-stacked → 兩組上下 */
+    .groups.is-stacked{
+      grid-template-columns: 1fr;
+    }
+
+    .teamBlock{
+      background:var(--surface);
+      border:1px solid rgba(255,255,255,.7);
+      border-radius:var(--radius-md);
+      padding:28px 26px;
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      box-shadow:0 16px 45px rgba(0,0,0,.04);
+    }
+
+    /* 組名：淡線漸變 underline */
+    .groupTitle{
+      color:var(--muted);
+      font-weight:700;
+      letter-spacing:.18em;
+      font-size:1rem;
+      line-height:1.2;
+      margin-bottom:18px;
+      position:relative;
+      padding-bottom:12px;
+    }
+    .groupTitle::after{
+      content:"";
+      position:absolute;
+      left:0; right:0; bottom:0;
+      height:2px;
+      border-radius:999px;
+      background: linear-gradient(
+        90deg,
+        rgba(255,107,74,.45) 0%,
+        rgba(255,107,74,.22) 55%,
+        rgba(255,107,74,.08) 82%,
+        rgba(255,107,74,0) 100%
+      );
+    }
+
+    /* 預設：每組名單兩欄（平均分 + column-first 排序） */
+    .names{
+      list-style:none;
+      margin:0;
+      padding:0;
+
+      display:grid;
+      grid-template-rows: repeat(var(--rowsPerCol), auto);
+      grid-auto-flow: column;     /* 直向優先：1,5 / 2,6 / 3,7 / 4 */
+      grid-auto-columns: 1fr;     /* 兩欄平均分 50/50 */
+
+      column-gap: var(--namesColGap);
+      row-gap: var(--namesRowGap);
+    }
+
+    /* JS 會加 .names-onecol → 該組名單單欄
+      同時：一旦兩組上下，也強制單欄 */
+    .teamBlock.names-onecol .names,
+    .groups.is-stacked .names{
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+      grid-auto-flow: row;
+      grid-auto-columns: initial;
+    }
+
+    /* 名字：不換色 highlight 的 hover */
+    .name{
+      font-size:1.05rem;
+      font-weight:500;
+      letter-spacing:.05em;
+      color:rgba(0,0,0,.62);
+      padding:6px 0;
+
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+
+      opacity:.88;
+      transition: opacity .18s ease, transform .18s ease, letter-spacing .18s ease;
+    }
+    @media (hover:hover){
+      .name:hover{
+        opacity:1;
+        transform:translateX(1px);
+        letter-spacing:.065em;
+      }
+    }
+    @media (prefers-reduced-motion: reduce){
+      .name{ transition:none; opacity:1; }
+    }
+
+  </style>
+</head>
+
+<body class="theme-about" data-barba="wrapper">
+    <!-- 這是全站通用 SVG 容器 -->
+  <div id="global-watermark" class="watermark-overlay"></div>
+  <div id="site-menu"></div>
+
+      <!-- HERO -->
+    <section class="hero-section" style="--hero-photo: url('/assets/img/sectionHero_about-us.jpg');">
+      <div class="content-wrapper">
+        <div class="title-group">
+          <span class="en-shadow">About Us</span>
+          <h1 class="zh-title">關於我們</h1>
+        </div>
+        <p class="description">
+          「香港基督教磐石教會」重視堅守真理、活出敬拜，並以愛與福音服事眾人。
+        </p>
+      </div>
+    </section>
+
+  <main data-barba="container" data-barba-namespace="about">
+
+    <!-- 這個 Wrapper 決定了整個推動過程的容器 -->
+      <!-- 1) 成立經過（Milestone） -->
+    <section class="section section--airy section-visual sticky" id="milestone">
+
+      <div class="container">
+        <div class="section-title theme-peach">
+          <!-- 裝飾泡泡 -->
+          <div class="particle p1"></div>
+          <div class="particle p2"></div>
+          <div class="particle p3"></div>
+          <div class="particle p4"></div>
+
+          <div class="text-content">
+            <span class="text-main">成立</span>
+            <span class="text-sub">經過</span>
+            <span class="diamond"></span>
+          </div>
+        </div>
+
+        <div class="content-section">
+          <div id="content">
+            <h1 class="year-title" id="milestoneYear"></h1>
+            <p class="desc-text" id="desc"></p>
+          </div>  
+        </div>
+
+        <div class="timeline-container">
+          <div class="timeline-track-wrapper" id="track-wrapper">
+            <div class="track-bg"></div>
+            <div class="track-progress"></div>
+
+            <!--
+            Milestone dots intentionally use inline onclick.
+            Reason:
+            - Guarantees click works before JS hydration
+            - Allows simpler hit-target mapping for timeline UX
+            Do NOT refactor unless removing inline HTML control entirely.
+            -->
+            <div class="dots-container">
+              <div class="dot-item active" onclick="updateTimeline(0)">
+                <div class="dot"></div>
+                <div class="dot-label">Jan 2000</div>
+              </div>
+              <div class="dot-item" onclick="updateTimeline(1)">
+                <div class="dot"></div>
+                <div class="dot-label">Jun 2000</div>
+              </div>
+              <div class="dot-item" onclick="updateTimeline(2)">
+                <div class="dot"></div>
+                <div class="dot-label">Jun 2002</div>
+              </div>
+              <div class="dot-item" onclick="updateTimeline(3)">
+                <div class="dot"></div>
+                <div class="dot-label">Jun 2006</div>
+              </div>
+            </div>
+
+            <div class="active-thumb">
+              <div class="thumb-glow"></div>
+            </div>
+          </div>
+        </div>
+      </div> 
+    </section>
+
+      <!-- 2) 本會信仰 -->
+
+    <section class="section section--airy section-push" id="principle">
+      <div class="container">  
+        <div class="section-title theme-lavender reveal">
+          <!-- 裝飾泡泡 -->
+          <div class="particle p1"></div>
+          <div class="particle p2"></div>
+          <div class="particle p3"></div>
+          <div class="particle p4"></div>
+
+          <div class="text-content">
+            <span class="text-main">本會</span>
+            <span class="text-sub">信仰</span>
+            <span class="diamond"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="principle-section">
+        <div class="principle-container">
+          <!-- 左側 Quote -->
+          <div class="quote-card">
+            <p class="quote-text reveal">
+              《使 徒 信 經》 
+              <br>
+               我信上帝，全能的父，創造天地的主。 我信我主耶穌基督，上帝的獨生子﹔ 因著聖靈感孕，從童貞女馬利亞所生﹔ 在本丟彼拉多手下受難， 被釘在十字架上，受死，埋葬﹔ 降在陰間﹔第三天從死里復活﹔ 他升天，坐在全能父上帝的右邊﹔ 將來必從那里降臨，審判活人，死人。 我信聖靈﹔ 我信聖而公之教會﹔我信聖徒相通﹔ 我信罪得赦免﹔ 我信身體復活﹔ 我信永生。阿們！
+            </p>
+          </div>
+
+          <!-- 右側說明 -->
+          <div class="content-side reveal">
+            <p class="principle-description">
+              <b>「香港基督教磐石教會」</b>是政府註冊的非牟利基督教團體，是一間沒有任何宗派背景，單單倚靠主耶穌的恩典，蒙祂信實供應的全備福音信仰之獨立教會。
+            </p>
+            <p class="principle-description">
+              基督教《使徒信經》乃大公教會的共同信仰表白，「香港基督教磐石教會」為大公教會，我們謹以《使徒信經》來表白本堂的信仰，以聖經真理為依歸，傳揚福音，裝備信徒，實踐耶穌基督所託付的大使命。
+            </p>
+          </div>
+        </div>
+      </div>
+      
+    </section>
+
+      <!-- 3) 使命與異象（Mission/Vision） -->
+    <section class="section section-visual sticky" id="mission">
+      <!-- Special: Custom screen size ratio, No <div class="container"> -->
+        <div class="container mv">
+
+          <div class="section-title theme-mint reveal">
+            <!-- 裝飾泡泡 -->
+            <div class="particle p1"></div>
+            <div class="particle p2"></div>
+            <div class="particle p3"></div>
+            <div class="particle p4"></div>
+
+            <div class="text-content">
+              <span class="text-main">使命與</span>
+              <span class="text-sub">異象</span>
+              <span class="diamond"></span>
+            </div>
+          </div>
+          
+          <div class="grid">
+            <section class="mv-card reveal">
+              <h2 class="mv-card-title simple">我們看重</h2>
+              <div class="row">
+                <div class="orbit" id="missionOrbit"></div>
+                <div class="content" id="missionContent"></div>
+              </div>
+            </section>
+
+            <section class="mv-card reveal">
+              <h2 class="mv-card-title simple">我們的異象</h2>
+              <div class="row reverse">
+                <div class="orbit" id="visionOrbit"></div>
+                <div class="content" id="visionContent"></div>
+              </div>
+            </section>
+          </div>
+        </div>
+    </section>  
+    
+      <!-- 4) 本堂同工及執事 -->
+    <section class="section section--compact section-push" id="staff">
+      <div class="container">
+        <div class="section-title theme-peach reveal">
+          <!-- 裝飾泡泡 -->
+          <div class="particle p1"></div>
+          <div class="particle p2"></div>
+          <div class="particle p3"></div>
+          <div class="particle p4"></div>
+
+          <div class="text-content">
+            <span class="text-main">本堂同工及</span>
+            <span class="text-sub">執事</span>
+            <span class="diamond"></span>
+          </div>
+        </div>
+
+        <!-- <p class="sectionDesc reveal"></p> -->
+
+        <section class="groups" id="groups">
+          <section class="teamBlock reveal" data-team>
+            <div class="groupTitle">教牧及行政同工</div>
+            <ul class="names" aria-label="教牧及行政同工">
+              <li class="name">傳道同工：林玉華牧師</li>
+              <li class="name">幹事：黃陳幸芳姊妹</li>
+              <li class="name">幹事：何劉家麗姊妹</li>
+            </ul>
+          </section>
+
+          <section class="teamBlock reveal" data-team>
+            <div class="groupTitle">本堂執事</div>
+            <ul class="names" aria-label="本堂執事">
+              <li class="name">主席：吳倩潔姊妹</li>
+              <li class="name">司庫：黃陳幸芳姊妹</li>
+              <li class="name">司數：魏秀珊姊妹</li>
+              <li class="name">何劉家麗姊妹</li>
+              <li class="name">張珍愛姊妹</li>
+              <li class="name">何偉溢弟兄</li>        
+            </ul>
+          </section>
+        </section>
+      </div>  
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <div id="site-footer"></div>
+
+
+  <!-- JS -->
+  <script>
+
+// =========================
+// 2) Milestone (Timeline)
+// =========================
+
+const milestoneData = [
+  {
+    year: "Jan 2000",
+    desc: "本堂成立於二零零零年一月一日，最初只有十多位弟兄姊妹，以家庭聚會開始，其後也曾借用屯門一教會星期六晚上作崇拜，主日則在元朗市鎭公園舉行聚會。",
+    color: "#6366f1",
+    shadow: "rgba(99, 102, 241, 0.30)",
+    blobs: ["#fda4af", "#93c5fd", "#ddd6fe"]
+  },
+  {
+    year: "Jun 2000",
+    desc: "蒙神的祝福帶領，同年六月，教會正式註冊為「香港基督教磐石教會」 “The Christian Church on the Rock Hong Kong” ，上帝亦為我們建立了第一個正式堂址，在元朗同樂街的舊式唐樓，只有一千多呎。雖然面積細小，但卻有瓦遮頭，不需再到處頻撲。簡單的裝修和用心的佈置，成為一間別緻的小教堂。",
+    color: "#f59e0b",
+    shadow: "rgba(245, 158, 11, 0.30)",
+    blobs: ["#fef3c7", "#fde68a", "#fbbf24"]
+  },
+  {
+    year: "Jun 2002",
+    desc: "兩年後，於二零零二年六月，上帝賜給我們一個更大的地方，在元朗大馬路的誠信商業大廈十二樓，全層2250呎。主恩無限，實在而奇妙，主耶穌的工作從沒止息！",
+    color: "#ec4899",
+    shadow: "rgba(236, 72, 153, 0.30)",
+    blobs: ["#fbcfe8", "#f9a8d4", "#f472b6"]
+  },
+  {
+    year: "Jun 2006",
+    desc: "二零零八年六月，上帝再帶領我們遷往九龍區的中心地帶，那裡的交通四通八達，即是現時本堂的堂址，太子道西旺角城大廈四樓全層共三千多呎，還額外有一個近千呎的露臺。",
+    color: "#8b5cf6",
+    shadow: "rgba(139, 92, 246, 0.30)",
+    blobs: ["#ddd6fe", "#c4b5fd", "#a78bfa"]
+  }
+];
+
+
+(function initMilestone(){
+  const root = document.documentElement;
+
+  const content = document.getElementById('content');
+  const milestoneYearEl = document.getElementById('milestoneYear');
+  const descEl = document.getElementById('desc');
+  const trackWrapper = document.getElementById('track-wrapper');
+
+  if (!content || !milestoneYearEl || !descEl || !trackWrapper) return;
+
+  // 令 CSS calc 用到正確總步數（0..3 -> total-steps=3）
+  root.style.setProperty('--total-steps', String(milestoneData.length - 1));
+
+  // ----------------------------
+  // One-time hint state (B-lite)
+  // ----------------------------
+  // UX principle:
+  // Hints are shown only once to avoid training users to wait for guidance
+  let hintUsed = false;
+
+  function clearHintForever(){
+    hintUsed = true;
+    document.querySelectorAll('.dot-item').forEach(d => d.classList.remove('hint'));
+  }
+
+  function showHint(activeIndex){
+    if (hintUsed) return;
+
+    const dots = Array.from(document.querySelectorAll('.dot-item'));
+    dots.forEach(d => d.classList.remove('hint'));
+
+    // 提示「下一個」為主；如果已到最後，就唔提示（更克制）
+    const next = activeIndex + 1;
+    if (next >= 0 && next < milestoneData.length) {
+      dots[next]?.classList.add('hint');
+    }
+  }
+
+  // ----------------------------
+  // Theme / content swap
+  // ----------------------------
+  function applyTheme(index){
+    const item = milestoneData[index];
+    // Design decision:
+    // Timeline visual state is driven by CSS variables,
+    // not JS classes, to keep animation logic declarative
+    root.style.setProperty('--active-index', String(index));
+    root.style.setProperty('--ms-accent-color', item.color);
+    root.style.setProperty('--ms-accent-shadow', item.shadow);
+    root.style.setProperty('--blob1-color', item.blobs[0]);
+    root.style.setProperty('--blob2-color', item.blobs[1]);
+    root.style.setProperty('--blob3-color', item.blobs[2]);
+  }
+
+  function animateContentSwap(item){
+    // 1) 淡出
+    content.classList.add('is-swapping');
+
+    // 2) 等淡出完成後換字（時間要跟 CSS transition 對齊：0.35s）
+    setTimeout(() => {
+      milestoneYearEl.textContent = item.year;
+      descEl.textContent = item.desc;
+
+      // 3) 強制 reflow（確保下一步淡入一定觸發）
+      void content.offsetWidth;
+
+      // 4) 淡入
+      content.classList.remove('is-swapping');
+    }, 220); // 200~240 都OK；你可以微調節奏
+  }
+
+  function setDotsActive(index){
+    const dotItems = document.querySelectorAll('.dot-item');
+    dotItems.forEach((dot, i) => {
+      const isActive = i === index;
+      dot.classList.toggle('active', isActive);
+
+      const dotCircle = dot.querySelector('.dot');
+      if (dotCircle) dotCircle.classList.toggle('active', isActive);
+    });
+  }
+
+  function updateTimeline(index){
+    const safeIndex = Math.max(0, Math.min(index, milestoneData.length - 1));
+    const item = milestoneData[safeIndex];
+
+    applyTheme(safeIndex);
+    animateContentSwap(item);
+    setDotsActive(safeIndex);
+
+    // 一次性引導：只在未互動前顯示下一個 hint
+    showHint(safeIndex);
+  }
+
+  // ----------------------------
+  // Make inline onclick work
+  // ----------------------------
+  // 你 HTML 仍用 onclick="updateTimeline(x)"，所以要掛到 window
+  // 同時：第一次互動就 clear hint
+  window.updateTimeline = function(i){
+    clearHintForever();
+    updateTimeline(i);
+  };
+
+  // ----------------------------
+  // Track click (empty area) -> choose nearest dot
+  // ----------------------------
+  trackWrapper.addEventListener('click', (e) => {
+    // 點到 dot-item 本身，就交俾 onclick / wrapper click 處理
+    if (e.target.classList.contains('dot-item') || e.target.closest('.dot-item')) return;
+
+    const rect = trackWrapper.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const percent = x / rect.width;
+    const closestIndex = Math.round(percent * (milestoneData.length - 1));
+
+    clearHintForever();
+    updateTimeline(closestIndex);
+  });
+
+  // ----------------------------
+  // Optional: make dot-items clickable even without inline onclick
+  // (防呆：若之後移除 onclick，仍可用)
+  // ----------------------------
+  document.querySelectorAll('.dot-item').forEach((dot, i) => {
+    dot.style.cursor = 'pointer';
+    dot.addEventListener('click', () => {
+      clearHintForever();
+      updateTimeline(i);
+    }, { passive: true });
+  });
+
+  // ----------------------------
+  // Init
+  // ----------------------------
+  updateTimeline(0); // 初始會顯示 hint(下一個)，但未互動前有效
+
+  // ----------------------------
+  // Auto play (one round) + IntersectionObserver
+  // Requirements:
+  // - Only start when milestone section is visible
+  // - every 5s go next
+  // - run only one round (0→last) then stop
+  // - any user interaction stops forever and stays at last seen
+  // - prefers-reduced-motion => no autoplay
+  // - if user scrolls away mid-play: pause (stay), scroll back: resume (still same round)
+  // ----------------------------
+  const prefersReduced = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+   // Autoplay rule:
+  // Milestone auto-plays only once to suggest progression,
+  // not to compete with reading or imply urgency
+  let autoTimer = null;
+  let autoStoppedForever = false;   // user interacted => stop forever
+  let autoFinished = false;         // finished one round => stop forever (no restart)
+  let autoIndex = 0;                // current index (will resume from here if paused)
+  let observer = null;
+
+  const milestoneSection = document.getElementById('milestone'); // section id="milestone"
+  const TOTAL = milestoneData.length;
+
+  // helper: pause (not forever)
+  function pauseAuto(){
+    if (autoTimer) clearInterval(autoTimer);
+    autoTimer = null;
+  }
+
+  // helper: stop forever (user interaction)
+  function stopAutoForever(){
+    autoStoppedForever = true;
+    pauseAuto();
+    if (observer) observer.disconnect();
+    observer = null;
+  }
+
+  // helper: start/resume auto play
+  let hintClearedByAuto = false; // 確保只清一次
+
+  function startOrResumeAuto(){
+    if (prefersReduced) return;
+    if (autoStoppedForever) return;
+    if (autoFinished) return;
+    if (TOTAL <= 1) return;
+    if (autoTimer) return; // already running
+
+    
+    // autoplay 第一次真正開始時 → 永久清除 hint
+    if (!hintClearedByAuto) {
+      clearHintForever();
+      hintClearedByAuto = true;
+    }
+
+    autoTimer = setInterval(() => {
+      if (autoStoppedForever || autoFinished) {
+        pauseAuto();
+        return;
+      }
+
+      const next = autoIndex + 1;
+
+      // one round: stop after reaching last
+      if (next >= TOTAL) {
+        autoFinished = true;  // finished the one round
+        pauseAuto();          // stop and stay at last seen (which is already last)
+        if (observer) observer.disconnect(); // no restart
+        observer = null;
+        return;
+      }
+
+      autoIndex = next;
+      updateTimeline(autoIndex);
+    }, 5000);
+  }
+
+  // Any explicit user interaction => stop forever and stay where they left it
+  function onUserInteract(){
+    stopAutoForever();
+  }
+
+  // Hook interactions
+  trackWrapper.addEventListener('click', onUserInteract, { passive: true });
+  document.querySelectorAll('.dot-item').forEach(dot => {
+    dot.addEventListener('click', onUserInteract, { passive: true });
+  });
+
+  // Keep autoIndex synced when user manually changes timeline (so “stay at last seen” is true)
+  const _origUpdateTimeline = updateTimeline;
+  updateTimeline = function(idx){
+    autoIndex = Math.max(0, Math.min(idx, TOTAL - 1));
+    _origUpdateTimeline(autoIndex);
+  };
+
+  // ----------------------------
+  // IntersectionObserver gate
+  // ----------------------------
+  if (!prefersReduced && milestoneSection) {
+    observer = new IntersectionObserver((entries) => {
+      const entry = entries[0];
+      if (!entry) return;
+
+      if (entry.isIntersecting) {
+        // start/resume ONLY when visible
+        startOrResumeAuto();
+      } else {
+        // pause when not visible (keep current autoIndex)
+        pauseAuto();
+      }
+    }, {
+      root: null,
+      // threshold 代表 section 約一半入畫面先開始播（避免一閃而過）
+      threshold: 0.85
+    });
+
+    observer.observe(milestoneSection);
+  }
+
+
+})();
+
+
+
+// =========================
+// 3) Mission / Vision
+// =========================
+
+(function initMissionVision(){
+  const ICONS_BTN = {
+    mission_1: 'mission_1',
+    mission_2: 'mission_2',
+    mission_3: 'mission_3',
+    mission_4: 'mission_4',
+    mission_5: 'mission_5',
+    vision_1: 'vision_1',
+    vision_2: 'vision_2',
+    vision_3: 'vision_3',
+    vision_4: 'vision_4'
+  };
+
+  // Inline SVG太長, 所以放到icons.svg裡提取使用
+  function getIconSpriteUrl(){
+    const base = (typeof getBase === 'function') ? getBase() : '';
+    return `${base}assets/icons/icons.svg`;
+  }
+
+  function renderIconBtn(name, className = 'svg-icon') {
+    const id = ICONS_BTN[name];
+    if (!id) return '';
+
+    const sprite = getIconSpriteUrl();
+    const ref = `${sprite}#${id}`;
+    console.log('[icon-ref]', ref);
+
+    return `
+      <svg class="${className}" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true" focusable="false">
+        <use href="${ref}" xlink:href="${ref}"></use>
+      </svg>
+    `;
+  }
+
+
+  const missionData = [
+    {"title":"堅守聖經真理","icon":"mission_1","accent":"#f43f5e","gradA":"#fb7185","gradB":"#f472b6","color":"#f43f5e","bg":"#fff1f2","border":"#fecdd3","shadow":"rgba(244,63,94,0.12)","text":"是我們整個信仰的根基，也是基督徒生活的準則和指引。\n我們鼓勵弟兄姊妹每年讀完新舊聖經一遍，努力學習並實踐聖經的教導。"},
+    {"title":"順服聖靈的引導","icon":"mission_2","accent":"#f59e0b","gradA":"#fb923c","gradB":"#fbbf24","color":"#f59e0b","bg":"#fffbeb","border":"#fef3c7","shadow":"rgba(245,158,11,0.12)","text":"主耶穌應許將聖靈賜給我們，要我們靠著聖靈得力，在這末世的日子，藉著醫治釋放與權能，經歷聖靈的大能力，引領人更確實的歸向耶穌。"},
+    {"title":"活潑有力的敬拜生活","icon":"mission_3","accent":"#10b981","gradA":"#34d399","gradB":"#2dd4bf","color":"#10b981","bg":"#ecfdf5","border":"#d1fae5","shadow":"rgba(16,185,129,0.12)","text":"敬拜主耶穌是我們的整個生活態度，主日崇拜更是每週敬拜上帝的高峰，我們教會的敬拜充滿喜樂與能力，在敬拜裡得力，更多經歷主耶穌。"},
+    {"title":"作傳福音的使者","icon":"mission_4","accent":"#8b5cf6","gradA":"#c4b5fd","gradB":"#8b5cf6","color":"#8b5cf6","bg":"#f5f3ff","border":"#ddd6fe","shadow":"rgba(139,92,246,0.12)","text":"基督徒人生的最大托負是傳福音，我們鼓勵弟兄姊妹肩負召命，把握每個傳福音的機遇，將福音帶來的盼望向別人分享。傳福音，是教會最重要的工作。"},
+    {"title":"教會是真正愛的團契","icon":"mission_5","accent":"#06b6d4","gradA":"#60a5fa","gradB":"#818cf8","color":"#06b6d4","bg":"#ecfeff","border":"#cffafe","shadow":"rgba(6,182,212,0.12)","text":"我們鼓勵弟兄姊妹學習彼此相愛，實踐真理，使教會真正成為一個充滿愛與接納的地方。\n教會是愛的團契，充滿溫暖、喜樂與關懷。我們歡迎您加入，成為我們的一分子。"}
+  ];
+
+  const visionData = [
+    {"title":"扎根磐石","icon":"vision_1","accent":"#a855f7","gradA":"#a855f7","gradB":"#d946ef","color":"#d946ef","bg":"#fdf4ff","border":"#fae8ff","shadow":"rgba(217,70,239,0.12)","text":"我們對神的道要十分認真，在這個似是而非的世界裡，我們要真誠嚴謹地學習神的話語，並努力將神的教導實踐出來。\n我們的生命要堅固，唯一的途徑就是牢固的扎根在磐石上，那就是神的道。"},
+    {"title":"倚靠聖靈 順服神主權","icon":"vision_2","accent":"#06b6d4","gradA":"#22d3ee","gradB":"#60a5fa","color":"#3b82f6","bg":"#eff6ff","border":"#dbeafe","shadow":"rgba(59,130,246,0.12)","text":"我們對聖靈使我們成聖和使我們得力，要十分順服。\n我們並非一間「靈恩教會」，乃是要將聖靈的工作放回適當的位置，讓聖靈在教會有自由運行的空間。若忽略聖靈的工作，無論人怎樣努力，都是沒有果效的。"},
+    {"title":"成為醫治人的地方","icon":"vision_3","accent":"#f59e0b","gradA":"#fbbf24","gradB":"#fb923c","color":"#f97316","bg":"#fff7ed","border":"#ffedd5","shadow":"rgba(249,115,22,0.12)","text":"教會要成為一個醫治人的地方，人到這里來會尋找到神，會經歷到神的大愛，生命得到醫治。\n神要我們在這個充滿了傷痛的世代，將神的醫治與釋放帶給所有來接觸我們的人。主應許要教會所提供的，是人在這世界裡找不到的。"},
+    {"title":"實踐主使命 擴展神國度","icon":"vision_4","accent":"#ef4444","gradA":"#fb7185","gradB":"#ef4444","color":"#ef4444","bg":"#fef2f2","border":"#fee2e2","shadow":"rgba(239,68,68,0.12)","text":"我們要成為一間熱切傳福音的教會，盡心竭力去實踐福音召命，使更多人認識主耶穌，經歷靈性的更新，帶來生命的改變。"}
+  ];
+
+  // 讀你新變數 --mv-itemRadius
+  function getItemRadius(){
+    const r = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--mv-itemRadius'));
+    return Number.isFinite(r) ? r : 125;
+  }
+
+  function clearEl(el){
+    while (el && el.firstChild) el.removeChild(el.firstChild);
+  }
+
+  function calcCirclePositions(n, r){
+    const a=[];
+    for(let i=0;i<n;i++){
+      const ang=(i/n)*Math.PI*2 - Math.PI/2;
+      a.push({x:Math.cos(ang)*r,y:Math.sin(ang)*r});
+    }
+    return a;
+  }
+
+  function calcTopSemiPositions(n, r){
+    const a=[];
+    const start=Math.PI, end=0;
+    const span=end-start;
+    for(let i=0;i<n;i++){
+      const t=(n===1)?0.5:(i/(n-1));
+      const ang=start+span*t;
+      a.push({x:Math.cos(ang)*r,y:Math.sin(ang)*r});
+    }
+    return a;
+  }
+
+  function addGuideArcSameCircle(orbitEl, centerYOffset, radius){
+    const w=orbitEl.clientWidth, h=orbitEl.clientHeight;
+    const cx=w/2;
+    const cy=h/2 + centerYOffset;
+    const r=radius;
+
+    const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('class','guide-svg');
+    svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+    svg.setAttribute('preserveAspectRatio','none');
+
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('class','guide-path');
+    path.setAttribute('d',`M ${cx-r} ${cy} A ${r} ${r} 0 0 1 ${cx+r} ${cy}`);
+
+    svg.appendChild(path);
+    orbitEl.appendChild(svg);
+  }
+
+  function addVisionGuideLinksArc(orbitEl, positions, R){
+    if(!positions || positions.length < 4) return;
+
+    const w = orbitEl.clientWidth;
+    const h = orbitEl.clientHeight;
+    const cx = w / 2;
+    const cy = h / 2;
+
+    const [p0,p1,p2,p3] = positions;
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('class','connector-svg');
+    svg.setAttribute('width','100%');
+    svg.setAttribute('height','100%');
+
+    // 固定座標系
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    svg.setAttribute('preserveAspectRatio', 'none');
+
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('class','vision-guide-path');
+
+    const d = [
+      `M ${cx + p0.x} ${cy + p0.y}`,
+      `A ${R} ${R} 0 0 0 ${cx + p1.x} ${cy + p1.y}`,
+      `A ${R} ${R} 0 0 0 ${cx + p2.x} ${cy + p2.y}`,
+      `A ${R} ${R} 0 0 0 ${cx + p3.x} ${cy + p3.y}`
+    ].join(' ');
+
+    path.setAttribute('d', d);
+    svg.appendChild(path);
+    orbitEl.appendChild(svg);
+  }
+
+  const UI = {
+    mission: {items: [], visited: new Set(), active: 0},
+    vision:  {items: [], visited: new Set(), active: 0}
+  };
+
+  function updateHints(type){
+    const st = UI[type];
+    st.items.forEach(it => it.wrap.classList.remove('hint'));
+    if(!st.items.length) return;
+    if(st.visited.size === st.items.length) return;
+    const idx = st.items.findIndex((it,i)=> !st.visited.has(i) && i !== st.active);
+    if(idx === -1) return;
+    st.items[idx].wrap.classList.add('hint');
+  }
+
+  function updateAllHints(){
+    updateHints('mission');
+    updateHints('vision');
+  }
+
+  function initOrbit({containerId, contentId, data, type, centerText}){
+    const orbitEl = document.getElementById(containerId);
+    const contentEl = document.getElementById(contentId);
+    if(!orbitEl || !contentEl) return false;
+
+    // 如果 orbit 未有尺寸（clientWidth=0），延遲下一 frame 再試，避免 SVG/位置計算出事
+    if (orbitEl.clientWidth === 0 || orbitEl.clientHeight === 0) return false;
+
+    clearEl(orbitEl);
+    orbitEl.dataset.type = type;
+    orbitEl.dataset.mode = (type==='vision') ? 'B' : 'A';
+
+    const nebula = document.createElement('div');
+    nebula.className = 'nebula';
+    nebula.style.setProperty('--conic', type==='mission'
+      ? 'conic-gradient(#fda4af, #fcd34d, #6ee7b7, #93c5fd, #fda4af)'
+      : 'conic-gradient(#c084fc, #818cf8, #22d3ee, #c084fc)');
+    orbitEl.appendChild(nebula);
+
+    const glass = document.createElement('div');
+    glass.className = 'glass-orbit';
+    orbitEl.appendChild(glass);
+
+    const baseR = getItemRadius();
+    let positions = (type==='vision')
+      ? calcTopSemiPositions(data.length, baseR)
+      : calcCirclePositions(data.length, baseR);
+
+    if(type==='vision'){
+      const yShift = 20;
+      const R = baseR;
+      positions = calcTopSemiPositions(data.length, R).map(p => ({x:p.x, y:p.y + yShift}));
+      addGuideArcSameCircle(orbitEl, yShift, R);
+      addVisionGuideLinksArc(orbitEl, positions, R);
+    }
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('class','connector-svg');
+    svg.setAttribute('width','100%');
+    svg.setAttribute('height','100%');
+
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('class','connector-line');
+    svg.appendChild(line);
+    orbitEl.appendChild(svg);
+
+    const center = document.createElement('div');
+    center.className = `center ${type==='vision'?'dark':''}`;
+    center.innerHTML = `<div class="centerText"><div class="kicker">${type.toUpperCase()}</div><div class="main">${centerText}</div></div>`;
+    orbitEl.appendChild(center);
+
+    const items = [];
+
+    data.forEach((item,i)=>{
+      const wrap = document.createElement('div');
+      wrap.className = 'item';
+      wrap.style.left = `calc(50% + ${positions[i].x}px)`;
+      wrap.style.top  = `calc(50% + ${positions[i].y}px)`;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+
+      // 只用 mv-btn（唔再加 .btn，避免 navbar btn style 影響 MV）
+      btn.className = 'mv-btn';
+
+      btn.innerHTML = `<div class="icon-badge"><div class="icon-box">${renderIconBtn(item.icon)}</div></div><span>${item.title}</span>`;
+      btn.style.setProperty('--about-accent-light', item.bg);
+      btn.style.setProperty('--about-accent-border', item.border);
+      btn.style.setProperty('--about-accent-main', item.color);
+      btn.style.setProperty('--about-accent-shadow', item.shadow);
+
+      wrap.appendChild(btn);
+      orbitEl.appendChild(wrap);
+
+      btn.addEventListener('click', ()=> setActive(i));
+      items.push({wrap, item, x: positions[i].x, y: positions[i].y});
+    });
+
+    UI[type].items = items;
+
+    function updateConnector(active){
+      // 用 layout 尺寸（不被 transform scale 影響）
+      const w = orbitEl.clientWidth;
+      const h = orbitEl.clientHeight;
+      const cx = w / 2;
+      const cy = h / 2;
+
+      line.setAttribute('x1', cx);
+      line.setAttribute('y1', cy);
+      line.setAttribute('x2', cx + active.x);
+      line.setAttribute('y2', cy + active.y);
+      line.setAttribute('stroke', active.item.accent);
+    }
+
+
+    function setActive(index){
+      UI[type].active = index;
+      items.forEach((it,i)=> it.wrap.classList.toggle('active', i===index));
+      UI[type].visited.add(index);
+
+      const active = items[index];
+      updateConnector(active);
+
+      contentEl.innerHTML =
+        `<div class="head">
+          <div class="badge" style="--gradA:${active.item.gradA}; --gradB:${active.item.gradB}">
+            ${renderIconBtn(active.item.icon, 'svg-icon')}
+          </div>
+          <h3 class="ctitle">${active.item.title}</h3>
+        </div>
+        <p>${active.item.text}</p>`;
+
+      updateAllHints();
+    }
+
+    setActive(0);
+    return true;
+  }
+
+  function renderAllMV(){
+    const ok1 = initOrbit({containerId:'missionOrbit', contentId:'missionContent', data: missionData, type:'mission', centerText:'使命'});
+    const ok2 = initOrbit({containerId:'visionOrbit',  contentId:'visionContent',  data: visionData,  type:'vision',  centerText:'願景'});
+
+    // 如果第一次 render 時 orbit 未有尺寸，下一 frame 再試（最多幾次）
+    // Orbit rendering depends on final layout size.
+    // This retry loop prevents zero-width rendering on first paint.
+    return ok1 && ok2;
+  }
+
+  // 初次 render：最多 retry 10 次，避免無限 loop
+  let tries = 0;
+  (function tryRender(){
+    const ok = renderAllMV();
+    if (!ok && tries < 10) {
+      tries++;
+      requestAnimationFrame(tryRender);
+    }
+  })();
+
+  // Resize 時重畫（同樣先等到有尺寸）
+  let raf = 0;
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      tries = 0;
+      (function tryRender(){
+        const ok = renderAllMV();
+        if (!ok && tries < 10) {
+          tries++;
+          requestAnimationFrame(tryRender);
+        }
+      })();
+    });
+  }, { passive: true });
+})();
+
+
+// =========================
+// 4) Name List
+// =========================
+/**
+ * A) 預設：兩組並排 + 每組兩欄
+ * B) 拉窄：先「每組兩欄→單欄」（仍並排）
+ * C) 再更窄：先至兩組上下（且名單固定單欄）
+ *
+ * 觸發方式：用「實際卡片寬度」做門檻（穩定、可控、不受字體/換行偵測影響）
+ // Reason:
+ // Using real card width avoids font-size, language length and zoom-level false positives from media queries
+ */
+(() => {
+  const groups = document.getElementById('groups');
+  const teams = [...document.querySelectorAll('[data-team]')];
+
+  // 你只需要調這兩個數：
+  // 1) namesOneColMin：每張卡並排時，卡片窄到幾多就先令名單變單欄
+  // 2) stackMin：再窄到幾多才兩組上下
+  const namesOneColMin = 360; // px：建議 340~380（越大越早單欄）
+  const stackMin       = 300; // px：建議 280~320（越大越早上下）
+  const stackViewportHardMin = 420; // px：最窄保底，避免橫向擠壓
+
+  function getGapPx(el){
+    const cs = getComputedStyle(el);
+    // grid gap 可能用 gap / column-gap；兼容取值
+    const g = cs.columnGap && cs.columnGap !== 'normal' ? cs.columnGap : cs.gap;
+    const val = parseFloat(g);
+    return Number.isFinite(val) ? val : 0;
+  }
+
+  function applyLayout(){
+    // 0) 預設：永遠先假設「兩組並排」
+    groups.classList.remove('is-stacked');
+
+    // 先重置：每組都預設兩欄（符合你要求）
+    teams.forEach(t => t.classList.remove('names-onecol'));
+
+    // 1) 計算「如果並排時」每張卡大概有幾闊
+    const groupsWidth = groups.getBoundingClientRect().width;
+    const gap = getGapPx(groups);
+    const cardWidthIfTwoUp = (groupsWidth - gap) / 2;
+
+    // 2) Phase B：卡片開始窄 → 先把每組名單變單欄（仍並排）
+    if (cardWidthIfTwoUp < namesOneColMin) {
+      teams.forEach(t => t.classList.add('names-onecol'));
+    }
+
+    // 3) Phase C：再窄 → 兩組上下（並且名單固定單欄）
+    const shouldStack = (window.innerWidth <= stackViewportHardMin) || (cardWidthIfTwoUp < stackMin);
+    if (shouldStack){
+      groups.classList.add('is-stacked');
+      teams.forEach(t => t.classList.add('names-onecol'));
+    }
+  }
+
+  // ResizeObserver + RAF debounce（穩定）
+  let raf = 0;
+  const schedule = () => {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(applyLayout);
+  };
+
+  window.addEventListener('resize', schedule, {passive:true});
+  window.addEventListener('load', applyLayout);
+
+  // 監聽 groups 尺寸改變（例如瀏覽器縮放、側邊欄影響）
+  if ('ResizeObserver' in window){
+    const ro = new ResizeObserver(schedule);
+    ro.observe(groups);
+  }
+
+  applyLayout();
+})();
+  </script>
+</body>
+</html>

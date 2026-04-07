@@ -1,0 +1,1182 @@
+/* Role note:
+   shared.css defines the global design system:
+   color tokens, spacing, typography, radius, and motion
+   Page-specific styles must NOT be added here
+*/
+/* Scope boundary:
+   shared.css = design system & tokens
+   main.css   = legacy + base layout rules
+*/
+/* Typography & Contrast Rules
+1) 主文必須清晰可長讀；對比不足的文字不可承載關鍵資訊。
+2) 字級由角色決定（Hero > Section > Card > Body > Meta），不可為視覺而破壞層級。
+3) rgba(0,0,0,0.45–0.55 只用於 meta / hint / 非任務文字。
+4) Accent 色只用於 CTA、active、標記；禁止作長段文字。
+5) 若畫面覺得太亮，先檢查結構與層級，而非直接調暗文字。
+*/
+
+/* =========================================================
+   - Layout / Section system
+   - Title system
+   - Blob system (Global Atmosphere + Component Emotion)
+========================================================= */
+
+/* ========================
+   Root tokens
+======================== */
+:root{
+  /* Tuning tokens (very subtle by default) */
+  /* depth: 0.035–0.055 is the sweet spot for your current warm base */
+  --tone-alpha: 0.045;
+  --tone-radius: 26px;
+  --tone-pad-y: clamp(24px, 3.2vw, 42px);
+  --tone-pad-x: clamp(14px, 2.2vw, 28px);
+
+  /* menu 高度 */
+  --menu-h: 64px;        /* desktop menu 高度 */
+  --menu-h-mobile: 56px;/* mobile / tablet */
+
+  /* Motion */
+  /* Motion system:
+    Easing values define the overall interaction feel.
+    Avoid introducing new easing curves.
+  */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* Layout */
+  --layout-max: 1100px;
+  --layout-pad: 24px;
+  --layout-pad-mobile: 16px;
+
+  /* Colors */
+  --bg: #F9F8F6;
+  --surface: rgba(255,255,255,.80);
+  --surface-soft: rgba(255,255,255,.55);
+
+  --white-warm: #fafafa;
+  --white-100: #ffffff;                     /* 功能性白 / 對比必須最大 */
+  --white-92: rgba(255,255,255,0.92);       /* 標題 / 重要文字 */
+  --white-82: rgba(255,255,255,0.82);       /* active tab / 次主角 */
+  --white-55: rgba(255,255,255,0.55);       /* 次要 / inactive */
+
+  --text:#2B2B2B;
+  --muted:#6B6B6B;
+  --line: rgba(22,22,22,.10);
+
+  /* Semantic colors:
+    Colors are assigned by meaning, not by page or component.
+    Do not hardcode colors elsewhere.
+  */
+  --color-accent: #FF6B4A;
+  --color-peach: #FDE2D9;
+  --color-mint: #D9E9E8;
+  --color-lavender: #E5E1F4;
+
+  /* Radius */
+  /* Radius system:
+    Border-radius values are intentionally limited
+    to maintain a consistent visual language.
+  */
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+
+  /* Global blob (page-level atmosphere) */
+  --blob-opacity: .9;
+
+  /* Motion — Page Transition */
+    /* Journey Lite tuning */
+  --bl-j-x: 9px;        
+  --bl-j-blur: 1.2px; 
+  --bl-j-dur: 320ms;   
+
+  /* Fade tuning */
+  --bl-fade-dur: 240ms; /* 200–320ms */
+
+}
+
+/* ========================
+   Base / Reset
+======================== */
+*,*::before,*::after{ box-sizing:border-box; }
+html, body, main { overflow-x: visible !important; }
+body, html {
+  margin: 0;
+  padding: 0;
+}
+html{ scroll-behavior:smooth; }
+/* only for cross-page hash jump: disable smooth temporarily */
+html.hash-jump {
+  scroll-behavior: auto !important;
+}
+body{
+  font-family:
+      "PingFang TC",        /* macOS 首選 */
+      "Noto Sans TC",       /* Android / 部分 Chrome */
+      "Microsoft JhengHei", /* Windows */
+      sans-serif;           /* 最後保底 */
+  letter-spacing: 0.01em;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.7;
+}
+
+
+/* Global atmosphere — body blob */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  background:
+    /* 左上：紫（穩定背景） */
+    radial-gradient(1300px 680px at 16% 10%, rgba(229,225,244,.55), transparent 62%),
+
+    /* 右上：綠（清新輔助） */
+    radial-gradient(980px 520px  at 88% 16%, rgba(217,233,232,.40), transparent 58%),
+
+    /* 下方：紅（溫度托底） */
+    radial-gradient(900px 560px  at 56% 108%, rgba(253,226,217,.24), transparent 74%),
+
+    /* 細粒雜訊不變 */
+    radial-gradient(2px 2px at 20px 30px, rgba(0,0,0,.035) 45%, transparent 46%),
+    radial-gradient(2px 2px at 70px 90px, rgba(0,0,0,.03) 45%, transparent 46%);
+    
+  background-size:auto,auto,auto,120px 120px,140px 140px;
+  mix-blend-mode:multiply;
+  opacity:var(--blob-opacity);
+   animation: blobDrift 28s ease-in-out infinite;
+}
+
+@keyframes blobDrift {
+  0%   { background-position: 0% 0%, 0% 0%, 0% 0%, 0 0, 0 0; }
+  50%  { background-position: -2% -1.5%, 0% 0%, 0% 0%, 0 0, 0 0; }
+  100% { background-position: 0% 0%, 0% 0%, 0% 0%, 0 0, 0 0; }
+}
+
+@media (max-height: 620px){
+  body::before{
+    opacity: calc(var(--blob-opacity) * 0.9);
+  }
+}
+
+/* @media (max-width: 640px) {
+  body::before {
+    background:
+      radial-gradient(600px 400px at 16% 10%, rgba(229,225,244,.55), transparent 62%),
+      radial-gradient(500px 300px at 88% 16%, rgba(217,233,232,.40), transparent 58%),
+      radial-gradient(450px 350px at 56% 108%, rgba(253,226,217,.24), transparent 74%);
+  }
+} */
+
+/* ensure content always above atmosphere */
+body > header,
+body > footer,
+body > main {
+  position: relative;
+  z-index: 1;
+}
+
+/* Background SVG*/
+/* 基礎容器設定：完全繼承原本 body::after 的邏輯 */
+.watermark-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    /* SVG 路徑 */
+    background-image: url("../img/bg1.svg");
+    background-repeat: no-repeat;
+    opacity: 0.08;
+    mix-blend-mode: multiply;
+    transition: opacity 0.3s ease; /* 增加切換時的平滑感 */
+}
+.watermark-overlay::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        transparent 55%,
+        rgba(248,247,244,0.35) 100%
+    );
+    pointer-events: none;
+}
+
+.hero-section ~ #global-watermark {
+  opacity: 0.04;
+}
+
+
+/* 1. 桌面版 (Large Desktop) */
+@media (min-width: 1440px) {
+    .watermark-overlay {
+        background-position: 85% 0%;
+        background-size: 780px auto;
+        opacity: 0.08;
+    }
+}
+
+/* 2. 標準電腦版 (Desktop/Laptop) */
+@media (min-width: 1025px) and (max-width: 1439px) {
+    .watermark-overlay {
+        background-position: 85% -20%;
+        background-size: 560px auto;
+        opacity: 0.08;
+    }
+}
+
+/* 3. 平板直向 (Tablet) */
+@media (min-width: 641px) and (max-width: 1024px) {
+    .watermark-overlay {
+        background-position: 220% 6%;
+        background-size: min(80vw, 820px) min(70vh, 900px);
+        opacity: 0.06;
+    }
+}
+
+/* 4. 大螢幕手機 / 小平板 (Large Mobile) 直向 */
+@media (min-width: 420px) and (max-width: 640px) {
+    .watermark-overlay {
+        background-position: 220% -10%;
+        background-size: min(75vw, 780px) min(65vh, 860px);
+        opacity: 0.06;
+    }
+}
+
+/* 5. iPad mini / Air / Pro — Landscape */
+@media (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape) {
+    .watermark-overlay {
+        background-position: 116% 14%;
+
+        /* 高度主導，並加上限，避免 Pro 過大 */
+        background-size: auto min(82vh, 720px);
+
+        opacity: 0.06;
+    }
+}
+
+/* 6. 手機直向 (Mobile Portrait) */
+@media (max-width: 419px) and (orientation: portrait) {
+    .watermark-overlay {
+        background-position: 170% 10%;
+        background-size: min(75vw, 780px) min(65vh, 860px);
+        opacity: 0.05;
+    }
+}
+
+/* 7. 手機橫向 (Mobile Landscape) */
+@media (max-width: 1023px) and (orientation: landscape) {
+    .watermark-overlay {
+        background-position: 120% 12%;
+        background-size: auto min(120vh, 560px);
+        opacity: 0.05;
+    }
+}
+
+/*********************************************************************/
+
+img,video,svg{ max-width:100%; height:auto; }
+
+h1{
+  font-weight: 800;
+}
+h2{
+  font-weight: 700;
+  font-size:2.5rem;
+  margin:0 0 24px;
+  position:relative;
+  padding-bottom:14px;
+}
+h3{
+  font-weight: 600;
+}
+p {
+  font-weight: 400;
+  line-height: 1.7;
+}
+.label,
+.badge,
+.kicker {
+  font-weight: 700;
+  letter-spacing: .1em;
+}
+
+/* 用途 weight
+Hero h1: 800
+Section h2: 700
+h3: 600
+Paragraph: 400
+Label / Badge: 700 */
+/* ========================
+   Layout containers
+======================== */
+.container{
+  max-width:var(--layout-max);
+  margin-left:auto;
+  margin-right:auto;
+  padding-left:var(--layout-pad);
+  padding-right:var(--layout-pad);
+}
+@media(max-width:560px){
+  .container{
+    padding-left:var(--layout-pad-mobile);
+    padding-right:var(--layout-pad-mobile);
+  }
+}
+
+/* ========================
+   Section system
+======================== */
+ /* 
+
+「user會係呢度停一停」
+→ section--airy
+
+
+「user會一路掃落去」
+→ section--compact
+
+
+「兩者都唔係」
+→ 預設 .section 
+
+*/
+
+.section {
+    position: relative;
+    width: 100%;
+    /* 移除 height: auto，讓父層高度由內容撐開 */
+    overflow: visible;
+    padding: clamp(60px, 8vw, 120px) 20px;
+}
+
+.section-visual.sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    /* 初始值，JS 會動態覆蓋它 */
+    top: var(--menu-h); 
+    z-index: 1;
+    will-change: opacity, top;
+}
+
+.section-push {
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(
+      135deg,
+      rgba(224, 231, 255, 0.9) 0%, 
+      rgba(245, 247, 255, 0.95) 100%
+    );
+    box-shadow: 0 8px 24px rgba(100, 110, 140, 0.08);
+}
+
+.section-push.is-last {
+    z-index: 3;
+    background-color: #ede4e0;
+    min-height: 80vh;
+    padding-top: 100px;
+}
+
+/* 為「需要呼吸感」的 section 加一級: 
+  - Hero 後第一段
+  - 故事轉折段
+  - 大圖片段
+*/
+.section--airy{
+  padding-bottom: clamp(104px, 10vw, 160px);
+}
+
+/* 為「內容密集」段落減一級:
+  - 卡片 grid
+  - FAQ
+  - 列表型內容
+*/
+.section--compact{
+  padding-block: clamp(48px, 5vw, 72px);
+}
+@media (max-width: 480px){
+  .section--airy{
+    padding-bottom: clamp(72px, 14vw, 96px);
+  }
+}
+
+/* 預設 section 交界 */
+section + section{
+  border-top: 1px solid rgba(0,0,0,.03);
+}
+
+/*有頁面連續 3 個 airy*/
+.section--airy + .section--airy{
+  padding-top: clamp(40px, 5vw, 64px);
+}
+
+/* 如果上一段是 airy，就弱化分隔 */
+.section--airy + section{
+  border-top-color: rgba(0,0,0,.015);
+}
+
+.section > .container > .title-underline{
+  margin-top: 0;          /* 保證不被其他 h2 margin 影響 */
+}
+
+.section--airy > .container > .title-underline{
+  margin-bottom: 44px;
+}
+
+.sectionDesc{
+  color: var(--muted);
+}
+/* ========================
+   Title system
+======================== */
+/* ===============================
+    版本色系 (保留並優化)
+================================ */
+.theme-peach { 
+    --accent: #f97316; 
+    --bg-alpha: rgba(249, 115, 22, 0.12); 
+    --glow: rgba(249, 115, 22, 0.4);
+}
+.theme-mint { 
+    --accent: #10b981; 
+    --bg-alpha: rgba(16, 185, 129, 0.12); 
+    --glow: rgba(16, 185, 129, 0.4);
+}
+.theme-lavender { 
+    --accent: #8b5cf6; 
+    --bg-alpha: rgba(139, 92, 246, 0.12); 
+    --glow: rgba(139, 92, 246, 0.4);
+}
+
+/* ===============================
+    Header 主體 (重新設計：去盒感)
+================================ */
+.section-title {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70%;
+    height: 100px; /* 稍微增加高度讓光暈擴散 */
+    margin: 40px auto;
+    user-select: none;
+    /* 移除硬背景，改用向兩端消失的徑向漸層 */
+    background: radial-gradient(
+        50% 50% at 50% 50%,
+        var(--bg-alpha) 0%,
+        transparent 100%
+    );
+}
+
+/* ===============================
+    裝飾線條 (發光細線)
+================================ */
+.section-title::before,
+.section-title::after {
+    content: "";
+    position: absolute;
+    height: 1px;
+    width: 15%; 
+    background: linear-gradient(to right, transparent, var(--accent), transparent);
+    filter: drop-shadow(0 0 5px var(--accent));
+    opacity: 0.6;
+}
+
+.section-title::before { left: 15%; }
+.section-title::after { right: 15%; }
+
+/* ===============================
+    裝飾粒子 (泡泡 - 增加模糊與光暈)
+================================ */
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--accent);
+    z-index: 1;
+    filter: blur(2px); /* 增加模糊感 */
+    box-shadow: 0 0 10px var(--glow); /* 增加螢光感 */
+}
+
+.p1 { width: 10px; height: 10px; top: 15%; left: 22%; animation: float 6s ease-in-out infinite; opacity: 0.4; }
+.p2 { width: 5px; height: 5px; bottom: 20%; left: 28%; animation: float 4s ease-in-out infinite reverse; opacity: 0.6; }
+.p3 { width: 18px; height: 18px; top: 25%; right: 20%; animation: float 7s ease-in-out infinite 1s; opacity: 0.2; }
+.p4 { width: 7px; height: 7px; bottom: 15%; right: 26%; animation: float 5s ease-in-out infinite; opacity: 0.5; }
+
+/* ===============================
+    文字區 (字體細節強化)
+================================ */
+.text-content {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 6px; 
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 10px;
+    animation: text-in .9s cubic-bezier(.22,1,.36,1) both;
+    /* 文字整體微發光 */
+    text-shadow: 0 0 10px rgba(255,255,255,0.45);
+}
+
+.text-main {
+    color: var(--text);
+    font-weight: 300; 
+    opacity: 0.9;
+}
+
+.text-sub {
+    color: var(--accent);
+    font-weight: 700; 
+}
+
+/* ===============================
+    菱形標記 (視覺中心)
+================================ */
+.diamond {
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    transform: rotate(45deg);
+    filter: blur(1px);
+    animation: diamond-breathe 4s ease-in-out infinite;
+    margin-left: 5px;
+}
+
+/* ===============================
+    動畫 (保留並微調)
+================================ */
+@keyframes float {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    50% { transform: translateY(-15px) translateX(8px); }
+}
+
+@keyframes diamond-breathe {
+    0%, 100% { transform: rotate(45deg) scale(1); opacity: 0.7; box-shadow: 0 0 15px var(--accent); }
+    50% { transform: rotate(45deg) scale(1.2); opacity: 0.4; box-shadow: 0 0 25px var(--accent); }
+}
+
+@keyframes text-in {
+    from { opacity: 0; letter-spacing: 30px; transform: translateY(10px); filter: blur(10px); }
+    to { opacity: 1; letter-spacing: 10px; transform: translateY(0); filter: blur(0); }
+}
+
+/* ===============================
+    響應式
+================================ */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .section-title { width: 90%; height: 80px; }
+    .text-content { font-size: 1.5rem; letter-spacing: 5px; }
+    .section-title::before { left: 18%; }
+    .section-title::after { right: 18%; }
+    .diamond {margin-left: 2px;}
+}
+@media (max-width: 767px) {
+    .section-title { width: 90%; height: 80px; }
+    .text-content { font-size: 1.5rem; letter-spacing: 5px; }
+    .section-title::before { left: -5%; }
+    .section-title::after { right: 0%; }
+    .p1 {left: 4%; }
+    .p2 {left: 8%; }
+    .p3 {right: 6%; }
+    .p4 {right: 12%; }
+    .diamond {margin-left: -2px;}
+}
+
+ /* =========================
+    銜接文字區
+    ========================= */
+.intro-section { 
+  padding: 5rem 0 3rem; 
+  text-align: left; 
+  max-width: 60rem; 
+  margin: 0 auto; 
+  padding-left: 1.5rem; 
+  padding-right: 1.5rem; }
+
+/* Header */
+.intro-header{
+  text-align: center;
+  line-height: 1.8;
+  font-size: 1.75rem; 
+  font-weight: 700; 
+  color: var(--text); 
+  margin-bottom: 1.25rem;
+  letter-spacing: 3px;
+}
+
+/* Core structure */
+.intro-list{
+  display: grid;
+  gap: 28px;
+  margin: 0 auto;
+}
+.intro-list p{
+  color: var(--muted);
+}
+.intro-item{
+  position: relative;
+  padding-left: 22px;
+  transition: transform 0.3s ease;
+  letter-spacing: 1px;
+}
+.intro-item:hover {
+  transform: translateY(-2px); /* 輕微上浮 */
+}
+
+.intro-item::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  opacity: 0.75;
+}
+
+.intro-item p{
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--muted);
+  margin: 0;
+  text-align: left; 
+}
+
+/* Mobile */
+@media (max-width: 768px){
+  .intro-list{
+    gap: 18px;
+  }
+  .intro-header{
+    margin-bottom: 20px;
+  }
+}
+
+/* =========================================================
+  Reveal Animation
+========================================================= */
+/* Perceived rhythm:
+  Reveal effects guide reading flow,
+  not decorative animation.
+*/
+
+/* Reveal Animation */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity .8s var(--ease-out), transform .8s var(--ease-out);
+}
+.reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ========================
+   Accessibility helpers
+======================== */
+.sr-only{
+  position:absolute!important;
+  width:1px;height:1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+}
+/* Keyboard focus – custom ring */
+/* 用不同色:
+event.html - .close-modal 
+stories.html - .close-btn*/
+:focus-visible{
+  outline:3px solid rgba(255,107,74,.35);
+  outline-offset:3px;
+  border-radius:12px;
+}
+
+/* .close-btn:focus-visible{box-shadow:0 0 0 4px rgba(255,255,255,.25)} */
+/* ========================
+   Reduced motion
+======================== */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation:none!important;
+    transition:none!important;
+  }
+  .reveal{ opacity: 1 !important; transform: none !important; }
+}
+
+/* =========================================================
+   Brand Lab — Global Page Transition (Default: Journey Lite)
+   State classes (set by main.js):
+     html.is-journey            → default Journey Lite
+     html.bl-fallback-fade      → force Fade (low perf / save-data / reduced-motion)
+     html.is-leaving            → leaving state
+     html.is-entering           → entering setup
+     html.is-entering-play      → entering play (trigger transitions)
+
+   Added cue: subtle brightness shift (more perceptible than small X move)
+========================================================= */
+
+[data-barba="container"]{
+  will-change: opacity, transform, filter;
+}
+
+/* ---------- Default (Journey Lite) ---------- */
+html.is-journey.is-leaving [data-barba="container"]{
+  opacity: 0;
+  transform: translateX(calc(var(--bl-j-x) * -1));
+  /* Added brightness cue */
+  filter: blur(var(--bl-j-blur)) brightness(0.98);
+  transition:
+    opacity var(--bl-j-dur) ease,
+    transform var(--bl-j-dur) cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter var(--bl-j-dur) ease;
+}
+
+html.is-journey.is-entering [data-barba="container"]{
+  opacity: 0;
+  transform: translateX(var(--bl-j-x));
+  filter: blur(var(--bl-j-blur)) brightness(0.99);
+}
+
+html.is-journey.is-entering.is-entering-play [data-barba="container"]{
+  opacity: 1;
+  transform: translateX(0);
+  /* Return to normal brightness */
+  filter: blur(0) brightness(1);
+  transition:
+    opacity var(--bl-j-dur) ease,
+    transform var(--bl-j-dur) cubic-bezier(0.16, 1, 0.3, 1),
+    filter var(--bl-j-dur) ease;
+}
+
+/* ---------- Fallback (Fade) ---------- */
+html.bl-fallback-fade [data-barba="container"]{
+  transform: none !important;
+  filter: none !important;
+}
+
+html.bl-fallback-fade.is-leaving [data-barba="container"]{
+  opacity: 0;
+  transition: opacity var(--bl-fade-dur) ease;
+}
+
+html.bl-fallback-fade.is-entering [data-barba="container"]{
+  opacity: 0;
+}
+
+html.bl-fallback-fade.is-entering.is-entering-play [data-barba="container"]{
+  opacity: 1;
+  transition: opacity var(--bl-fade-dur) ease;
+}
+
+/* ---------- prefers-reduced-motion: always calm ---------- */
+@media (prefers-reduced-motion: reduce){
+  html.is-leaving [data-barba="container"]{
+    opacity: 0;
+    transform: none !important;
+    filter: none !important;
+    transition: opacity 180ms ease !important;
+  }
+  html.is-entering [data-barba="container"]{
+    opacity: 0;
+    transform: none !important;
+    filter: none !important;
+  }
+  html.is-entering.is-entering-play [data-barba="container"]{
+    opacity: 1;
+    transform: none !important;
+    filter: none !important;
+    transition: opacity 180ms ease !important;
+  }
+}
+
+/* ===== FIX stacking context: ensure menu layer is above main ===== */
+#site-menu{
+  position: relative;   /* 建立 stacking context */
+  z-index: 9999;        /* 高於 body > * 的 z-index:1 */
+}
+
+/* =================================================
+   HERO MENU — WHITE TEXT
+   只在 Hero 初始狀態生效
+================================================= */
+
+/* Hero 初始（landing page，未 scroll）才用白色文字 */
+html.is-hero:not(.hero-scrolled) body.theme-home #site-menu .menu-item a{
+  font-size: 20px;
+}
+  /* color: var(--white-100);
+  text-shadow: 0 1px 6px rgba(0,0,0,.25); */
+
+/* Hero 初始 hover 仍然保持白色 */
+/* html.is-hero:not(.hero-scrolled) body.theme-home #site-menu .menu-item a:hover{
+  color: var(--white-100);
+} */
+
+
+/* DEV ONLY: force motion even if prefers-reduced-motion is reduce */
+html.force-motion * ,
+html.force-motion *::before,
+html.force-motion *::after{
+  animation: initial !important;
+  transition: initial !important;
+}
+
+/* =================================================
+   HERO SECTION HTML
+   在每個html裡的小hero
+================================================= */
+/* --- 核心組件：中英疊加標題（保留 + 微調更舒服） --- */
+.title-group {
+  position: relative;
+  margin-bottom: 18px;
+  display: inline-block;
+  isolation: isolate; /* 令疊字層次更穩定 */
+}
+.title-group::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-10px;
+  width:64px;
+  height:4px;
+  border-radius:999px;
+  background:linear-gradient(90deg, rgba(93,95,239,.55), rgba(93,95,239,0));
+  opacity:.35;
+}
+.en-shadow {
+  position: absolute;
+  top: -16px;
+  left: -6px;
+  font-size: 56px;
+  font-weight: 900;
+  color: rgba(93, 95, 239, 0.22);
+  white-space: nowrap;
+  z-index: 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+  transition: all 0.3s ease;
+  filter: blur(0.5px);
+}
+
+.zh-title {
+  position: relative;
+  z-index: 1;
+  font-size: 32px;
+  font-weight: 850;
+  margin: 0;
+  color: var(--text);
+  text-shadow: 0 0 15px rgba(255,255,255,0.8);
+  letter-spacing: .8px;     
+  line-height: 1.25;
+}
+
+.description {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--muted);
+  max-width: 52ch;           /* 用 ch 更貼近閱讀舒適度 */
+  margin: 0;
+}
+
+.hero-section {
+  position: relative;
+  background: var(--bg);
+  overflow: hidden;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  padding: 58px 60px;
+  margin-bottom: 0px;
+  border-radius: 0;
+}
+
+/* 水印相片 */
+.hero-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 30%; 
+  background-image: var(--hero-photo);
+
+  /* opacity: 0.3; 
+  filter: grayscale(0.25) contrast(1.06) saturate(1.08) brightness(0.92); */
+        opacity: 0.4; 
+  filter: grayscale(0.3) contrast(1.1) brightness(0.82);
+
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease; 
+}
+
+.hero-section::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: 
+  /* 1. 頂部壓深 */
+  linear-gradient(
+    to bottom,
+    rgba(30, 35, 45, 0.35) 0%, 
+    rgba(30, 35, 45, 0.15) 40%,
+    rgba(255, 255, 255, 0) 70%
+  ),
+  /* 2. 底部銜接：確保 100% 處完全等於背景色 */
+  linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(255, 255, 255, 0.2) 80%,
+    var(--bg) 100%
+  );
+
+  pointer-events: none;
+  z-index: 1;
+}
+
+
+.hero-section .content-wrapper {
+  position: relative;
+  padding-top: var(--menu-h);
+  z-index: 2;
+}
+
+
+/* iPad mini / Tablet fine-tune */
+@media (min-width: 768px) and (max-width: 900px){
+  .sectionHead{
+    margin-top: -6px;
+  }
+  .hero-section{
+    text-align:center;
+  }
+  .title-group{
+    display:inline-block; /* 保持 inline-block 讓 after 置中更穩 */
+  }
+  .en-shadow{
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto; 
+  }
+  .description{
+    margin:0 auto;
+  }
+  .title-group::after{
+    left:50%;
+    transform:translateX(-50%);
+    width:46px;     /* 比 mobile/desktop 再短，視覺更穩 */
+    height:4px;     /* 保持厚度一致 */
+    bottom:-10px;   /* 跟原本一致，避免跳動 */
+    opacity:.30;    /* 平板上略淡一點，更柔和 */
+  }
+}
+
+/* =========================
+Mobile Large (481–767px)
+========================= */
+@media (min-width: 481px) and (max-width: 767px){
+
+  .title-group{ display:inline-block; }
+
+  .title-group::after{
+    left:50%;
+    transform:translateX(-50%);
+    width:52px;     /* 手機稍長，視覺更清楚 */
+    opacity:.34;
+  }
+
+  .hero-section{
+    padding: 44px 20px;
+    min-height: 240px; /* optional */
+  }
+
+  .hero-section .content-wrapper{
+    padding-top: var(--menu-h-mobile, var(--menu-h));
+  }
+
+  .zh-title{ 
+    font-size: 28px; /* optional */
+  }
+
+  .en-shadow{ 
+    font-size: 44px; 
+    top: -12px; 
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .description{ margin:0 auto; }
+}
+
+
+/* =========================
+  Mobile (<=480px)
+  ========================= */
+@media (max-width: 480px){
+
+  .title-group::after{
+    left:50%;
+    transform:translateX(-50%);
+    width:52px;
+    opacity:.34;
+  }
+
+  .hero-section{
+    padding: 44px 20px;
+    min-height: 210px;
+  }
+
+  .hero-section .content-wrapper{
+    padding-top: var(--menu-h-mobile, var(--menu-h));
+  }
+
+  .zh-title{ 
+    font-size: 28px; 
+  }
+
+  .en-shadow{ 
+    font-size: 44px; 
+    top: -12px; 
+  }
+
+  .hero-section::before{
+    inset: -10px;
+    opacity: 0.35; 
+    filter: grayscale(0.35) blur(1px) contrast(1.1) brightness(0.85);
+    background-position: 65% 38%;
+    transform: scale(1.03);
+  }
+
+  .hero-section::after {
+    background:
+    linear-gradient(
+      to bottom,
+      rgba(30, 35, 45, 0.25) 0%,
+      rgba(30, 35, 45, 0.05) 60%,
+      var(--bg) 100%
+    );
+  }
+}
+
+
+/* ===== readMore 共用 ===== */
+.readMore{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  color: var(--color-accent);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  text-decoration: none; 
+}
+
+.readMore::after{
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .25s ease;
+}
+
+.readMore .arrow{
+  display: inline-block;
+  transition: transform .25s ease;
+}
+
+.readMore:hover::after{
+  transform: scaleX(1); /* 底線 */
+}
+
+.readMore:hover .arrow{
+  transform: translateX(4px);
+}
+
+/* ===== pageNums 共用 ===== */
+.pager{
+  display:flex;
+  justify-content:center;
+  margin-top:20px;
+}
+
+.pagerNums{
+  display:flex;
+  gap:10px;
+}
+
+/* 單一頁碼 */
+.pageNum{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  border:none;
+  background:transparent;
+  font-size:14px;
+  font-weight:600;
+  color: color-mix(in srgb, var(--muted) 70%, transparent);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:background .2s ease, color .2s ease;
+  /* 數字等寬，避免 1/2 視覺距離怪 */
+  font-variant-numeric: tabular-nums; font-feature-settings:"tnum";
+}
+
+/* hover */
+.pageNum:hover{
+  background:rgba(0,0,0,.05);
+}
+
+/* active page：圓形淡底色 */
+.pageNum.active{
+  background:rgba(0,0,0,.08);
+  color:var(--text);
+  font-weight:700;
+}
+.pageNum.active:hover{
+  background: rgba(0,0,0,.12);
+}
+.pageNum:not(.active):hover{
+  background: rgba(0,0,0,.04);
+}
+
+/* ===== full modal / lightbox 開時：強制隱藏 menu + widget  ===== */
+body.ui-hide-global #site-menu,
+body.ui-hide-global widget-msgbox-scrolltop{
+  display: none !important;
+}
+
+/* ===== index.html link to other section on desktop version  ===== */
+@media (min-width: 1021px) {
+  section[id] {
+    scroll-margin-top: var(--menu-h);
+  }
+}
+
+
+/* ===== DEBUG: Check section 高度 ===== */
+/* main,
+section,
+#site-footer,
+#site-footer > *,
+body {
+  outline: 2px solid rgba(255,0,0,.35);
+} */

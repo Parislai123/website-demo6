@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>讀經計劃 | 香港基督教磐石教會</title>
+
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+
+  <!-- Core styles -->
+  <link rel="stylesheet" href="../assets/css/shared.css">
+  <link rel="stylesheet" href="../assets/css/main.css">
+
+  <!-- menu bar -->
+  <link rel="stylesheet" href="../assets/css/menu.css">
+  <link rel="stylesheet" href="../assets/css/mobile-menu.css">
+
+    
+  <!-- JS -->
+  <!-- Core scripts -->
+  <script src="../assets/js/main.js"></script>
+
+  <!-- Partials loader -->
+  <script src="../assets/js/include-partials.js"></script>
+
+  <!-- Widget -->
+  <script src="../assets/js/widget_msgbox_scrolltop.js" defer></script>
+
+
+  <style>
+
+    :root{
+      --stepcard-accent:#ff4d00;
+      --orange-600:#ea580c;
+
+    }
+
+
+    /* ===== Header ===== */
+    .header-space{padding-top:6rem;padding-bottom:4rem;}
+    .page-title{
+      font-size:3rem;
+      font-weight:700;
+      margin:0 0 2rem;
+      letter-spacing:-0.025em;
+    }
+    .lead{
+      max-width:42rem;
+      font-size:1.125rem;
+      color:var(--text);
+      font-weight:300;
+      margin:0;
+    }
+
+    /* ===== Steps Grid ===== */
+    .steps-grid{display:grid;gap:3rem;}
+    .step-card{
+      position:relative;
+      padding-top:2rem;
+      transition:transform .35s ease, border-color .35s ease;
+      border-top:1px solid #e0e0e0;
+    }
+    .step-card:hover{
+      transform:translateY(-10px);
+      border-top-color:var(--stepcard-accent);
+    }
+    .step-number{
+      font-size:5rem;
+      font-weight:900;
+      color:rgba(0,0,0,0.03);
+      position:absolute;
+      top:-20px;
+      right:10px;
+      z-index:0;
+    }
+    .step-content{position:relative;z-index:1;}
+    .step-kicker{
+      color:var(--orange-600);
+      font-weight:700;
+      font-size:.875rem;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+      display:inline-block;
+    }
+    .step-heading{
+      font-size:1.5rem;
+      font-weight:700;
+      margin:.5rem 0 1rem;
+    }
+    .step-text{
+      color:var(--muted);
+      font-weight:400;
+      margin:0;
+    }
+
+    /* ===== Rules Section ===== */
+    #planRule .container{
+      display: flex;
+      flex-direction: column;
+      align-items: center;  
+    }
+
+    .rule-heading{
+      font-size:1.875rem;
+      font-weight:400;
+      margin:0 0 2rem;
+      display:flex;
+      align-items:center;
+      gap:1rem;
+    }
+    .rule-line{height:1px;width:3rem;background:var(--line);}
+    .rule-list{
+      color:var(--text);
+      margin:0;
+      padding-left:0;
+      list-style:none;
+      font-size:1.1rem;
+    }
+    .rule-list li{
+      position:relative;
+      padding-left:20px;
+      margin-bottom:12px;
+    }
+    .rule-list li::before{
+      content:'';
+      position:absolute;
+      left:0;
+      top:10px;
+      width:6px;
+      height:6px;
+      /* fallback: 用接近的顏色 */
+      background-color: #7a6fe0;
+      /* 新瀏覽器支援 color-mix 時會覆蓋 fallback */
+      background: color-mix(in srgb, var(--color-lavender) 70%, #6c5ce7 30%);
+      border-radius:50%;
+    }
+
+    /* =========================================
+       reading-plan (Bubble list) — NO atmosphere
+    ========================================= */
+    /* Intent:
+      Keep this section neutral and factual
+      Avoid emotional or atmospheric visuals here
+    */
+    .reading-plan-groups{
+      display:grid;
+      gap:20px;
+      margin-top:2.5rem;
+    }
+
+    .reading-plan-group{
+      padding:28px 18px;
+      max-width: 980px;
+      margin-left:auto;
+      margin-right:auto;
+
+      background: rgba(255,255,255,0.55);
+      border: 1px solid rgba(22,160,133,0.06);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      backdrop-filter: blur(6px); 
+    }
+
+    .reading-plan-flex{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:left;
+      gap:12px 14px;    
+      max-width: 860px;   
+      margin:0 auto;
+    }
+
+    /* 氣泡：更實的底色 + 更清楚邊界 */
+    .name-bubble{
+      background: linear-gradient(180deg, #ffffff 0%, #fdfbfb 100%); /* #eef8f6 */
+      border:1px solid rgba(22,160,133,0.1);
+
+      border-radius: 1rem;
+      padding:14px 26px;
+
+      font-size:1rem;
+      font-weight:600; 
+      /* 備用寫法 */
+      color: rgba(var(--text), 0.78); 
+      /* 新瀏覽器支援 color-mix 時會覆蓋 fallback */
+      color: color-mix(in srgb, var(--text) 78%, transparent);
+      letter-spacing:.5px;
+
+      display:flex;
+      min-width: 120px;       /* 令每粒 bubble 最少一樣闊，視覺更整齊 (Visual order: Ensure bubbles align more evenly regardless of name length) */
+      justify-content:center; 
+      align-items:center;
+      gap:8px;
+
+      box-shadow:0 6px 16px rgba(0,0,0,0.07);
+      transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease, color .25s ease;
+
+      /* 仍然保留輕浮動（可被 reduced motion 關掉） */
+      animation: floatBubble 4.5s ease-in-out infinite;
+      animation-delay: var(--delay);
+    }
+
+    @keyframes floatBubble{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-4px)}
+    }
+    .name-bubble::before{
+      content:'';
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:rgba(22,160,133,0.65);
+      border-color: rgba(22,160,133,0.7);
+      box-shadow:0 10px 26px rgba(22,160,133,0.16);
+    }
+    .name-bubble:hover{
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.10);
+      border-color: rgba(22,160,133,0.5);
+    }
+
+    /* 文字部分 */
+    .stats-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stats-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem; /* 圖示與文字之間的距離 */
+    }
+
+    /* 背景獎章圖示 */
+    .icon-award-bg {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #e2e8f0;
+    }
+    /* 背景獎章圖示 size*/
+    .icon-xl {
+      width: 80px;
+      height: 80px;
+      opacity: 0.6;
+    }
+
+    .year-badge {
+      margin-bottom: -0.25rem;
+      padding: 0.25rem 1rem;
+      background-color: #ecfdf5;
+      color: #059669;
+      border-radius: 9999px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      border: 1px solid #ecfdf5;
+      text-align: center;
+    }
+
+    /* 數字區塊 */
+    .stats-number-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .stats-number-group {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+
+    .big-number {
+      font-size: 2.25rem;
+      font-weight: 900;
+      color: #059669;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .unit {
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: #475569;
+      letter-spacing: 0.15rem;
+    }
+
+
+    /* ===== Responsive ===== */
+    @media (min-width:768px) and (max-width:1024px){
+      .rules-grid{column-gap: 8rem;}
+    }    
+    @media (min-width:768px){
+      .page-title{font-size:4.5rem;}
+      .steps-grid{grid-template-columns:repeat(3,1fr);}
+      .rules-grid{grid-template-columns:repeat(2,1fr);}
+    }
+
+    /* 手機：尺寸與 spacing 再收斂 */
+    @media (max-width:767px){
+      .reading-plan-flex{gap:12px;}
+      .name-bubble{
+        padding:10px 16px;
+        font-size:.92rem;
+        letter-spacing:.2px;
+      }
+      .rules-grid{grid-template-columns:repeat(1,1fr);row-gap: 2rem;}
+    }
+
+    /* Accessibility：Reduced Motion */
+    @media (prefers-reduced-motion: reduce){
+      .name-bubble{animation:none !important;}
+      .name-bubble,
+      .step-card,
+      .title-underline::after{
+        transition:none !important;
+      }
+      .step-card:hover,
+      .name-bubble:hover{
+        transform:none !important;
+        box-shadow:none !important;
+      }
+    }
+
+  </style>
+</head>
+
+<body class="theme-reading-plan" data-barba="wrapper">
+    <!-- 這是你的全站通用 SVG 容器 -->
+  <div id="global-watermark" class="watermark-overlay"></div>
+  <div id="site-menu"></div>
+
+      <!-- HERO -->
+    <section class="hero-section" style="--hero-photo: url('/assets/img/sectionHero_reading-plan.jpg');">
+      <div class="content-wrapper">
+        <div class="title-group">
+          <span class="en-shadow">Journey</span>
+          <h1 class="zh-title">讀經計劃</h1>
+        </div>
+        <p class="description">
+          鼓勵弟兄姊妹立志每日閱讀聖經，並於年度公布名單中互相勉勵，共同建立屬靈生活習慣。
+        </p>
+      </div>
+    </section>
+
+  <main data-barba="container" data-barba-namespace="reading-plan">
+
+    <!-- INTRO SECTION -->
+    <section class="intro-section">
+      <div class="container">
+
+        <!-- Header -->
+        <p class="intro-header">
+          人人讀聖經 一人一計劃
+        </p>
+
+        <!-- Content -->
+        <div class="intro-list">
+            <p>
+              本堂自2003年1月起鼓勵 本堂磐石教會肢體彼此互勉互勵，立定心志一起閱讀上帝的話語成為我們的生活習慣，鼓勵弟兄姊妹自行擇選其中一項讀經計劃，並於一年度內完成。
+            </p>
+      
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 參加辦法 -->
+    <section class="section section--airy section-visual sticky" id="planMethod">
+      <div class="container">
+        <div class="section-title theme-peach reveal">
+          <!-- 裝飾泡泡 -->
+          <div class="particle p1"></div>
+          <div class="particle p2"></div>
+          <div class="particle p3"></div>
+          <div class="particle p4"></div>
+
+          <div class="text-content">
+            <span class="text-main">參加</span>
+            <span class="text-sub">辦法</span>
+            <span class="diamond"></span>
+          </div>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-card reveal">
+            <span class="step-number">01</span>
+            <div class="step-content">
+              <span class="step-kicker">Step 1</span>
+              <h3 class="step-heading">登記閱讀項目</h3>
+              <p class="step-text">弟兄姊妹可於教會後門前之佈告板上填上你的名字和閱讀項目；</p>
+            </div>
+          </div>
+
+          <div class="step-card reveal">           
+            <span class="step-number">02</span>
+            <div class="step-content">
+              <span class="step-kicker">Step 2</span>
+              <h3 class="step-heading">完成後貼上貼紙</h3>
+              <p class="step-text">閱讀完成一卷書後，請在該卷書目之方格上貼上貼紙 (貼紙可於報告板上找到)；</p>
+            </div>
+          </div>
+
+          <div class="step-card reveal">         
+            <span class="step-number">03</span>
+            <div class="step-content">
+              <span class="step-kicker">Step 3</span>
+              <h3 class="step-heading">年度公佈鼓勵</h3>
+              <p class="step-text">本堂於每年一月份公佈上年度之達標名單，以作鼓勵。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 規則 -->
+    <section class="section section--compact section-push" id="planRule">
+      <div class="container">
+        <div class="section-title theme-lavender reveal">
+          <!-- 裝飾泡泡 -->
+          <div class="particle p1"></div>
+          <div class="particle p2"></div>
+          <div class="particle p3"></div>
+          <div class="particle p4"></div>
+
+          <div class="text-content">
+            <span class="text-main">參加</span>
+            <span class="text-sub">規則</span>
+            <span class="diamond"></span>
+          </div>
+        </div>
+
+        <div class="reveal">
+          <ul class="rule-list">
+            <li><b>所有執事:</b> “務必” 於一年內最少讀完【新舊約全書】聖經一次</li>
+            <li><b>信主一年或以上肢體:</b> 鼓勵於一年內最少讀完【新舊約全書】聖經一次。</li>
+            <li><b>初信肢體:</b> 鼓勵 於一年內最少讀完【四福音書】及【使徒行傳】一次。</li>
+            <li><b>信主一年以內肢體:</b> 鼓勵於一年內最少讀完【新約聖經】一次。</li>
+            <li><b>所有弟兄姊妹:</b> 每天按照當天的日期讀【箴言】一章 ，一個月讀完一次，一年讀完十二次。 <br> (例：1月1日讀第一章；如當月只得30日，則第30日讀30及31章)</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 年度公佈名單 -->
+    <section class="section section--airy" id="nameList">
+      <div class="container">
+
+        <div class="section-title theme-mint reveal">
+          <!-- 裝飾泡泡 -->
+          <div class="particle p1"></div>
+          <div class="particle p2"></div>
+          <div class="particle p3"></div>
+          <div class="particle p4"></div>
+
+          <div class="text-content">
+            <span class="text-main">年度公佈</span>
+            <span class="text-sub">名單</span>
+            <span class="diamond"></span>
+          </div>
+        </div>
+
+        <!-- 文字部分 -->
+        <div class="stats-container">
+          <div class="stats-header">
+            <div class="icon-award-bg reveal">
+              <!-- 背景獎章圖示 -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon-xl" viewBox="0 0 24 24"><path fill="currentColor" d="m20.87 17.25l-2.71-4.68A6.9 6.9 0 0 0 19 9.25a7 7 0 0 0-14 0a6.9 6.9 0 0 0 .84 3.32l-2.71 4.68a1 1 0 0 0 .87 1.5h2.87l1.46 2.46a1 1 0 0 0 .18.22a1 1 0 0 0 .69.28h.14a1 1 0 0 0 .73-.49L12 17.9l1.93 3.35a1 1 0 0 0 .73.48h.14a1 1 0 0 0 .7-.28a.9.9 0 0 0 .17-.21l1.46-2.46H20a1 1 0 0 0 .87-.5a1 1 0 0 0 0-1.03M9.19 18.78l-.89-1.49a1 1 0 0 0-.85-.49H5.72l1.43-2.48a7 7 0 0 0 3.57 1.84ZM12 14.25a5 5 0 1 1 5-5a5 5 0 0 1-5 5m4.55 2.55a1 1 0 0 0-.85.49l-.89 1.49l-1.52-2.65a7.06 7.06 0 0 0 3.56-1.84l1.43 2.48Z"/></svg>
+            </div>
+
+            <div class="stats-number-block reveal">
+              <div class="year-badge">2025年度</div>
+              <div class="stats-number-group">            
+                <span class="unit">感恩已有</span>
+                <span class="big-number" id="reading-plan-count"></span>
+                <span class="unit">位弟兄姐妹讀畢新舊約全書肢體名單</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 名單部分 -->
+        <div class="reading-plan-groups">
+          <div class="reading-plan-group reveal">
+            <div class="reading-plan-flex" id="reading-plan-container-1"></div>
+          </div>
+          <div class="reading-plan-group reveal">
+            <div class="reading-plan-flex" id="reading-plan-container-2"></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="site-footer"></div>
+
+  </main>
+
+  <script>
+    // Data-driven rendering:
+    // Keep markup minimal to allow future dynamic data source
+    const names = [
+      "吳倩潔姊妹","梁麗霞姊妹","余大雄弟兄","宋玉晶姊妹",
+      "吳倩鑽姊妹","吳麗喜姊妹","張珍愛姊妹","李少芬姊妹",
+      "梁麗珠姊妹","李頌怡姊妹","方玲玲姊妹","周英偉弟兄",
+      "李紹秉弟兄","吳多加姊妹","黎翠婷姊妹","黃志君姊妹",
+      "鄧婉玲姊妹","梁易晴姊妹","曾詠皚姊妹","胡秀英姊妹",
+      "馬誦余姊妹"
+    ];
+
+  function renderNameBubbles(names){
+    const container1 = document.getElementById('reading-plan-container-1');
+    const container2 = document.getElementById('reading-plan-container-2');
+    const countEl = document.getElementById('reading-plan-count');
+
+    if (!container1 || !container2) return;
+
+    container1.innerHTML = '';
+    container2.innerHTML = '';
+
+    if (countEl) {
+      countEl.textContent = `${names.length} `;
+    }
+
+    // 自動平均分組（21 → 10 + 11）
+    let mid = Math.ceil(names.length / 2);
+    if (mid % 2 !== 0) {
+      mid -= 1; // 保證 groupA 是偶數
+    }
+    const groupA = names.slice(0, mid);
+    const groupB = names.slice(mid);
+
+    function appendBubbles(container, list){
+      list.forEach(name => {
+        const div = document.createElement('div');
+        div.className = 'name-bubble';
+        div.innerText = String(name).trim();
+
+        const delay = (Math.random() * 2).toFixed(2);
+        div.style.setProperty('--delay', `${delay}s`);
+
+        container.appendChild(div);
+      });
+    }
+
+    appendBubbles(container1, groupA);
+    appendBubbles(container2, groupB);
+
+    if (window.initReveal) window.initReveal();
+  }
+  renderNameBubbles(names);
+
+  // Count up
+  function countUp(elementId, target, duration) {
+    const el = document.getElementById(elementId);
+    let start = 0;
+    const increment = target / (duration / 16); // 每16ms更新一次
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= target) {
+        start = target;
+        clearInterval(timer);
+      }
+      el.textContent = Math.floor(start);
+    }, 16);
+  }
+
+  // 使用 IntersectionObserver
+  const targetEl = document.getElementById("reading-plan-count");
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // 第一次進場時觸發 count-up
+        countUp("reading-plan-count", names.length, 1500); 
+        // 觸發後停止 observe，避免重複
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 }); // 50% 可見時觸發
+
+  observer.observe(targetEl);
+
+  </script>
+</body>
+</html>

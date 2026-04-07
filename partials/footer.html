@@ -1,0 +1,92 @@
+<!-- Shared partial:
+     This footer is injected via include-partials.js
+     Changes affect all pages site-wide
+-->
+
+<style>
+/* =========================================================
+   Footer
+========================================================= */
+/* Design intent:
+   Footer is a quiet closing element, not a call-to-action
+   Keep contrast and size intentionally subdued
+*/
+.site-footer {
+  border-top: 1px solid rgba(0, 0, 0, 0.05); 
+  padding: 48px 0; 
+  color: var(--muted);
+  font-size: 14px;
+  background: linear-gradient(to bottom, #ffffff, #fcfdff); 
+}
+
+/* Layout choice:
+   Flex is used for simple horizontal alignment with minimal content and predictable wrapping
+*/
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+/* Logo sizing:
+   Height-constrained to preserve aspect ratio across different logo assets
+*/
+
+.footer-logo {
+  height: 32px;         
+  min-width: 32px;
+  max-width: 96px;
+  background: url("/assets/img/logo.png") center / contain no-repeat;    
+  transition: opacity 0.4s ease, transform 0.4s ease, filter 0.4s ease;
+}
+
+.footer-logo:hover {
+  transform: translateY(-2px); 
+}
+
+.footer-text {
+  margin: 0;
+  line-height: 1.6;
+  letter-spacing: 0.03em;  
+  font-weight: 300;       
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .site-footer {
+    padding: 34px 0;     
+  }
+  
+  .footer-inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .footer-logo {
+    height: 40px;         
+    min-width: 40px;
+    max-width: 120px;
+    margin-bottom: 8px;
+  }
+}
+
+</style>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <a href="index.html">
+      <div class="footer-logo" aria-hidden="true"></div>
+    </a>
+
+    <p class="footer-text">
+     &copy; <span id="footerYear"></span> 香港基督教磐石教會 The Christian Church on the Rock Hong Kong Ltd
+     <!-- © 2026 Brand. All rights reserved.  © 2026 Brand 版權所有  -->
+     <!-- Copyright © 2026 Brand. All rights reserved. 著作權所有 © 2026 Brand · 保留一切權利 -->
+      <!-- 著作權所有 © 2026 Brand · All rights reserved -->
+    </p>
+  </div>
+</footer>
+
+

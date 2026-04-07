@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<!--
+is-hero:
+Used to mark pages with full-screen hero behavior
+Affects global layout, transitions, and initial scroll logic
+Do NOT remove unless page has no hero section
+-->
+<html lang="zh-Hant"  class="is-hero">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>首頁 | 香港基督教磐石教會</title>
+
+  <!-- Blob System CSS（外部） -->
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+
+  <!-- Core styles -->
+  <link rel="stylesheet" href="assets/css/shared.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+
+  <!-- menu bar -->
+  <link rel="stylesheet" href="assets/css/menu.css">
+  <link rel="stylesheet" href="assets/css/mobile-menu.css">
+
+    
+  <!-- JS -->
+  <!-- Core scripts -->
+  <script src="assets/js/main.js"></script>
+
+  <!-- Partials loader -->
+  <script src="assets/js/include-partials.js"></script>
+
+  <!-- Widget -->
+  <script src="assets/js/widget_msgbox_scrolltop.js" defer></script>
+
+  <style>
+  /* =========================================================
+    Brand Lab – FULL CSS (Clean & Unified)
+    ========================================================= */
+
+  /* Section 專屬配色系統 */
+  .section-about {
+    --section-bg: #FFF9F7;
+    --section-accent: #FF6B4A;
+    --section-accent-hover: #FF522B; /* Hover 顏色 */
+  }
+  .section-stories {
+    --section-bg: #F9F8FF;
+    --section-accent: #6B66FF;
+    --section-accent-hover: #524CFF;
+  }
+  .section-events {
+    --section-bg: #F4FAF9;
+    --section-accent: #14B8A6;
+    --section-accent-hover: #0D9488;
+  }
+  .section-volunteers {
+    --section-bg: #FFF7F2;
+    --section-accent: #D95D00;
+    --section-accent-hover: #BF5200;
+  }
+  .section-contact {
+    --section-accent: #D95D00;
+    --section-accent-hover: #BF5200;
+  }
+  /* =========================
+    Base / Reset
+    ========================= */
+
+  section{
+    position:relative;
+    overflow:hidden;
+    /* background-color: var(--section-bg, var(--white-100)); */
+  }
+
+  /* =====================
+    HERO (保留原始邏輯)
+    ===================== */
+  .hero{ height:100vh; width:100vw; position:relative; overflow:hidden; }
+
+  /* hero最底做柔光
+    - Hero → section 1
+    - 圖片段 → 純白段
+  */
+  /* Purpose:
+   Create a soft visual handoff between hero image and first content section
+   Avoid hard edge / visual drop.
+   Do NOT increase contrast or height (breaks calm transition)
+*/
+  .hero::after{
+    content:"";
+    position:absolute; left:0; bottom:-1px;
+    width:100%; 
+    height: clamp(96px, 12vh, 160px);
+    pointer-events:none;
+    background:linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(253,226,217,0.65) 70%, rgba(253,226,217,1) 100%);
+    z-index:6;
+  }
+  .bl-hero{ position:absolute; inset:0; width:100%; height:100%; overflow:hidden; background:#000; isolation:isolate; }
+  .bl-layer{ position:absolute; inset:0; will-change:transform,opacity; opacity:0; transition:opacity 1.2s var(--ease); }
+  .bl-bg{ position:absolute; inset:0; background-size:cover; background-position:center; transform:scale(1.1); transition:transform 1.2s var(--ease); }
+  .bl-layer.is-current{ opacity:1; z-index:2; }
+  .bl-layer.is-current .bl-bg{ transform:scale(1.02); }
+  /* .bl-overlay{
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(
+        to bottom,
+        rgba(0,0,0,.18) 0%,
+        rgba(0,0,0,.08) 50%,
+        rgba(0,0,0,.32) 100%
+      ),
+      linear-gradient(
+        to right,
+        rgba(0,0,0,.38) 0%,
+        rgba(0,0,0,.12) 100%
+      );
+  } */
+
+  /* .bl-overlay{ position:absolute; inset:0; background: linear-gradient(to bottom, rgba(0,0,0,.3) 0%, rgba(0,0,0,.1) 50%, rgba(0,0,0,.6) 100%), linear-gradient(to right, rgba(0,0,0,.7) 0%, rgba(0,0,0,.2) 100%); } */
+  .bl-inner{ position:relative; height:100%; display:flex; align-items:center; padding:0 8%; z-index:5; color:var(--white-100); }
+  .bl-content{
+    opacity:0;
+    transform:translateY(30px);
+    transition: opacity .8s var(--ease), transform .8s var(--ease);
+  }
+
+  .bl-content.is-visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  /* IndexSection 1*/
+  .bl-title{ margin: 0; font-size:clamp(25px, 6.5vw, 55px); font-weight:900; line-height:1.1; text-shadow:0 10px 30px rgba(0,0,0,.3); letter-spacing: 2px; }
+  .bl-subtitle{ margin: 0; font-weight:700; font-size:clamp(18px, 3.5vw, 32px); line-height:1.2; opacity:.9; text-shadow: 0 1px 6px rgba(0,0,0,.25); letter-spacing: 1px; }
+  .bl-desc{ margin: 0; font-weight:600; font-size:clamp(16px, 3vw, 28px); line-height:1.2; opacity:.9; text-shadow: 0 1px 6px rgba(0,0,0,.25); letter-spacing: 1px; }
+  .bl-detail{ margin: 0; font-weight:500; font-size:clamp(14px, 2.5vw, 24px); line-height:1.2; opacity:.9; text-shadow: 0 1px 6px rgba(0,0,0,.25); letter-spacing: 1px; }
+  
+  .bl-title + .bl-subtitle{ margin-top: clamp(16px, 4vw, 28px); }
+  .bl-subtitle + .bl-desc{ margin-top: clamp(12px, 3vw, 20px); }
+  .bl-desc + .bl-detail{ margin-top: clamp(12px, 3vw, 20px); }
+  .bl-detail + .bl-cta{ margin-top: clamp(16px, 4vw, 28px); }
+
+  @media (max-width: 768px) {
+  .bl-title { letter-spacing: 1px; }
+  .bl-desc, .bl-detail { line-height: 1.4; }
+  }
+
+  @media (min-width: 1200px) {
+    .bl-title { margin: 40px 0 20px; }
+  }
+
+  /* index Section 2*/
+  /* @font-face {
+    font-family: 'Maobi';
+    src: url('../assets/fonts/bcd.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  } */
+
+  .bl-header {
+    display: flex;
+    align-items: center;
+    gap: 26px; 
+    padding-top: 70px;              
+  }
+
+  .bl-subtitle-2{  color: #6B3B1F; font-family: 'Maobi', 'KaiTi', serif; display: flex; writing-mode: vertical-rl; text-orientation: upright; margin: 0; font-weight:700; font-size:clamp(20px, 6vw, 50px); line-height:1.2; opacity:.9; text-shadow: 0 1px 6px rgba(0,0,0,.25); letter-spacing: 5px;}
+  .bl-title-2{  font-family:  'Maobi', 'KaiTi', serif; display: flex; flex-direction: column; gap: 50px; writing-mode: vertical-rl; text-orientation: upright; margin: 0; font-size:clamp(35px, 9vw, 80px); font-weight:900; line-height:1.1; text-shadow:0 10px 30px rgba(0,0,0,.4); letter-spacing: 11px; }
+  .titleColor-1{color: #f7cf31; }
+  .titleColor-2{color: #E06D2A; }
+  .titleColor-3{color: #E22b5C; }
+
+  /* =========================
+    Hero CTA (bl-cta)
+    ========================= */
+  .bl-cta{
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 14px 28px;
+    margin-top: 10px;
+
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+
+    color: var(--white-100);
+    text-decoration: none;
+
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.25);
+
+    background: linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.18),
+      rgba(255,255,255,0.06)
+    );
+
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+    box-shadow:
+      0 8px 24px rgba(0,0,0,0.35),
+      inset 0 0 0 1px rgba(255,255,255,0.15);
+
+    transition:
+      transform .3s var(--ease),
+      box-shadow .3s var(--ease),
+      background .3s var(--ease),
+      border-color .3s var(--ease);
+  }
+
+  /* CTA 文字 span */
+  .bl-cta span{
+    display: inline-block;
+  }
+
+  /* Hover */
+  .bl-cta:hover{
+    transform: translateY(-2px);
+
+    background: linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.32),
+      rgba(255,255,255,0.14)
+    );
+
+    border-color: var(--hero-accent, #ff6b4a);
+
+    box-shadow:
+      0 14px 36px rgba(0,0,0,0.45),
+      0 0 0 4px color-mix(
+        in srgb,
+        var(--hero-accent, #ff6b4a) 25%,
+        transparent
+      );
+  }
+
+  /* Active（點擊） */
+  .bl-cta:active{
+    transform: translateY(0);
+  }
+
+  /* Mobile 微調 */
+  @media (max-width: 560px){
+    .bl-cta{
+      padding: 12px 24px;
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+    }
+  }
+
+  /* .bl-dots{ position:absolute; left:50%; bottom:34px; transform:translateX(-50%); display:flex; gap:15px; z-index:10; }
+  .bl-dot{ width:40px; height:4px; border-radius:2px; background:rgba(255,255,255,.3); border:none; cursor:pointer; transition:.3s; }
+  .bl-dot[aria-current="true"]{ background:var(--hero-accent, #ff6b4a); width:60px; } */
+
+  /* 幻燈片控制圓點 */
+  .bl-dots { 
+    position: absolute; right: 5%; top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 20px; z-index: 20; 
+  }
+  .bl-dot { 
+    width: 12px; height: 12px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.5);
+    background: transparent; cursor: pointer; transition: 0.3s; padding: 0;
+  }
+  .bl-dot[aria-current="true"] { background: var(--hero-accent, #ff6b4a); border-color: var(--hero-accent, #ff6b4a); transform: scale(1.3); }
+
+  /* Scroll down */
+  .scroll-down{
+    position:absolute;
+    bottom:50px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:10;
+    color:var(--white-100);
+    text-decoration:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:0px;
+    font-size:.9rem;
+    font-weight: 500;
+    text-shadow: 0 1px 6px rgba(0,0,0,.25);
+    animation:bounce 2s infinite;
+  }
+
+  @keyframes bounce{
+    0%,20%,50%,80%,100%{ transform:translate(-50%,0); }
+    40%{ transform:translate(-50%,-6px); }
+    60%{ transform:translate(-50%,-3px); }
+  }
+
+  #heroContent[hidden]{ display:none !important; }
+
+
+  /* =========================
+    Tabs Navigation
+    ========================= */
+    /* --- 響應式佈局設計 --- */
+    .overlap-layout {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        padding-top: 10px;
+    }
+    @media (min-width: 768px){
+      .overlap-layout.is-reverse{
+        flex-direction: row-reverse;
+      }
+      .overlap-layout.is-reverse .accordion-wrapper{
+        margin-left: 0;
+        margin-right: -6%;
+      }
+    }
+    @media (min-width: 1024px){
+      .overlap-layout.is-reverse .accordion-wrapper{
+        margin-right: -8%;
+      }
+    }
+    /* 圖片 Box 基礎 */
+    .side-image-box {
+        width: 100%;
+        border-radius: 1.5rem;
+        background-size: cover; /* 改為 cover 以確保圖片充滿容器，視覺感更強 */
+        background-repeat: no-repeat;
+        background-position: center;
+        transform: translateY(-14px);
+
+        /* 四層陰影（接觸 → 主體 → 空氣 → 遠距） */
+        box-shadow:
+          0 2px 6px rgba(0,0,0,0.10),    /* 接觸陰影：防止漂浮假感 */
+          0 12px 24px rgba(0,0,0,0.12),  /* 主體高度 */
+          0 32px 64px rgba(0,0,0,0.10),  /* 空氣層 */
+          0 60px 120px rgba(0,0,0,0.08); /* 距離感 */
+
+        transition:
+          transform 0.6s ease,
+          box-shadow 0.6s ease;
+    }
+    .side-image-box:hover {
+        transform: translateY(-10px) scale(1.02); /* 輕微放大增加互動感 */
+        box-shadow:
+            0 10px 15px -3px rgba(0, 0, 0, 0.05),
+            0 40px 60px -15px rgba(0, 0, 0, 0.15);
+    }
+    /* Accordion 基礎 */
+    .accordion-container {
+        position: relative;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(4px);
+        border-radius: 1.25rem;
+        padding: 0.5rem;
+        box-shadow: 0 6px 18px rgba(15,23,42,0.06);
+    }
+    
+    .accordion-container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+    pointer-events: none;
+    }
+
+
+    /* Accordion 內容細節 */
+    .accordion-item { border-bottom: 1px solid rgba(22,22,22,.03); }
+    .accordion-item:last-child { border-bottom: none; }
+    /* 內容展開 */
+    .content-inner {
+        padding: 1rem 1.5rem; color: var(--muted);
+        font-size: 1.05rem; line-height: 1.7;
+        transition: all 0.4s ease;
+        text-align: justify;
+    }
+
+
+    /* 顯示控制 */
+    .accordion-footer-link { padding: 0.5rem 1.5rem 1.25rem; text-align: right; }
+
+
+    /* --- 1. Mobile 版 (< 768px) --- */
+    @media (max-width: 767px) {
+        .side-image-box {
+            height: 280px;
+            margin-bottom: -2rem; /* 增加重疊感 */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            z-index: 1;
+        }
+        .accordion-container{
+            box-shadow:
+            0 6px 14px rgba(0,0,0,0.06),
+            0 2px 4px rgba(0,0,0,0.03);
+        }
+        .accordion-wrapper {
+            z-index: 2;
+            padding: 0 0.5rem;
+        }
+        .section-header { text-align: center; }
+        .content-inner {
+            padding: 0.8rem; 
+            font-size: 1rem; 
+        }
+    }
+
+    /* --- 2. Tablet 版 (iPad Mini, iPad Air: 768px ~ 1023px) --- */
+    @media (min-width: 768px) and (max-width: 1023px) {
+        .overlap-layout {
+            flex-direction: row;
+            align-items: center;
+        }
+        /* 圖片 */
+        .side-image-wrapper {
+            width: 62%;
+            z-index: 1;
+        }
+        /* 文字 並重疊 */
+        .accordion-wrapper {
+            width: 48%;
+            margin-left: -6%;
+            z-index: 2;
+        }
+        .side-image-box { height: 420px; }
+        .section-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-end;
+            text-align: left;
+        }
+        .content-inner {
+        padding: 0.9rem; 
+        font-size: 1.05rem; 
+    }
+    }
+
+    /* --- 3. Desktop 版 (iPad Pro, Laptop, PC: >= 1024px) --- */
+    @media (min-width: 1024px) {
+        .overlap-layout { 
+            flex-direction: row; 
+            align-items: center; /* 垂直置中重疊 */
+        }
+        /* 圖片做主角：佔 2/3 */
+        .side-image-wrapper { 
+            width: 70%; 
+            z-index: 1; 
+        }
+        /* 文字做配角：佔 1/3 並深重疊 */
+        .accordion-wrapper { 
+            width: 42%; 
+            margin-left: -8%; 
+            z-index: 2; 
+        }
+        .side-image-box { 
+            height: 520px; 
+            border-radius: 2rem; 
+        }
+        .section-header { text-align: left; padding-left: 1rem; }
+    }
+
+  /* =========================
+    Buttons (按鈕專屬顏色與 Hover)
+    ========================= */
+    .contactAlign{
+      text-align:center;
+    }
+    .contactNote{
+      color: var(--section-accent);
+    }  
+    
+    .btn-cta{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:16px 36px;
+    background:var(--text);  /*--section-accent*/
+    color:var(--white-100);
+    text-decoration:none;
+    border-radius:var(--radius-xl);
+    font-weight:700;
+    transition:.3s var(--ease);
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+    transform: translateY(0);
+  }
+
+  .btn-cta:hover{
+    background:var(--section-accent-hover);
+    transform:translateY(-2px);
+    box-shadow: 0 15px 30px -5px rgba(0,0,0,0.2);
+  }
+
+  /* =========================
+    Responsive
+    ========================= */
+
+
+    @media (max-width:850px){
+    h2{ font-size:2rem; }
+  }
+  @media (max-width:560px){
+    section{
+      padding:64px 0;
+    }
+
+    h2{
+      margin-bottom:28px;
+    }
+  }
+
+
+  </style>
+</head>
+
+<body class="theme-home" data-barba="wrapper">
+  <div id="global-watermark" class="watermark-overlay"></div>
+  <div id="site-menu"></div>
+
+  <main data-barba="container" data-barba-namespace="index">
+
+    <!-- HERO SECTION -->
+    <header class="hero" id="home">
+      <section class="bl-hero" id="hero">
+        <div class="bl-layer is-current" id="layerA"><div class="bl-bg" id="bgA"></div><div class="bl-overlay"></div></div>
+        <div class="bl-layer" id="layerB"><div class="bl-bg" id="bgB"></div><div class="bl-overlay"></div></div>
+        <div class="bl-inner">
+          <!-- 顯示容器：保持空，JS 會注入內容 -->
+          <div class="bl-content" id="heroContent"></div>
+        </div>
+
+        <!-- 每張 slide 的文字內容 -->
+        <div id="heroSlides" hidden>
+          <!-- Slide 1：有標題＋兩段描述＋CTA -->
+          <article class="bl-slide" data-image="../assets/img/indexHero_2.png">
+            <h1 class="bl-title">我們歡迎你!</h1>
+            <p class="bl-subtitle">2026年4月5日主日崇拜信息</p>
+          
+              <p class="bl-desc">講題：初熟的果子</p>
+              <p class="bl-desc">經文：哥林多前書15章20-22節，雅各書1章17-18節</p>
+          
+              <p class="bl-detail">參考經文：</p>
+              <p class="bl-detail">帖撒羅尼加前書4章13-18節，羅馬書12章1-2節</p>
+  
+            <!-- <a class="bl-cta" href="services-events.html"><span>了解更多</span></a> -->
+          </article>
+
+          <!-- Slide 2：只有標題＋一段描述 -->
+          <article class="bl-slide" data-image="../assets/img/indexHero_3.jpg">
+            <div class="bl-header">
+              <p class="bl-subtitle-2">磐石三寶</p>
+              <div class="bl-title-2">
+                <span class="titleColor-3">凡事謝恩</span>
+                <span class="titleColor-2">不住禱告</span>
+                <span class="titleColor-1">常常喜樂</span>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <a href="#intro" class="scroll-down">
+          <span>了解更多</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m16 13l-4 4l-4-4m8-6l-4 4l-4-4"/></svg>
+        </a>
+
+        <div class="bl-controls"><div class="bl-dots" id="dots"></div></div>
+      </section>
+    </header>
+
+    
+    <!-- INTRO SECTION -->
+    <section class="intro-section" id="intro">
+      <div class="container">
+
+        <!-- Header -->
+        <p class="intro-header">
+          我們是一間沒有宗派背景的獨立基督教會。
+        </p>
+
+        <!-- Content -->
+        <div class="intro-list">
+          <div class="intro-item">
+            <p>
+              上帝賜給我們異象，廣傳福音，領人歸主，建立門徒，建造堅實的教會。
+            </p>
+          </div>
+          <div class="intro-item">
+            <p>
+              教會取名為磐石教會，是建立在磐石上的意思，磐石就是主的道，聖經的話語。
+            </p>
+          </div>
+          <div class="intro-item">
+            <p>
+              本堂著力於傳福音，建立生命，活出見證，作真門徒，不做假信徒。
+            </p>
+          </div>
+          <div class="intro-item">
+            <p>
+              本教會是正統基督教會，堅守聖經真理，並與大公教會共同承認「使徒信經」所認信的純正基督教信仰立場。
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section class="section section-about section-visual sticky" id="about">
+      <div class="container">
+        <div class="section-title theme-peach reveal">
+          <!-- 裝飾泡泡 -->
+          <div class="particle p1"></div>
+          <div class="particle p2"></div>
+          <div class="particle p3"></div>
+          <div class="particle p4"></div>
+
+          <div class="text-content">
+            <span class="text-main">關於</span>
+            <span class="text-sub">我們</span>
+            <span class="diamond"></span>
+          </div>
+        </div>
+
+        <div class="overlap-layout">
+            <div class="side-image-wrapper">
+                <div class="side-image-box reveal" style="background-image: url('../assets/img/indexSection_about-us.jpg');"></div>
+            </div>
+            <div class="accordion-wrapper">
+                <div class="accordion-container reveal">
+                    <div class="accordion-item">
+                        <div class="content-inner">
+                            <p>本頁包含「成立經過」、「使命與異象」、「本會信仰」及「同工執事」四個部分。</p>
+                            <p>教會建立於2000年，逐步蒙神帶領建立堂址，以聖經為根基，活出敬拜與愛，傳揚福音，扎根於神的道。</p>
+                            <p>本會雖是獨立教會，但其信仰以《使徒信經》為根基，由同工與執事共同服事，裝備信徒、見證基督。</p> 
+                        </div>
+                    </div>
+                    <div class="accordion-footer-link">
+                        <a href="about-us.html" class="readMore">了解更多 <span class="arrow">→</span></a>
+                    </div>                        
+                </div>
+            </div>
+        </div>  
+      </div>
+    </section>
+
+    <!-- EVENTS SECTION -->
+    <section class="section section-events section-push">
+      <div class="container">
+        <div class="section-title theme-lavender reveal">
+          <!-- 裝飾泡泡 -->
+          <div class="particle p1"></div>
+          <div class="particle p2"></div>
+          <div class="particle p3"></div>
+          <div class="particle p4"></div>
+
+          <div class="text-content">
+            <span class="text-main">聚會·</span>
+            <span class="text-sub">活動</span>
+            <span class="diamond"></span>
+          </div>
+        </div>
+
+        <div class="overlap-layout is-reverse">
+            <div class="side-image-wrapper">
+                <div class="side-image-box reveal" style="background-image: url('../assets/img/indexSection_services-events.jpg');"></div>
+            </div>
+            <div class="accordion-wrapper">
+                <div class="accordion-container reveal">
+                    <div class="accordion-item">
+                        <div class="content-inner">
+                            <p>本頁包含「定期聚會」及「其他聚會/活動」二個部分。</p>
+                            <p>透過定期的聚會，如主日崇拜、祈禱會、小組聚會等，讓弟兄姊妹在不同時段同心敬拜和學習彼此代禱。</p>
+                            <p>其他聚會和活動則涵蓋全年特別安排，如聖誕崇拜、中秋愛筵、受難日默想聚會等，增進肢體間的交流與彼此勉勵，並在信仰生活中共同成長。</p>
+                        </div>
+                    </div>
+                    <div class="accordion-footer-link">
+                        <a href="services-events.html" class="readMore">了解更多 <span class="arrow">→</span></a>
+                    </div>                        
+                </div>
+            </div>
+        </div>  
+      </div>
+    </section>
+
+    <!-- GOSPEL SECTION -->
+    <section class="section section-stories section-visual sticky">
+      <div class="container">
+        <div class="section-title theme-mint reveal">
+          <!-- 裝飾泡泡 -->
+          <div class="particle p1"></div>
+          <div class="particle p2"></div>
+          <div class="particle p3"></div>
+          <div class="particle p4"></div>
+
+          <div class="text-content">
+            <span class="text-main">福音與</span>
+            <span class="text-sub">見證</span>
+            <span class="diamond"></span>
+          </div>
+        </div>
+
+        <div class="overlap-layout">
+            <div class="side-image-wrapper">
+                <div class="side-image-box reveal" style="background-image: url('../assets/img/indexSection_gospel-testimonies.jpg');"></div>
+            </div>
+            <div class="accordion-wrapper">
+                <div class="accordion-container reveal">
+                    <div class="accordion-item">
+                        <div class="content-inner">
+                            <p>本頁包含「認識福音」及「見證分享」二個部分。</p>
+                            <p>透過不同的文章分享，由淺入深地介紹基督信仰的核心，更全面理解信仰的意義與生命的更新。</p>
+                            <p>另外，透過多篇見證呈現弟兄姊妹在不同境遇中的經歷，包括悔改更新、疾病中的醫治、工作與生活的帶領等，展現神的憐憫、信實與奇妙安排。</p>
+                        </div>
+                    </div>
+                    <div class="accordion-footer-link">
+                        <a href="gospel-testimonies.html" class="readMore">了解更多 <span class="arrow">→</span></a>
+                    </div>                        
+                </div>
+            </div>
+        </div>  
+      </div>
+    </section>
+
+    <!-- READING PLAN SECTION -->
+    <section class="section section-volunteers section-push">
+      <div class="container">
+        <div class="section-title theme-peach reveal">
+          <!-- 裝飾泡泡 -->
+          <div class="particle p1"></div>
+          <div class="particle p2"></div>
+          <div class="particle p3"></div>
+          <div class="particle p4"></div>
+
+          <div class="text-content">
+            <span class="text-main">讀經</span>
+            <span class="text-sub">計劃</span>
+            <span class="diamond"></span>
+          </div>
+        </div>
+
+        <div class="overlap-layout is-reverse">
+            <div class="side-image-wrapper">
+                <div class="side-image-box reveal" style="background-image: url('../assets/img/indexSection_reading-plan.jpg');"></div>
+            </div>
+            <div class="accordion-wrapper">
+                <div class="accordion-container reveal">
+                    <div class="accordion-item">
+                        <div class="content-inner">
+                            <p>本頁包含「參加辦法」、「參加規則」及「年度公布名單」三個部分。</p>
+                            <p>本堂鼓勵弟兄姊妹立定心志，透過不同讀經計劃培養每日閱讀聖經的習慣。規則中針對不同信仰年資的肢體設立讀經目標，並鼓勵所有弟兄姊妹每日按日期誦讀箴言一章。</p>
+                        </div>
+                    </div>
+                    <div class="accordion-footer-link">
+                        <a href="reading-plan.html" class="readMore">了解更多 <span class="arrow">→</span></a>
+                    </div>                        
+                </div>
+            </div>
+        </div>  
+      </div>
+    </section>
+
+    
+    <!-- =========================
+        CONTACT SECTION
+        ========================= -->
+    <section class="section section-contact">
+
+      <div class="container">
+        <div class="contactAlign reveal">
+          <h2 class="contactNote">想知道如何奉獻或與我們聯繫嗎？</h2>
+
+          <!-- tab 內容區（只有文字） -->
+          <div class="tab-content">
+            <div id="contact-1" class="tab-pane">
+              <div class="tab-text">
+                <p>
+                  願神的愛和祝福臨到您和您的家庭，天天充滿平安喜樂!
+                </p>
+                <a href="donate-contact.html" class="btn-cta">
+                  前往頁面
+                </a>
+              </div>
+            </div>
+          </div> 
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+    <!-- Footer -->
+  <div id="site-footer"></div>
+  
+<script>
+(() => {
+  "use strict";
+
+  /* =========================
+    Hero Slideshow (HTML-driven)
+    ========================= */
+
+  // 1) 從 HTML 讀取 slides（每張 slide 自帶 data-image + 內容 HTML）
+  const slideEls = Array.from(document.querySelectorAll('#heroSlides .bl-slide'));
+  const SLIDES = slideEls.map(el => ({
+    image: el.dataset.image || "",
+    html: (el.innerHTML || "").trim()
+  }));
+
+  const hero = document.getElementById("hero");
+  const bgA = document.getElementById("bgA");
+  const bgB = document.getElementById("bgB");
+  const layerA = document.getElementById("layerA");
+  const layerB = document.getElementById("layerB");
+  const heroContent = document.getElementById("heroContent");
+  const dots = document.getElementById("dots");
+
+  
+  // Dual-layer swap (A/B) is intentional:
+  // - Prevents reflow during image transitions
+  // - Keeps opacity-based crossfade stable
+  // Do NOT refactor into single layer unless animation system is redesigned
+  let index = 0;
+  let isA = true;
+  
+
+  function applySlide(i){
+    const s = SLIDES[i];
+
+    // 先淡出（交畀 CSS）
+    heroContent.classList.remove("is-visible");
+
+    setTimeout(() => {
+      heroContent.innerHTML = s.html;
+
+      const empty = !s.html;
+      heroContent.toggleAttribute("hidden", empty);
+
+      // 淡入：只要有內容先顯示
+      if (!empty) {
+        requestAnimationFrame(() => {
+          heroContent.classList.add("is-visible");
+        });
+      }
+    }, 250);
+  }
+
+  function buildDots(){
+    dots.innerHTML = "";
+    SLIDES.forEach((_, i) => {
+      const b = document.createElement("button");
+      b.className = "bl-dot";
+      b.type = "button";
+      b.addEventListener("click", () => go(i, { user: true }));
+      dots.appendChild(b);
+    });
+  }
+
+  function setDots(){
+    [...dots.children].forEach((d, i) => d.setAttribute("aria-current", i === index));
+  }
+
+  function go(i, opts = { user:false }){
+    if(i === index) return;
+
+    const outgoing = isA ? layerA : layerB;
+    const incoming = isA ? layerB : layerA;
+    const incomingBg = isA ? bgB : bgA;
+
+    incomingBg.style.backgroundImage = `url(${SLIDES[i].image})`;
+    outgoing.classList.remove("is-current");
+    incoming.classList.add("is-current");
+
+    index = i;
+    applySlide(index);
+    setDots();
+    isA = !isA;
+    
+    // UX rule:
+    // Only reset autoplay timer on direct user interaction
+    // Auto transitions should NOT extend their own lifetime
+    if (opts.user) startAuto();
+  }
+
+  // init（容錯：至少要有 1 張）
+  if (SLIDES.length > 0) {
+    bgA.style.backgroundImage = `url(${SLIDES[0].image})`;
+    bgB.style.backgroundImage = `url(${SLIDES[(SLIDES.length > 1 ? 1 : 0)].image})`;
+    buildDots();
+    applySlide(0);
+    setDots();
+  }
+
+  // auto play with reset
+  let timer = null;
+  function startAuto(){
+    if (timer) clearInterval(timer);
+    if (SLIDES.length <= 1) return;
+    timer = setInterval(() => {
+      go((index + 1) % SLIDES.length, { user:false });
+    }, 9500);
+  }
+
+  // 只在「用戶有互動」後才啟用 hover pause
+  let allowHoverPause = false;
+
+  // 用戶第一次移動滑鼠 / 觸控一下，就視為「有互動」
+  window.addEventListener('mousemove', () => { allowHoverPause = true; }, { once: true });
+  window.addEventListener('touchstart', () => { allowHoverPause = true; }, { once: true });
+
+  hero.addEventListener('mouseenter', () => {
+    if (!allowHoverPause) return;   // 防止一載入就被 mouseenter 清 timer
+    if (timer) clearInterval(timer);
+  });
+
+  hero.addEventListener('mouseleave', () => startAuto());
+
+  startAuto();
+
+
+})();
+</script>
+</body>
+</html>

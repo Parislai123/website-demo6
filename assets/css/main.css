@@ -1,0 +1,128 @@
+/* Role note:
+   main.css contains legacy and base layout rules
+   New page-specific styles should NOT be added here
+*/
+
+/* =================================================
+   MAIN STYLES — Page & Section only
+================================================= */
+/* Global base:
+   Apply background and typography to html/body/main to avoid page-level overrides causing visual seams
+*/
+html,
+body,
+main {
+  background-color: var(--ui-bg);
+  color: var(--text-secondary);
+  overflow-x: hidden;
+  font-size: var(--fs-body);
+}
+
+/* ===== Loading ===== */
+/* Legacy support:
+   Kept for compatibility with initial loading transitions
+   Do not remove unless loading logic is fully retired
+*/
+.loading-screen {
+  z-index: 999;
+  background-color: #1E1E21;
+  width: 100%;
+  height: 0;
+}
+
+.load-container {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 999;
+  pointer-events: none;
+}
+
+/* ===== Hero ===== */
+/* Intentional:
+   Use `contain` to avoid image cropping on large screens
+*/
+#hero-section {
+  width: 100%;
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+/* ===== Intro ===== */
+/* Rhythm control:
+   Fixed viewport height to create strong opening cadence
+*/
+#intro {
+  height: 80vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.big-title {
+  font-family: 'bernier', serif;
+  font-size: var(--fs-1);
+  line-height: var(--lh-tight);
+}
+
+.small-title {
+  font-size: var(--fs-small);
+  color: var(--brand);
+}
+
+/* ===== Sections ===== */
+.container-fluid {
+  padding: 0 8%;
+}
+
+/* Reading flow:
+   Asymmetric padding creates directional emphasis
+*/
+.text-column {
+  padding-left: 7%;
+  padding-right: 25%;
+}
+
+.number {
+  font-family: 'bernier';
+  font-size: 3em;
+  color: var(--brand);
+}
+
+/* ===== Images ===== */
+.services-img img {
+  width: 100%;
+  display: block;
+  border-radius: 12px;
+}
+
+/* ===== Buttons ===== */
+.btn-ui-scope button {
+  background: var(--action-primary);
+  color: var(--action-primary-text);
+}
+
+#legal-notice {
+  color: var(--text-muted);
+  font-size: var(--fs-caption);
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 767px) {
+  #intro {
+    height: auto;
+    padding: 60px 20px;
+  }
+
+  .big-title {
+    font-size: 2.8em;
+  }
+
+  .text-column {
+    padding: 0 8%;
+  }
+}

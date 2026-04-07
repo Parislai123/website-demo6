@@ -1,0 +1,409 @@
+/* Role note:
+   mobile-menu.css defines the full-screen mobile navigation system
+   Behavior, motion, and scroll locking are intentionally CSS-driven
+*/
+
+/* =================================================
+   MOBILE MENU
+================================================= */
+
+:root {
+  --header-h: 72px;
+  --menu-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==============================
+   High Zoom / Reading Mode
+   ============================== */
+
+/* 一般情況：高 zoom → 隱藏 hamburger */
+/* Reading-first UX:
+   Hide hamburger in high-zoom / reading mode
+   to reduce interface distraction.
+*/
+html.ui-reading-mode .hamburger-icon{
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 但如果 menu 已經打開，要保留 hamburger 俾人關 */
+html.ui-reading-mode #openmenu:checked + .hamburger-icon{
+  opacity: 1;
+  pointer-events: auto;
+}
+html.menu-open .fab-wrap {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ==============================
+   Checkbox Toggle（狀態來源）
+============================== */
+.hamburger-checkbox{
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+/* ==============================
+   Hamburger Icon（label）
+============================== */
+/* === 1) 把原本 menu-toggle 的外觀套去 hamburger-icon（label）=== */
+.hamburger-icon{
+  position: fixed;
+  top: calc(22px + 2px);
+  right: calc(22px + env(safe-area-inset-right, 0px));
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  border: none;
+  padding: 2px;
+
+  background: rgba(255, 107, 74, 0.92);
+  color: white;
+
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+
+  z-index: 10001;
+  transition: transform 0.35s var(--menu-ease, cubic-bezier(0.16, 1, 0.3, 1)),
+              background 0.25s ease,
+              box-shadow .25s ease;
+  box-shadow: 0 4px 12px rgba(255, 107, 74, 0.28);
+
+  overflow: hidden;
+  line-height: 0;
+}
+
+.hamburger-icon:active{ transform: scale(0.92); }
+
+/* === 2) SVG icon（☰ / ✕）疊住 === */
+.hamburger-icon .icon-open,
+.hamburger-icon .icon-close{
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  transition: opacity .22s ease, transform .22s var(--menu-ease, cubic-bezier(0.16, 1, 0.3, 1));
+  transform-origin: center;
+  pointer-events: none;
+}
+
+/* 預設顯示 ☰ */
+.hamburger-icon .icon-open{ 
+  opacity: 1; transform: rotate(0deg) scale(1);
+  width: 20px;
+  height: 20px;
+  background-color: currentColor; /* 顏色由 CSS 控制 */
+  -webkit-mask: url("/assets/icons/hamburger-open.svg") center/contain no-repeat;
+  mask: url("/assets/icons/hamburger-open.svg") center/contain no-repeat;
+
+}
+.hamburger-icon .icon-close{ 
+  opacity: 0; transform: rotate(-90deg) scale(0.9); 
+  width: 20px;
+  height: 20px;
+  background-color: currentColor;
+  -webkit-mask: url("/assets/icons/hamburger-close.svg") center/contain no-repeat;
+  mask: url("/assets/icons/hamburger-close.svg") center/contain no-repeat;
+
+}
+
+/* === 3) 用 checkbox 狀態切換（☰ → ✕）=== */
+#openmenu:checked + .hamburger-icon .icon-open{
+  opacity: 0;
+  transform: rotate(90deg) scale(0.9);
+}
+#openmenu:checked + .hamburger-icon .icon-close{
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+/* === 4) 「☰ → ✕ 時 rotate」：旋轉整粒按鈕 === */
+#openmenu:checked + .hamburger-icon{
+  transform: rotate(90deg) scale(1.03);
+  will-change: transform;
+}
+
+
+/* ==============================
+   Menu Overlay（Soft Circle）
+============================== */
+.menu-pane {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  background:
+    radial-gradient(circle at 10% 10%, var(--color-peach), transparent 50%),
+    radial-gradient(circle at 90% 20%, var(--color-mint), transparent 50%),
+    radial-gradient(circle at 50% 90%, var(--color-lavender), transparent 50%),
+    var(--white-100);
+
+  pointer-events: none;
+  opacity: 0;
+  clip-path: circle(65% at 90% 8%); /* Motion origin: Clip-path expansion originates from hamburger position */
+  transition:
+    clip-path .42s cubic-bezier(.22,1,.36,1),
+    opacity .22s ease;
+  will-change: clip-path;
+}
+
+.menu-pane.is-open {
+  opacity: 1;
+  clip-path: circle(140% at 90% 8%);
+  pointer-events: auto;
+}
+
+/* 水印 */
+.menu-pane::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("/assets/img/logo.svg")
+    center 90% / 90% auto no-repeat;
+  opacity: 0.02;
+  filter: grayscale(100%);
+
+  pointer-events: none; /* Interaction safety: Disable pointer events when menu is closed to allow underlying page interaction */
+}
+
+@media (min-width: 768px) and (max-width: 1020px){
+  .menu-pane li{
+    padding-top: 20px;
+  }
+}
+/* ==============================
+   Drawer Content
+   safe-area + 不預設 scroll
+============================== */
+.menu-drawer {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  /* 增加 padding-top 確保不會被按鈕擋住，增加 padding-bottom 確保捲動到底 */
+  padding: 100px 24px calc(60px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+
+/* ==============================
+   Menu List
+============================== */
+.menu-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* 基礎狀態：隱藏 */
+.menu-links li {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .5s var(--menu-ease), transform .5s var(--menu-ease);
+}
+
+/* Stagger 延遲順序 */
+.menu-pane.is-open li:nth-child(1) { transition-delay: .05s; }
+.menu-pane.is-open li:nth-child(2) { transition-delay: .10s; }
+.menu-pane.is-open li:nth-child(3) { transition-delay: .15s; }
+.menu-pane.is-open li:nth-child(4) { transition-delay: .20s; }
+.menu-pane.is-open li:nth-child(5) { transition-delay: .25s; }
+.menu-pane.is-open li:nth-child(6) { transition-delay: .30s; }
+.menu-pane.is-open li:nth-child(7) { transition-delay: .35s; }
+.menu-pane.is-open li:nth-child(8) { transition-delay: .40s; }
+
+/* 萬一項目超過 8 個，給一個預設顯示，防止消失 (注意：這裡不要加 transition-delay，讓 nth-child 去加) */
+.menu-pane.is-open .menu-links li {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* ==============================
+   Menu Item（viewport 動態高度）
+============================== */
+.menu-links li a {
+  position: relative; 
+  display: flex;
+  align-items: center;
+  min-height: 64px; /* 稍微增加高度確保 SVG 不擁擠 */
+  padding: 12px 20px;
+  border-radius: 20px;
+  text-decoration: none;
+  background: rgba(255,255,255,.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,.6);
+  overflow: hidden; 
+}
+
+/* 微染色（保持 premium） */
+/* .menu-links li:nth-child(3n+1) a {
+  background: linear-gradient(
+    135deg,
+    rgba(253,226,217,.45),
+    rgba(255,255,255,.65)
+  );
+}
+.menu-links li:nth-child(3n+2) a {
+  background: linear-gradient(
+    135deg,
+    rgba(217,233,232,.45),
+    rgba(255,255,255,.65)
+  );
+}
+.menu-links li:nth-child(3n+3) a {
+  background: linear-gradient(
+    135deg,
+    rgba(229,225,244,.45),
+    rgba(255,255,255,.65)
+  );
+} */
+
+/* ==============================
+   結構細節（txt / name / desc / arrow）
+============================== */
+.menu-links li a .txt {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-right: 40px; /* 預留空間給絕對定位的箭頭 */
+}
+
+.menu-links li a .name {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: .3px;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+.menu-links li a .desc {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: .6px;
+  opacity: .8;
+}
+
+.arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+/* 箭頭容器：絕對定位，防止干擾文字排版 */
+/* Touch behavior:
+   Arrow is non-interactive to keep tap target on the full link
+*/
+.menu-links li a .arrow {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none; /* 讓點擊穿透到 a 標籤 */
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  background: url("/assets/icons/arrow-right.svg") center/18px 18px no-repeat;
+  opacity: 0.55;
+}
+
+.menu-links li a:active .arrow {
+  transform: translate(3px, -50%); /* 點擊時輕微右移 */
+}
+
+/* ==============================
+   Logo 區域
+============================== */
+.menu-logo-container {
+  margin-top: auto;
+  padding: 28px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all .6s var(--menu-ease) .35s; /* Visual closure: Logo appears last to provide a calm end to the menu flow */
+}
+
+.menu-pane.is-open .menu-logo-container {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.logoFull{
+  /* height: clamp(40px, 7vw, 56px);
+  width: auto; */
+  width: min(220px, 70vw); /* 最大 220px，否則佔螢幕 70% */
+  height: 100px;
+
+  aspect-ratio: auto;      
+  background: url("/assets/img/logoFull.png") center / contain no-repeat;
+  display: block;
+  margin: 0 auto;
+  /* box-shadow: 0 8px 20px rgba(0,0,0,.05); */
+}
+
+
+/* ==============================
+   超細 viewport fallback
+============================== */
+@media (max-height: 640px){
+  .menu-drawer{
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .menu-logo-container{
+    padding: 16px 0;
+  }
+
+  .logoFull{
+    width: min(220px, 70vw);
+    height: 44px;
+  }
+}
+
+/* ==============================
+   Lock page scroll when menu open
+============================== */
+/* iOS scroll lock:
+   Apply lock on both html and body to prevent background scroll
+*/
+html.menu-open {
+  overflow: hidden;
+  height: 100%;
+}
+/* iOS / Mobile 專用：真正鎖住頁面 */
+body.menu-open {
+  position: fixed;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  right: 0;
+}
+
+/* ==============================
+   Desktop 隱藏
+============================== */
+
+/* 1. 確保 Mobile 專用的 UI 在桌面隱藏 */
+@media screen and (min-width: 1021px) {
+  .mobile-toggle-wrapper {
+    display: none !important;
+  }
+}

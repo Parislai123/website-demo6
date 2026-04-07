@@ -1,0 +1,1413 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>奉獻/聯絡 | 香港基督教磐石教會</title>
+
+
+  <!-- 你只需把 QR 圖放到 /assets/fps-qr.png 或改成你的實際路徑 -->
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+
+  <!-- Core styles -->
+  <link rel="stylesheet" href="../assets/css/shared.css">
+  <link rel="stylesheet" href="../assets/css/main.css">
+
+  <!-- menu bar -->
+  <link rel="stylesheet" href="../assets/css/menu.css">
+  <link rel="stylesheet" href="../assets/css/mobile-menu.css">
+
+    
+  <!-- JS -->
+  <!-- Core scripts -->
+  <script src="../assets/js/main.js"></script>
+
+  <!-- Partials loader -->
+  <script src="../assets/js/include-partials.js"></script>
+
+  <!-- Widget -->
+  <script src="../assets/js/widget_msgbox_scrolltop.js" defer></script>
+
+
+  <style>
+    :root {
+
+      --shadow-soft: 0 10px 40px rgba(0,0,0,0.04);
+      --shadow-hover: 0 20px 40px rgba(0,0,0,0.06);
+
+
+      --info-blue: #2D9CDB;
+      --info-blue-bg: #EBF5FB;
+
+      --indigo: #4F46E5;
+      --indigo-bg: #EEF2FF;
+
+      --rose: #E11D48;
+      --rose-bg: #FFF1F2;
+
+      --success: #15803D;
+      --success-bg: #DCFCE7;
+
+      --sky: #0369A1;
+      --sky-bg: #E0F2FE;
+
+      --purple: #6C5CE7;
+    }
+
+    /* 背景裝飾 */
+    .hero { padding: 42px 0 28px; text-align: center; }
+    .hero h1 { font-size: clamp(30px, 6vw, 48px); font-weight: 900; margin: 0 0 12px; color: #1a1a1a; }
+    .hero p { color: var(--muted); max-width: 640px; margin: auto; }
+
+    /* ===== 捐款方式 ===== */
+    .donateHead{
+      color: var(--muted);
+      font-weight: 500;
+      text-align: center;
+      margin: 30px auto; 
+    }
+    .donateNote{
+      color: #2e7d32;
+      font-weight: 500;
+      max-width: 800px;
+      text-align: center;
+      font-style: italic;
+      margin: 20px auto; 
+    }    
+    .donation-grid {
+      display: grid;
+      /* grid-template-columns: repeat(3, 1fr); */
+      grid-template-columns: 0.9fr 1.1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    /* Mobile + iPad mini / Air：一排一張 */
+    @media (max-width: 1160px){
+      .donation-grid{
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* FPS 卡放中間 + 比其他卡大少少（保持 hover 正常） */
+    .method-card {
+      position: relative;
+      background: var(--white-100);
+      padding: 28px 22px;
+      border-radius: var(--radius-lg);
+      transition:
+        transform 0.35s var(--ease),
+        box-shadow 0.35s var(--ease),
+        border-color 0.25s ease,
+        background-color 0.25s ease;
+      border: 1px solid rgba(0,0,0,0.08);
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      overflow: hidden;
+    }
+    .method-card:hover {
+      /* background: linear-gradient(145deg, #ffffff, #fffaf9);       */
+      border-color: rgba(255,107,74,0.35);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-hover);
+    }
+    .method-icon {
+      width: 64px; height: 64px; border-radius: 20px;
+      display: grid; place-items: center; margin-bottom: 14px;
+    }
+
+    .method--bank .method-icon { background: var(--sky-bg); color: var(--sky); }
+    .method--fps  .method-icon { background: var(--success-bg); color: var(--success); }
+    /* 支票卡 icon  */
+      .method--check .method-icon {
+      background: var(--color-lavender);   
+      color: var(--purple);               
+    }
+
+    .method-label {
+      font-size: 11px; font-weight: 800; letter-spacing: 1px;
+      color: var(--color-accent); background: #FFF0ED;
+      padding: 4px 12px; border-radius: 6px; margin-bottom: 10px;
+    }
+
+    .method-title { font-size: 18px; font-weight: 700; margin-bottom: 14px; }
+
+    .method-detail {
+      width: 100%; text-align: left;
+      background: #F9F9F9;
+      padding: 14px;
+      border-radius: 16px;
+      font-size: 14px;
+    }
+
+    .method-detail-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .method-detail-row + .method-detail-row { margin-top: 10px; }
+
+    .method-detail b { display: block; font-size: 13px; color: var(--text); margin-bottom: 2px; }
+    .method-detail span { font-weight: 500; color: var(--muted); font-size: 13px; line-height: 1.2;}
+
+    .value-accent { color: var(--color-accent); font-size: 16px; }
+    .value-fps { color: var(--color-accent); font-size: 18px; letter-spacing: 1px; word-break: break-word; }
+
+    #fpsPayee {
+      display: -webkit-box;
+      line-clamp: 2;
+      -webkit-line-clamp: 2;      /* 最多兩行 */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.4;
+      font-size: 14px;
+    }
+    /* Copy buttons */
+    .btn-copy {
+      flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.06);
+      background: var(--white-100);
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.2s var(--ease);
+      user-select: none;
+      text-decoration: none;
+      white-space: nowrap;  
+      min-width: 70px;  
+    }
+    .btn-copy:hover {
+      border: 1px solid rgba(0,0,0,0.10);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+    }
+    .btn-copy:active { transform: translateY(0); }
+    .btn-copy svg { width: 14px; height: 14px; }
+
+    .btn-copy.is-copied {
+      background: rgba(16,185,129,0.12);
+      border-color: rgba(16,185,129,0.25);
+      color: #0F766E;
+    }
+    .btn-copy.is-error {
+      background: rgba(225,29,72,0.10);   /* 淡紅 */
+      border-color: rgba(225,29,72,0.25);
+      color: #BE123C;                      /* 深紅 */
+    }
+
+    /* QR container */
+    .qr-inline {
+      margin-top: 12px;
+      background: rgba(255,255,255,0.65);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 16px;
+      padding: 14px;
+      text-align: left;
+    }
+
+    /* FPS QR image (CSS background only) */
+    .fps-qr{
+      width: 160px;
+      height: 160px;
+      max-width: 100%;
+      margin: 0 auto;
+      background-image: url("../assets/img/fps-qr(fake).png");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-color: var(--white-100);
+      border-radius: 14px;
+    }
+
+    /* Caption */
+    .qr-inline .qr-caption{
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+      text-align: left;
+    }
+    .qr-inline .qr-caption b{ color: var(--text); }
+
+    /* Mobile size */
+    @media (max-width: 768px){
+      .fps-qr{ width: 220px; height: 220px; }
+    }
+
+    /* FPS QR toggle (low emphasis) */
+    .btn-qr-toggle{
+      width: 100%;
+      margin-top: 10px;
+      background: transparent;
+      color: var(--muted);
+      justify-content: center;
+      font-weight: 600;
+      border: 1px dashed rgba(21,128,61,0.35);
+    }
+    .btn-qr-toggle:hover{
+      background: rgba(21,128,61,0.06);
+    }
+
+    /* Collapsible */
+    .qr-collapsible{
+      overflow: hidden;
+    }
+    .qr-collapsible[hidden]{
+      display: none;
+    }
+
+    /* =========================
+   FPS QR Mobile Sheet
+   ========================= */
+   .fps-overlay{
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .fps-overlay.show{
+      display: flex;
+    }
+
+    .fps-sheet{
+      width: 100%;
+      max-width: 420px;
+      max-height: calc(100vh - 16px);
+      background: #ffffff;
+      border-radius: 24px 24px 0 0;
+      padding: 12px 20px 32px;
+      box-shadow: 0 -20px 40px rgba(0,0,0,0.25);
+      text-align: center;
+      animation: fpsSheetUp .25s ease;
+      overflow-y: auto;
+      overflow-x: hidden;
+      position: relative; /* 讓 fps-sheet 可以定位右上角按鈕 */
+    }
+
+    /* 右上角 close button（參考 event.html close-modal） */
+    .fps-sheet .close-modal{
+      position:absolute;
+      right:16px;
+      top:16px;
+      width:44px;height:44px;
+      border:0;outline:0;
+      appearance:none;-webkit-appearance:none;
+      background:rgba(0,0,0,.06);
+      border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;
+      color:rgba(0,0,0,.65);
+      user-select:none;
+      -webkit-tap-highlight-color:transparent;
+      transition:background .25s,transform .25s,box-shadow .25s,opacity .22s ease;
+      z-index:5;
+
+      /* 預設先隱藏，等 overlay show 再顯示 */
+      opacity:0;
+      transform:scale(.92);
+      pointer-events:none;
+    }
+
+    /* modal 出現時才顯示 close button */
+    .fps-overlay.show .fps-sheet .close-modal{
+      opacity:1;
+      transform:scale(1);
+      pointer-events:auto;
+    }
+
+    .fps-sheet .close-modal:hover{
+      background:rgba(0,0,0,.12);
+      transform:rotate(90deg) scale(1);
+    }
+
+    .fps-sheet .close-modal:focus-visible{
+      box-shadow:0 0 0 4px rgba(0,0,0,.12);
+    }
+
+    @keyframes fpsSheetUp{
+      from{ transform: translateY(40px); opacity: 0; }
+      to{ transform: translateY(0); opacity: 1; }
+    }
+
+    .fps-sheet .drag-bar{
+      width: 40px;
+      height: 5px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      margin: 6px auto 12px;
+    }
+
+    .fps-sheet h4{
+      font-size: 18px;
+      font-weight: 700;
+      margin: 6px 0 6px;
+      letter-spacing: 1px;
+    }
+
+    .fps-sheet .fps-qr{
+      width: 200px;
+      height: 200px;
+      margin: 0 auto;
+    }
+
+    .fps-sheet .payee-box{
+      margin-top: 20px;
+      background: var(--success-bg);
+      border: 1px dashed var(--success);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .fps-sheet .payee-box .label{
+      font-size: 12px;
+      color: var(--success);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .fps-sheet .payee-box .value{
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    body.theme-contact.modal-open
+    main[data-barba="container"] {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    /* iPad mini */
+    @media (min-width: 640px) and (max-width: 799px){
+      .fps-sheet{
+        max-width: 520px;
+      }
+    }
+
+    /* iPad Air */
+    @media (min-width: 800px) and (max-width: 1023px){
+      .fps-sheet{
+        max-width: 560px;
+      }
+    }
+
+    /* Phone 橫向：改成置中 modal + 縮 QR */
+    @media (max-height: 420px) and (orientation: landscape){
+      .fps-overlay{ 
+        align-items: center;          /* 不再固定貼底 */
+        padding: 8px;                /* 留少少邊距 */
+      }
+      .fps-sheet{
+        border-radius: 20px;         /* 變成真正 modal */
+        max-width: min(520px, 92vw);
+        padding: 10px 16px 14px;
+      }
+      .fps-sheet h4{
+        font-size: 16px;
+        margin: 4px 0 10px;
+      }
+      .fps-sheet .fps-qr{
+        width: 180px;
+        height: 180px;
+      }
+      .fps-sheet .payee-box{
+        margin-top: 12px;
+        padding: 10px;
+      }
+      .fps-sheet .close-sheet{
+        margin-top: 10px;
+        padding: 10px;
+      }
+    }
+
+    @media (min-width: 641px){
+      /* 只在展開時才 display:flex，hidden 時唔會被覆蓋 */
+      .method--fps .qr-inline:not([hidden]){
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    @media (min-width: 1024px) and (max-width: 1200px){
+      .method--fps .fps-qr{
+        width: 180px;
+        height: 180px;
+      }
+    }
+    @media (min-width: 641px) and (max-width: 1023px){
+      .method--fps .fps-qr{
+        width: 160px;
+        height: 160px;
+      }
+    }
+    /* Tablet / Mobile 一律用 modal，不用 inline QR */
+    @media (max-width:1023px){
+      .method--fps #fpsQrArea{ display:none !important; }
+    }
+
+    /* 捐款後提示（圖2） */
+    .donation-aftercare {
+      margin-top: 48px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.92), rgba(255,250,249,0.92));
+      border: 1px solid rgba(255,107,74,0.18);
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .donation-aftercare b { color: var(--text); }
+    .donation-aftercare .hint {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-weight: 700; color: var(--text); margin-bottom: 6px;
+    }
+    .donation-aftercare .pill {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-accent);
+      background: #FFF0ED;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-left: 8px;
+    }
+    .donation-aftercare-steps {
+      margin: 10px 0 0;
+      padding: 0 0 0 18px;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .donation-aftercare-note {
+      font-size: 12px;
+      margin: 10px 0 0;
+      color: var(--text);
+    }
+
+    /* ===== 聯絡我們 ===== */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      grid-template-areas:
+        "phone email fax"
+        "address address address"; /* 第二行佔滿三欄 */
+      gap: 20px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .contact--phone { grid-area: phone; }
+    .contact--email { grid-area: email; }
+    .contact--fax   { grid-area: fax; }
+    .contact--address { grid-area: address; }
+    .contact-card {
+      background: white; padding: 24px; border-radius: var(--radius-lg);
+      display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+      transition: 0.3s; border: 1px solid transparent;
+      overflow: hidden;
+      border: 1px solid var(--line); 
+      width: 100%;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+    .contact-card:hover { 
+      border-color: var(--color-peach); 
+      /* background: linear-gradient(145deg, #ffffff, #fffaf9);  */
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    /* 專門處理圖示與標題的橫向容器 */
+    .contact-header-row {
+      display: flex;
+      align-items: center; 
+      gap: 18px;          
+      width: 100%;
+      margin-bottom: 4px;
+    }
+    .contact-header-row h3 { margin: 0; font-size: 18px; font-weight: 700; }
+    .contact-icon-wrapper {
+      width: 46px; height: 46px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .contact-icon--phone { background: var(--indigo-bg); color: var(--indigo); }
+    .contact-icon--email { background: var(--rose-bg); color: var(--rose); }
+    .contact-icon--fax {
+      background: var(--success-bg);  /* 綠底 */
+      color: var(--success);         /* 綠線 */
+    }
+    .contact--fax .contact-icon-wrapper{ opacity: 0.85; }
+    .contact-icon--address {
+      background: var(--color-lavender); /* 紫底 */
+      color: var(--purple);              /* 紫線 */
+    }
+    .contact--phone .contact-value,
+    .contact--fax .contact-value{
+      letter-spacing: 0.3px;
+    }
+    .contact-hints{ color:var(--muted); font-style: italic; font-size: 14px;}
+    .contact-hints span:first-child {
+      display: block;   /* 讓第一個 span 獨立一行 */
+    }
+
+    .contact-status {
+      font-size: 12px; color: var(--info-blue); background: var(--info-blue-bg);
+      padding: 2px 8px; border-radius: 6px; font-weight: 600;
+    }
+    .contact-status--email { background:#FEF2F2; color: var(--rose); }
+
+    .contact-value { display: block; font-weight: 550; margin: 8px 0; color: #555; word-break: break-word; text-align: left; }
+    /* 地圖卡內 iframe */
+      .contact-map {
+        width: 100%;
+        height: 350px;
+        border: 0;
+        border-radius: 16px;
+        margin-top: 12px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      }
+
+      @media (max-width: 768px) {
+        .contact-grid {
+          grid-template-columns: 1fr;
+          grid-template-areas:
+          "phone"
+          "email"
+          "fax"
+          "address";
+        }
+        .contact-map {
+          height: 160px;
+          margin-top: 10px;
+        }
+        .contact-card{
+          padding: 22px 20px; 
+        }
+        .contact-card:hover{
+          transform: none;
+        }
+        .contact-value, .contact-hints{
+          font-size: 14px;    
+          letter-spacing: 0.2px;
+        }
+        .contact--email .contact-value{
+          font-size: 13px;    
+        }
+        .contact-hints{ font-size: 12px;}
+        .btn-action{
+          font-size: 14px; 
+          padding: 10px 14px;
+        }
+
+      }
+    .btn-action {
+      display: inline-block; align-items: center; gap: 8px;
+      padding: 10px 16px; border-radius: 14px; font-size: 14px; font-weight: 700;
+      text-decoration: none; transition: 0.2s var(--ease);
+    }
+    .btn-map{
+      background: rgba(108,92,231,0.10); /* 紫色系 */
+      color: var(--purple);
+    }
+    .btn-map:hover{
+      background: var(--purple);
+      color: var(--white-100);
+    }
+    /* 導航按鈕基礎 */
+    .btn-map--nav svg{
+      position: relative;
+      top: 0.5px;        /* 微微向下 */
+    }
+    .btn-map--nav{
+      background: rgba(108,92,231,0.12);
+      color: var(--purple);
+      gap: 6px; 
+    }
+
+    /* hover（desktop） */
+    .btn-map--nav:hover{
+      background: var(--purple);
+      color: var(--white-100);
+    }
+
+    /* Mobile：強調 */
+    @media (max-width: 768px){
+      .btn-map--nav{
+        width: 100%;
+        justify-content: center;
+        font-size: 15px;
+        padding: 12px 16px;
+        border-radius: 16px;
+        margin-top: 12px;
+      }
+    }
+
+    /* Desktop：低調 */
+    @media (min-width: 769px){
+      .btn-map--nav{
+        display: inline-flex;
+        padding: 8px 14px;
+        font-size: 14px;
+        margin-top: 8px;
+      }
+    }
+    .btn-phone { background: var(--indigo-bg); color: var(--indigo); }
+    .btn-phone:hover { background: var(--indigo); color: white; }
+    .btn-email { background: var(--rose-bg); color: var(--rose); }
+    .btn-email:hover { background: var(--rose); color: white; }
+
+    /* ===== FAQ ===== */
+    .faq-list { position: relative; z-index: 1; }
+    .faq-item { border-bottom: 1px solid rgba(0,0,0,0.05); }
+    .faq-item:last-child { border-bottom: none; }
+
+    .faq-trigger {
+      width: 100%; padding: 20px 0; display: flex; justify-content: space-between;
+      align-items: center; background: none; border: none; cursor: pointer;
+      font-size: 16px; font-weight: 900; text-align: left; color: var(--text);
+      transition: 0.3s var(--ease);
+    }
+    .faq-trigger:hover { color: var(--color-accent); }
+
+    .faq-content {
+      max-height: 0; overflow: hidden;
+      transition: 0.4s var(--ease);
+      color: var(--muted); font-size: 15px;
+    }
+    .faq-item.active .faq-content { max-height: 240px; padding-bottom: 20px; }
+
+    .faq-icon {
+      width: 28px; height: 28px; background: var(--color-mint);
+      border-radius: 50%; display: grid; place-items: center;
+      font-size: 18px; transition: 0.3s var(--ease); color: #1F7A8C; font-weight: 700;
+    }
+    .faq-item.active .faq-icon {
+      transform: rotate(45deg);
+      background: var(--color-peach);
+      color: var(--color-accent);
+    }
+
+    /* ===== Mobile-first conversion tuning ===== */
+    @media (min-width: 1024px){
+
+      /* 地址 card 佔一整行 */
+      .contact--address{
+        grid-column: 1 / -1;
+      }
+    }
+    @media (max-width: 830px) {
+      .hero { padding: 34px 0 20px; }
+      .contact-grid { 
+        grid-template-columns: 1fr; 
+        grid-template-areas:
+        "phone"
+        "email"
+        "fax"
+        "address";
+      }
+      .method-detail-row { flex-direction: column; align-items: stretch; }
+      .btn-copy { width: 100%;  min-width: 0;}
+      .donation-aftercare{
+        margin-top: 28px;
+      }
+    }
+
+  </style>
+</head>
+
+<body class="theme-contact" data-barba="wrapper">
+    <!-- 這是你的全站通用 SVG 容器 -->
+  <div id="global-watermark" class="watermark-overlay"></div>
+  <div id="site-menu"></div>
+
+      <!-- HERO -->
+    <section class="hero-section" style="--hero-photo: url('/assets/img/sectionHero_donate-contact.jpg');">
+      <div class="content-wrapper">
+        <div class="title-group">
+          <span class="en-shadow">Support</span>
+          <h1 class="zh-title">奉獻 / 聯絡</h1>
+        </div>
+        <p class="description">
+          這是本堂奉獻與聯絡資訊，並提供常見問題解答，協助信徒以合適方式支持事工及保持聯繫。
+        </p>
+      </div>
+    </section>
+
+  <main data-barba="container" data-barba-namespace="contact">
+
+      <!-- 捐款方式 -->
+    <section class="section section-visual sticky" id="donate">
+      <div class="container"> 
+        <div class="section-title theme-peach">
+          <!-- 裝飾泡泡 -->
+          <div class="particle p1"></div>
+          <div class="particle p2"></div>
+          <div class="particle p3"></div>
+          <div class="particle p4"></div>
+
+          <div class="text-content">
+            <span class="text-main">奉獻</span>
+            <span class="text-sub">方式</span>
+            <span class="diamond"></span>
+          </div>
+        </div>
+
+        <p class="donateHead">非常感謝您慷慨的支持，願神祝福您和您的家庭。</p>
+        <div class="donation-grid">
+
+          <!-- Bank 左 -->
+          <div class="method-card method--bank" style="order: 0;">
+            <div class="method-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="3.3"><path d="M4 10a2 2 0 0 1 2-2h36a2 2 0 0 1 2 2v28a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path stroke-linecap="square" d="M4 16h40"/><path stroke-linecap="round" d="M27 32h9m8-22v16M4 10v16"/></g></svg>
+            </div>
+            <span class="method-label">BANK TRANSFER</span>
+            <div class="method-title">銀行轉帳</div>
+
+            <div class="method-detail">
+              <div class="method-detail-row">
+                <div>
+                  <b>銀行名稱</b>
+                  <span>東亞銀行 (015)</span>
+                </div>
+              </div>
+
+              <div class="method-detail-row">
+                <div>
+                  <b>帳戶號碼</b>
+                  <span class="value-accent" id="bankAcc">015-515-68-03833-3</span>
+                </div>
+                <button class="btn-copy" type="button" data-copy-target="bankAcc" aria-label="複製帳戶號碼">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  複製
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- FPS 中 -->
+          <div class="method-card method--fps" style="order: 1;">
+
+            <div class="method-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M9.75 23.25H22.5m-11.25-7.5v7.5m3-7.5v7.5m3.75-7.5v7.5m3-7.5v7.5m2.25-7.5H9l6.575-4.32a.93.93 0 0 1 1.1 0z"/><path d="M5.737 21.347a11.254 11.254 0 1 1 17.49-10.1"/><path d="M6.844 13.493a26.3 26.3 0 0 1 .232-5.928A16.3 16.3 0 0 1 9.289 1.08M.775 11.25H6.75M2.482 6h19.036M1.686 16.5H6m8.711-15.42a17.06 17.06 0 0 1 2.312 7.2"/></g></svg>
+            </div>
+            <span class="method-label">FAST PAYMENT</span>
+            <div class="method-title">轉數快 FPS</div>
+
+            <div class="method-detail">
+              <div class="method-detail-row">
+                <div>
+                  <b>FPS ID（轉數快識別碼）</b>
+                  <span class="value-fps" id="fpsValue">162-426-894</span>
+                </div>
+                <button class="btn-copy" type="button" data-copy-target="fpsValue" aria-label="複製 FPS ID">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  複製
+                </button>
+              </div>
+
+              <div class="method-detail-row">
+                <div>
+                  <b>FPS 快速支付電郵地址</b>
+                  <span class="value-fps" id="fpsValue">churchonrockhk@gmail.com</span>
+                </div>
+                <button class="btn-copy" type="button" data-copy-target="fpsValue" aria-label="複製 FPS ID">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  複製
+                </button>
+              </div>
+
+              <div class="method-detail-row">
+                <div>
+                  <b>收款人</b>
+                  <span id="fpsPayee">The Christian Church on the Rock Hong Kong Ltd</span>
+                </div>
+              </div>
+
+               <!-- Toggle QR button -->
+              <button class="btn-action btn-qr-toggle" type="button" aria-controls="fpsQrArea" aria-expanded="false" onclick="toggleFpsQr(this)">
+                顯示 QR Code
+              </button>
+
+               <!-- Collapsible QR area -->
+              <div class="qr-inline qr-collapsible" id="fpsQrArea" hidden>
+                <!-- QR 圖 -->
+                <div class="fps-qr" role="img" aria-label="FPS QR Code"></div>
+
+                <div class="qr-caption">
+                  掃碼後，請於銀行 App 核對收款人：<b>The Christian Church on the Rock Hong Kong Ltd</b>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Check 右（白底同銀行一致） -->
+          <div class="method-card method--check" style="order: 2;">
+            <div class="method-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.7"><path stroke-linecap="round" d="M7 11H6c-3.31 0-4 .69-4 4v3c0 3.31.69 4 4 4h12c3.31 0 4-.69 4-4v-3c0-2.211-.308-3.253-1.5-3.701M12 18h6"/><path d="M17.244 3.133c.447-.485.67-.728.908-.87a1.86 1.86 0 0 1 1.862-.027c.242.134.472.37.933.841c.46.472.691.707.823.954a1.98 1.98 0 0 1-.028 1.905c-.138.243-.375.472-.85.93l-5.642 5.442c-1.494 1.441-2.42 1.74-4.49 1.686c-.377-.01-.565-.015-.674-.139s-.094-.316-.064-.7c.137-1.767.449-2.673 1.652-3.978z"/></g></svg>
+            </div>
+            <span class="method-label">BY CHECK</span>
+            <div class="method-title">支票</div>
+
+            <div class="method-detail">
+              <div class="method-detail-row">
+                <div>
+                  <b>中文抬頭</b>
+                  <span id="checkPayee_1">香港基督教磐石教會有限公司</span>
+                </div>
+                <button class="btn-copy" type="button" data-copy-target="checkPayee_1" aria-label="複製中文支票抬頭">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  複製
+                </button>
+              </div>
+              <div class="method-detail-row">
+                <div>
+                  <b>英文抬頭</b>
+                  <span id="checkPayee_2">The Christian Church on the Rock Hong Kong Ltd</span>
+                </div>
+                <button class="btn-copy" type="button" data-copy-target="checkPayee_2" aria-label="複製英文支票抬頭">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  複製
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="donation-aftercare">
+          <div class="hint">
+            奉獻需知 <span class="pill">本堂所發出之奉獻收據，可減免香港稅務。</span>
+          </div>
+
+          <ol class="donation-aftercare-steps">
+            <li>請把支票或銀行入數紙放入本堂奉獻封內，並以正楷填寫姓名及奉獻項目，完成後把奉獻封投入本堂奉獻箱內。</li>
+            <li>若以“轉數快”奉獻，請轉數後以手機把確認已轉數資料畫面截圖轉發給本堂魏秀珊執事，並請注明奉獻項目。</li>
+          </ol>
+        </div>
+        <p class="donateNote">『萬軍之耶和華說，你們要將當納的十分之一，全然送入倉庫，使我家有糧，以此試試我，是否為你們敞開天上的窗戶，傾福與你們，甚至無處可容。』— 瑪拉基書 三章10節</p>
+      </div>
+    </section>
+
+      <!-- 聯絡我們（你圖片要加回去的部分） -->
+    <section class="section section--airy section-push">
+      <div class="container"> 
+        <div class="section-title theme-lavender reveal">
+          <!-- 裝飾泡泡 -->
+          <div class="particle p1"></div>
+          <div class="particle p2"></div>
+          <div class="particle p3"></div>
+          <div class="particle p4"></div>
+
+          <div class="text-content">
+            <span class="text-main">聯絡</span>
+            <span class="text-sub">我們</span>
+            <span class="diamond"></span>
+          </div>
+        </div>
+
+        <div class="contact-grid">
+
+          <!-- 電話 -->
+          <div class="contact-card contact--phone reveal">
+            
+            <!-- 第一行：圖示 + 標題 -->
+            <div class="contact-header-row">
+              <div class="contact-icon-wrapper contact-icon--phone">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.28-2.28a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+              </div>
+              <h3>電話</h3>
+            </div>
+
+            <!-- 第二行及之後：數值與按鈕 (會自動換行並靠左) -->
+            <span class="contact-value">+852 3126 5042</span>
+            <a href="tel:+85231265042" class="btn-action btn-phone">
+              立即撥打
+            </a>
+            
+          </div>
+
+          <!-- 電郵 -->
+          <div class="contact-card contact--email reveal">
+            <!-- 第一行：圖示 + 標題 -->
+            <div class="contact-header-row">
+              <div class="contact-icon-wrapper contact-icon--email">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+              </div>
+              <h3>電子郵件</h3>
+            </div>
+
+            <!-- 第二行及之後：數值與按鈕 (會自動換行並靠左) -->
+              <span class="contact-value">info@christianchurchontherock.org.hk</span>
+              <a href="mailto:info@christianchurchontherock.org.hk" class="btn-action btn-email">
+                發送郵件
+              </a>
+          </div>
+
+          <!-- Fax -->
+          <div class="contact-card contact--fax reveal">
+            <!-- 第一行：圖示 + 標題 -->
+            <div class="contact-header-row">
+              <div class="contact-icon-wrapper contact-icon--fax">
+                <svg width="24" height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <!-- 主體 -->
+                  <path d="M6 9V3h12v6"></path>
+                  <path d="M6 18h12"></path>
+
+                  <!-- 傳真機 -->
+                  <rect x="4" y="9" width="16" height="8" rx="2"></rect>
+
+                  <!-- 紙張 -->
+                  <path d="M8 17v4h8v-4"></path>
+
+                  <!-- 控制燈 -->
+                  <circle cx="17" cy="13" r="1"></circle>
+                </svg>
+              </div>
+              <h3>傳真</h3>
+            </div> 
+          
+            <!-- 第二行及之後：數值與按鈕 (會自動換行並靠左) -->  
+              <span class="contact-value">+852 3126 5049</span>
+          </div>
+
+          <!-- 地址 + Google Map -->
+          <div class="contact-card contact--address reveal">
+            <!-- 第一行：圖示 + 標題 -->
+            <div class="contact-header-row">
+              <div class="contact-icon-wrapper contact-icon--address">
+                <svg width="24" height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+                  <!-- Pin -->
+                  <path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 1 1 18 0z"></path>
+
+                  <!-- 中心點 -->
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+              </div>
+              <h3>本堂地址</h3>
+            </div>
+
+            <!-- 第二行及之後：數值與按鈕 (會自動換行並靠左) -->    
+              <span class="contact-value">
+                九龍旺角太子道西154-158號旺角城大廈4樓全層 (大閘門口按“4A”)
+              </span>  
+                <div class="contact-hints">
+                  <span>前往提示:</span>
+                  <span>由太子地鐵站B1出口出發（鄰近旺角警署） → 沿太子道西直行，經過「名寶石餐廳」 → 繼續前行至洗衣街交界，過馬路 → 即可見旺角城大廈入口</span>
+                </div> 
+              
+               
+
+              <!-- https://www.google.com/maps/search/?api=1&query=地址 / https://www.google.com/maps/dir/?api=1&destination=地址 就可以在mobile直接跳去app-->
+              <a class="btn-action btn-map btn-map--nav"
+                href="https://www.google.com/maps/dir/?api=1&destination=九龍旺角太子道西154-158號旺角城大廈"
+                target="_blank"
+                rel="noopener">
+
+                <!-- 導航 icon -->
+                <svg width="16" height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+                  <path d="M3 11l19-9-9 19-2-7-7-2z"></path>
+                </svg>
+
+                Google Maps 導航
+              </a>
+
+
+              <!-- Google Map（你可換成實際地址 link） -->
+              <iframe
+                class="contact-map"
+                src="https://www.google.com/maps/embed?pb=!4v1775397574602!6m8!1m7!1s2oPFLlgWed-eEIxmLkldgQ!2m2!1d22.32453025554704!2d114.170853970171!3f1.8708039711279412!4f5.422936869996718!5f0.7820865974627469"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+              </iframe>
+
+          </div>
+        </div>
+      </div>  
+    </section>
+
+
+      <!-- 常見問題（你圖片要加回去的部分） -->
+    <section class="section section--compact">
+      <div class="container"> 
+        <div class="section-title theme-mint reveal">
+          <!-- 裝飾泡泡 -->
+          <div class="particle p1"></div>
+          <div class="particle p2"></div>
+          <div class="particle p3"></div>
+          <div class="particle p4"></div>
+
+          <div class="text-content">
+            <span class="text-main">常見</span>
+            <span class="text-sub">問題</span>
+            <span class="diamond"></span>
+          </div>
+        </div>
+
+        <div class="faq-list">
+          <div class="faq-item reveal">
+            <button class="faq-trigger" onclick="toggleFaq(this)">
+              <span>如何索取奉獻收據？</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-content">
+              請將奉獻的截圖或入數紙等連同您的姓名、聯絡電話及地址電郵給我們，收據會通過電子郵件或郵寄方式發出。
+            </div>
+          </div>
+
+          <div class="faq-item reveal">
+            <button class="faq-trigger" onclick="toggleFaq(this)">
+              <span>奉獻可以用於扣稅嗎？</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-content">
+              是的，「香港基督教磐石教會」為註冊慈善機構。單筆捐款滿 HK$100 或以上，可憑收據在香港申請稅務扣減。
+            </div>
+          </div>
+
+          <div class="faq-item reveal">
+            <button class="faq-trigger" onclick="toggleFaq(this)">
+              <span>我可以指定奉獻用途嗎？</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-content">
+              可以，例如您可以在轉帳備註註明您想支持的奉獻項目。
+            </div>
+          </div>
+        </div>
+      </div>  
+    </section>
+
+  </main>
+
+    <!-- Footer -->
+    <div id="site-footer"></div>
+
+    
+    <!-- FPS QR Mobile Sheet -->
+    <div class="fps-overlay" id="fpsOverlay" onclick="if(event.target===this) closeFpsSheet()">
+      <div class="fps-sheet">
+        <button class="close-modal" type="button" onclick="closeFpsSheet()" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+            <line x1="2" y1="2" x2="14" y2="14" stroke="currentColor" stroke-width="2"/>
+            <line x1="14" y1="2" x2="2" y2="14" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </button>
+
+        <div class="drag-bar"></div>
+
+        <h4>使用QR Code掃瞄</h4>
+
+        <!-- Mobile QR code modal -->
+        <div class="fps-qr" aria-label="FPS QR Code"></div>
+
+        <div class="payee-box">
+          <div class="label">掃瞄後請於銀行 App 核對收款人：</div>
+          <div class="value">The Christian Church on the Rock Hong Kong Ltd</div>
+        </div>
+ 
+      </div>
+    </div>
+
+  <script>
+    const ICON_COPY = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
+        <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+    `;
+
+    const ICON_OK = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
+        <path d="M20 6L9 17l-5-5"></path>
+      </svg>
+    `;
+
+    const ICON_WARN = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
+        <path d="M12 9v4"></path>
+        <path d="M12 17h.01"></path>
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+      </svg>
+    `;
+
+    // Accordion behavior:
+    // Only one FAQ is expanded at a time to reduce cognitive load
+    function toggleFaq(btn) {
+      const item = btn.parentElement;
+      const isActive = item.classList.contains('active');
+      document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('active'));
+      if (!isActive) item.classList.add('active');
+    }
+
+    //modal 開啟時：鎖住 body scroll
+    //modal 關閉時：還原 body scroll
+    // Use counter instead of boolean to support nested overlays safely
+    let __bodyLockCount = 0;
+
+    function lockBodyScroll(){
+      __bodyLockCount++;
+      if(__bodyLockCount === 1){
+        document.body.style.overflow = 'hidden'; // 鎖住滾動
+      }
+    }
+
+    function unlockBodyScroll(){
+      __bodyLockCount = Math.max(0, __bodyLockCount - 1);
+      if(__bodyLockCount === 0){
+        document.body.style.overflow = ''; // 恢復滾動
+      }
+    }
+
+
+    // QR code button
+    // UX strategy:
+    // Desktop shows inline QR for quick glance.
+    // Tablet/Mobile uses modal to avoid layout crowding.
+    function toggleFpsQr(btn){
+      const isModalMode = window.matchMedia('(max-width: 9999px)').matches; //先解決inline 不能向下滑問題
+
+      const overlay = document.getElementById('fpsOverlay');
+      const qr = document.getElementById('fpsQrArea');
+
+      if (isModalMode) {
+        // Tablet/Mobile：一律用 modal，不用 inline
+        if (qr) qr.setAttribute('hidden', '');
+
+        // === 隱藏 menu bar 和 widget ===
+        if (window.UIVisibility) UIVisibility.hideAll();
+
+        // 確保 widget 一定隱藏（處理 defer / late-load）
+        // Defensive: // Widget may load late (defer), force-hide to prevent overlap
+        const widget = document.querySelector('widget-msgbox-scrolltop');
+        if (widget) widget.style.display = 'none';
+
+
+        // === 鎖背景滾動 ===
+        lockBodyScroll();
+
+        if (overlay) overlay.classList.add('show');
+
+        // modal 模式按鈕永遠保持「顯示 QR Code」
+        if (btn){
+          btn.textContent = '顯示 QR Code';
+          btn.setAttribute('aria-expanded', 'false');
+        }
+        return;
+      }
+
+      // Desktop / iPad Pro：inline toggle，不要鎖 body scroll
+      if (!qr) return;
+
+      const isOpen = !qr.hasAttribute('hidden');
+
+      if (isOpen) {
+        qr.setAttribute('hidden', '');
+        btn.textContent = '顯示 QR Code';
+        btn.setAttribute('aria-expanded', 'false');
+      } else {
+        qr.removeAttribute('hidden');
+        btn.textContent = '收起 QR Code';
+        btn.setAttribute('aria-expanded', 'true');
+
+      }
+    }
+
+    // QR code Modal
+    function closeFpsSheet(){
+      const overlay = document.getElementById('fpsOverlay');
+      if (overlay) overlay.classList.remove('show');
+
+      // === 恢復背景滾動 ===
+      unlockBodyScroll();
+
+      // === 恢復 menu bar 和 widget ===
+      if (window.UIVisibility) UIVisibility.show();
+
+      // widget
+      const widget = document.querySelector('widget-msgbox-scrolltop');
+      if (widget) widget.style.display = '';
+
+
+      // 關 modal 後重設按鈕文字（避免殘留「收起」）
+      const btn = document.querySelector('.method--fps .btn-qr-toggle');
+      if (btn){
+        btn.textContent = '顯示 QR Code';
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    // State reconciler:
+    // Ensure QR UI stays consistent across resize / orientation changes.
+    function syncFpsQrUI(){
+      const isModalMode = window.matchMedia('(max-width: 9999px)').matches; //先解決inline 不能向下滑問題
+      const overlay = document.getElementById('fpsOverlay');
+      const qr = document.getElementById('fpsQrArea');
+      const btn = document.querySelector('.method--fps .btn-qr-toggle');
+
+      if (!btn) return;
+
+      if (isModalMode){
+        // 進入 modal 模式：收起 inline
+        if (qr) qr.setAttribute('hidden', '');
+
+        // 若 modal 正在顯示，使用 closeFpsSheet() 關閉並正確 unlock/restore
+        if (overlay && overlay.classList.contains('show')) {
+          closeFpsSheet();
+        }
+
+        btn.textContent = '顯示 QR Code';
+        btn.setAttribute('aria-expanded', 'false');
+      } else {
+        // 進入 inline 模式：按 inline 狀態決定文字
+        const isOpen = qr && !qr.hasAttribute('hidden');
+        btn.textContent = isOpen ? '收起 QR Code' : '顯示 QR Code';
+        btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+
+        // 保險：離開 modal 模式時強制關 overlay
+        if (overlay) overlay.classList.remove('show');
+      }
+    }
+
+    // Fallback support:
+    // execCommand is kept for older browsers / non-secure contexts.
+    async function copyText(text) {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          return true;
+        }
+      } catch (e) {}
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        return ok;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function setCopiedState(btn, ok) {
+    const original = btn.dataset.originalText || "複製";
+    if (!btn.dataset.originalText) btn.dataset.originalText = original;
+
+    if (btn.dataset.timer) clearTimeout(Number(btn.dataset.timer));
+
+    btn.classList.remove('is-copied', 'is-error');
+
+    if (ok) {
+      btn.classList.add('is-copied');
+      btn.innerHTML = `${ICON_OK} 已複製`;
+
+      const t = setTimeout(() => {
+        btn.classList.remove('is-copied');
+        btn.innerHTML = `${ICON_COPY} ${btn.dataset.originalText}`;
+        delete btn.dataset.timer;
+      }, 1200);
+
+      btn.dataset.timer = String(t);
+
+    } else {
+      btn.classList.add('is-error');
+      btn.innerHTML = `${ICON_WARN} 未能複製`;
+
+      const t = setTimeout(() => {
+        btn.classList.remove('is-error');
+        btn.innerHTML = `${ICON_COPY} ${btn.dataset.originalText}`;
+        delete btn.dataset.timer;
+      }, 1400);
+
+      btn.dataset.timer = String(t);
+    }
+  }
+
+
+    document.querySelectorAll('[data-copy-target]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.getAttribute('data-copy-target');
+        const el = document.getElementById(id);
+        const text = (el ? el.textContent : "").trim();
+
+        // 就係加喺呢度
+        if (!text) {
+          setCopiedState(btn, false);
+          return;
+        }
+
+        const ok = await copyText(text);
+        setCopiedState(btn, ok);
+      });
+    });
+
+    
+    // 初次載入就同步一次
+    window.addEventListener('DOMContentLoaded', syncFpsQrUI);
+
+    // 轉 orientation / resize 時同步（加 debounce 避免抖動）
+    let _fpsResizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(_fpsResizeTimer);
+      _fpsResizeTimer = setTimeout(syncFpsQrUI, 120);
+    });
+    window.addEventListener('orientationchange', syncFpsQrUI);
+
+  </script>
+
+</body>
+</html>

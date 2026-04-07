@@ -1,0 +1,107 @@
+<!-- Desktop Header (對應 menu.css 的選擇器) -->
+ <!-- Shared partial:
+     This file is injected via include-partials.js
+     Changes affect all pages
+-->
+
+ <!-- Design rule:
+     Desktop header and mobile menu must be structurally separate
+     Mobile drawer should NOT be nested inside hero-header
+  -->
+<header id="hero-header">
+  <div class="logo-container">
+    <a href="index.html">
+      <!--放Logo 圖片 -->
+      <div class="logo"></div>
+    </a>
+  </div>
+
+  <nav class="menu-items">
+    <div class="menu-item"><a href="../about-us.html">關於我們</a></div>
+    <div class="menu-item"><a href="../services-events.html">聚會/活動</a></div>
+    <div class="menu-item"><a href="../gospel-testimonies.html">福音與見證</a></div>
+    <div class="menu-item"><a href="../reading-plan.html">讀經計劃</a></div>
+    <div class="menu-item"><a href="../donate-contact.html">奉獻/聯絡</a></div>
+  </nav>
+</header>
+
+<!-- Mobile Menu Toggle (獨立於 hero-header 之外，避免被隱藏) -->
+ <!-- Intentional CSS toggle:
+     Use checkbox + label to avoid JS dependency and ensure menu works before JS loads
+  -->
+  <!-- Structure constraint (同 :checked ~ .menu-pane selector 有關, 一移位就全壞):
+      Checkbox must be a sibling of menu-pane
+      for CSS :checked selectors to work
+  -->     
+<div class="mobile-toggle-wrapper">
+  <input type="checkbox" id="openmenu" class="hamburger-checkbox">
+  <label for="openmenu" class="hamburger-icon" id="hamburger-label">
+    <span class="icon-open"></span>
+    <span class="icon-close"></span>
+  </label>
+
+  <div class="menu-pane">
+    <div class="menu-drawer">
+      <ul class="menu-links">
+        <li>
+          <a href="../about-us.html">
+            <div class="txt">
+              <span class="name">關於我們</span>
+              <span class="desc">ABOUT US</span>
+            </div>
+            <!-- <span class="arrow">→</span> -->
+             <!-- Reserved element:
+                  Arrow span is kept for alignment / future motion cues
+              -->
+            <span class="arrow"></span>
+          </a>
+        </li>
+        <li>
+          <a href="../services-events.html">
+            <div class="txt">
+              <span class="name">聚會/活動</span>
+              <span class="desc">SERVICES/EVENTS</span>
+            </div>
+            <span class="arrow"></span>
+          </a>
+        </li>
+        <li>
+          <a href="../gospel-testimonies.html">
+            <div class="txt">
+              <span class="name">福音與見證</span>
+              <span class="desc">GOSPEL/TESTIMONIES</span>
+            </div>
+            <span class="arrow"></span>
+          </a>
+        </li>
+        <li>
+          <a href="../reading-plan.html">
+            <div class="txt">
+              <span class="name">讀經計劃</span>
+              <span class="desc">BIBLE READING PLAN</span>
+            </div>
+            <span class="arrow"></span>
+          </a>
+        </li>
+        <li>
+          <a href="../donate-contact.html">
+            <div class="txt">
+              <span class="name">奉獻/聯絡</span>
+              <span class="desc">DONATE/CONTACT</span>
+            </div>
+            <span class="arrow"></span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Brand anchor:
+          Drawer footer logo provides emotional closure and brand continuity on mobile
+      -->
+      <div class="menu-logo-container drawer-logo">
+        <a href="index.html">
+          <div class="logoFull"></div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

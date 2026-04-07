@@ -1,0 +1,2866 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>福音與見證 | 香港基督教磐石教會</title>
+
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+
+  <!-- Core styles -->
+  <link rel="stylesheet" href="../assets/css/shared.css">
+  <link rel="stylesheet" href="../assets/css/main.css">
+
+  <!-- menu bar -->
+  <link rel="stylesheet" href="../assets/css/menu.css">
+  <link rel="stylesheet" href="../assets/css/mobile-menu.css">
+
+    
+  <!-- JS -->
+  <!-- Core scripts -->
+  <script src="../assets/js/main.js"></script>
+
+  <!-- Partials loader -->
+  <script src="../assets/js/include-partials.js"></script>
+
+  <!-- Widget -->
+  <script src="../assets/js/widget_msgbox_scrolltop.js" defer></script>
+
+  <style>
+    :root{
+
+    --shadow:0 15px 45px rgba(0,0,0,.06);
+    /* --ease:cubic-bezier(.34,1.56,.64,1); */
+    --modal-in:260ms;
+    --modal-ease:cubic-bezier(.165,.84,.44,1);
+    --r-tl:60px;
+    --r-tr:10px;
+    --r-br:60px;
+    --r-bl:10px;
+    --offset-x:16px;
+    --offset-y:16px;
+    }
+
+    h1{font-size:42px;margin:0 0 10px;font-weight:900}
+
+    /* Filters */
+    .filtersWrap {
+        position: relative;
+        margin-top: 30px;
+        margin-bottom: 22px;
+    }
+
+    .filtersWrap::before,
+    .filtersWrap::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 28px;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity .2s ease;
+        z-index: 5;
+    }
+
+    /* UX affordance:
+      Side gradients indicate horizontal scroll availability.
+      Do NOT remove unless filters are no longer scrollable.
+    */
+    .filtersWrap::before {
+        left: 0;
+        background: linear-gradient(
+            to right,
+            var(--bg),
+            rgba(249, 248, 246, 0)
+        );
+    }
+
+    .filtersWrap::after {
+        right: 0;
+        background: linear-gradient(
+            to left,
+            var(--bg),
+            rgba(249, 248, 246, 0)
+        );
+    }
+
+    .filtersWrap.show-left::before {
+        opacity: 1;
+    }
+
+    .filtersWrap.show-right::after {
+        opacity: 1;
+    }
+
+    .filters {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .filterBtn{
+    --btn-accent: var(--color-accent);
+    border:1px solid rgba(0,0,0,.06);
+    background:var(--white-100);
+    padding:10px 18px;
+    border-radius:999px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease, color .18s ease;
+    box-shadow:0 4px 10px rgba(0,0,0,.03);
+    color:#222;
+    user-select:none;
+    white-space:nowrap;
+    }
+    .filterBtn:hover{
+    transform:translateY(-1px);
+    border-color: color-mix(in srgb, var(--btn-accent) 35%, rgba(0,0,0,0));
+    background: color-mix(in srgb, var(--btn-accent) 10%, var(--white-100));
+    color: var(--btn-accent);
+    box-shadow:0 10px 22px rgba(0,0,0,.08);
+    }
+    .filterBtn.active{
+    background: var(--btn-accent);
+    color:var(--white-100);
+    border-color: transparent;
+    font-weight:700;
+    transform:none;
+    box-shadow:0 10px 22px rgba(0,0,0,.10);
+    }
+    @media(max-width:600px){
+    :root{ --offset-x:10px; --offset-y:10px; }
+    .filters{
+    flex-wrap:nowrap;
+    overflow-x:auto; overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    scroll-snap-type:x mandatory;
+    scroll-padding-inline: 16px;
+    padding: 0 6px 4px;
+    gap:10px;
+    }
+    .filterBtn{flex:0 0 auto;scroll-snap-align:start;padding:10px 16px;}
+    .filters::-webkit-scrollbar{height:0}
+    .filters{scrollbar-width:none;}
+    }
+
+    /* Chapters / grids */
+    .storyCard, .intro-card{
+      height: 100%;
+    }
+    .storyCard--featured{
+      min-height: 320px;         
+      padding: 36px;           
+    }
+    .storyCard--list{
+      min-height: 240px;
+      padding: 28px;
+    }
+    .storyCard--featured .storyTitle{
+      font-size: 20px;
+    }
+    /* Visual hierarchy:
+      First featured story is intentionally wider to anchor attention.
+    */
+    #featuredGrid{
+      grid-template-columns: repeat(3, minmax(0,1fr));
+    }
+
+    @media(min-width:1024px){
+      #featuredGrid{
+        grid-template-columns: 1.4fr 1fr 1fr;
+      }
+    }
+    .chapter{margin-top:26px}
+    .chapter-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin: 18px 0 14px;}
+    .chapter-title{font-size:18px;font-weight:700;letter-spacing:.5px;margin:0;}
+    .chapter-sub{color:rgba(0,0,0,.45);font-size:13px;margin:0;white-space:nowrap;}
+    /* 卡片描述文字：兩行截斷，避免高度太大 */
+    .cardDesc{
+      margin: 6px 0 6px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: rgba(0,0,0,.55);
+
+      display: -webkit-box;
+      line-clamp: 2;
+      -webkit-line-clamp: 2;      /* 顯示 2 行 */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .divider{height:1px;background:rgba(0,0,0,.06);margin:16px 0 0;}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:stretch;position:relative;}
+    @media(max-width:900px){.grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:600px){.grid{grid-template-columns:1fr}}
+    .storyCard{
+    background:var(--white-100);border-radius:var(--radius-lg);
+    padding:30px;display:flex;flex-direction:column;
+    box-shadow:0 4px 20px rgba(0,0,0,.02);
+    border:1px solid rgba(0,0,0,.03);
+    transition:transform .35s var(--ease),box-shadow .35s var(--ease),opacity .25s ease;
+    opacity:1;transform:translateY(0) scale(1);
+    min-height: 260px;
+    }
+    .storyCard:hover{transform:translateY(-1px);
+      box-shadow: var(--shadow);
+      border-color: color-mix(in srgb, currentColor 30%, rgba(0,0,0,0));
+    }
+    /* 分享卡標題（story card title） */
+    .storyTitle{
+      margin: 10px 0 6px;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.4;
+      color: #1e293b;
+
+      /* 可選：避免標題太長撐高卡片 */
+      display: -webkit-box;
+      line-clamp: 2;
+      -webkit-line-clamp: 2;   /* 最多兩行 */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .tagRow {
+      display: inline-flex;
+      align-items: center;  
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .storyTag{
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 12px;   
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--soft);
+      color: var(--color-accent);
+      letter-spacing: .3px;
+    }
+
+    .tagNewBadge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      height: 20px;          
+      padding: 0 8px;        /* 只留左右 padding */
+      border-radius: 6px;
+
+      background-color: #ff6b6b;
+      color: var(--white-100);
+      font-size: 11.5px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .formatRow{display:flex;align-items:center;gap:14px;margin-bottom:12px;color:rgba(0,0,0,.62);user-select:none;flex-wrap:wrap;}
+    .formatItem{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;letter-spacing:.2px;line-height:1;}
+    .formatItem svg{width:16px;height:16px;stroke:currentColor;flex:none;}
+    .formatItem .fillPlay{fill:currentColor;stroke:none;}
+    .storyAuthor{
+    font-weight:500;font-size:14px;margin-top:auto;
+    display:flex;justify-content:space-between;align-items:center;gap:12px;
+    color: color-mix(in srgb, var(--muted) 85%, transparent);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.5);
+      backdrop-filter: blur(8px);
+      z-index: 9999; /* 提高層級，蓋過 menu 和 widget */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: .3s ease;
+      padding: 16px;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-shell{
+      position: relative;
+      width: min(92vw, 720px);     /* 寬度 source of truth */
+      max-height: 85vh;
+
+      opacity: 0;
+      transform: translateY(18px) scale(.985);
+      transition: transform var(--modal-in) var(--modal-ease), opacity var(--modal-in) ease;
+      will-change: transform, opacity;
+    }
+    .modal-overlay.active .modal-shell{
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* iPad Pro + */
+    @media (min-width:1024px){
+      .modal-shell{
+        width: min(70vw, 720px);
+      }
+    }
+
+    .modal-wrap{
+    position:relative;width:100%;max-height:85vh;
+    filter: none;
+    }
+    .modal-bg{
+    position:absolute;inset:0;background:var(--soft);
+    border-radius:var(--r-tl) var(--r-tr) var(--r-br) var(--r-bl);
+    transform:translate(var(--offset-x), var(--offset-y)); /* Intentional offset: Creates layered depth between modal card and background. */
+    z-index:0;
+    pointer-events: none;   /* 避免 hover/repaint 影響 */
+    }
+    /* Safari/Chromium fix:
+      Ensure border-radius clips correctly with overflow + transforms.
+      Do NOT remove without cross-browser testing.
+    */
+    .modal-card{
+    position:relative;z-index:1;width:100%;max-height:85vh;
+    display:flex;flex-direction:column;background:var(--white-100);
+    border-radius:var(--r-tl) var(--r-tr) var(--r-br) var(--r-bl);
+    box-shadow: 0 22px 48px rgba(0,0,0,.20);
+    overflow:hidden;
+    transform: translateZ(0);
+    isolation:isolate;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    mask-image: radial-gradient(white, black);
+    clip-path: inset(0 round var(--r-tl) var(--r-tr) var(--r-br) var(--r-bl));
+    min-height:0;
+    }
+
+
+    .modal-head{
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      
+      background: var(--color-accent);
+      color: var(--white-92);
+      padding: 20px 40px 10px;
+    }
+
+    .modal-head-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-title{
+      flex: 0 0 auto;
+      margin: 0;
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1.2;
+      padding-top: 12px;
+    }
+
+    .formatTabs{
+      display: flex;
+      flex-shrink: 0;
+      margin-left: 12px; /* 與標題的距離 */
+      gap: 10px;
+      align-items: center;
+    }
+    .modal-note{margin-top:8px;font-size:13px;opacity:.75;line-height:1.6}
+
+    .tabBtn {
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--white-55);
+      padding: 6px 4px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .tabBtn::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: -2px;
+      width: 100%;
+      height: 2px;
+      background: currentColor;
+      transform: scaleX(0);
+      transition: transform .25s ease;
+    }
+
+    .tabBtn.active {
+      color: var(--white-82);
+      font-weight: 600;
+    }
+
+    .tabBtn.active::after {
+      transform: scaleX(1);
+    }
+    .modal-body{flex:1 1 auto;overflow:hidden;background:var(--bg);position:relative;display:flex;min-height:0;}
+    .modal-scroll{
+    flex:1 1 auto;min-height:0;overflow:auto;
+    padding:26px 44px 48px;background:var(--white-100);
+    -webkit-overflow-scrolling: touch;overscroll-behavior: contain;
+    }
+    .close-btn{
+    position:absolute;right:18px;top:18px;width:44px;height:44px;
+    border:0;outline:0;appearance:none;-webkit-appearance:none;
+    background:rgba(255,255,255,.22);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;color:var(--white-82);user-select:none;
+    -webkit-tap-highlight-color:transparent;
+    transition:background .25s,transform .25s, box-shadow .25s;z-index:5;
+    }
+    .close-btn:hover{background:rgba(255,255,255,.35);transform:rotate(90deg);color: var(--white-100);}
+    .close-btn:focus-visible{box-shadow:0 0 0 4px rgba(255,255,255,.25)}
+    .modal-divider{height:1px;background:rgba(0,0,0,.06);margin:20px 0}
+    .modal-section{margin-top:14px}
+    .modal-section h3{margin:0 0 8px;font-size:22px;letter-spacing:.5px;color:var(--color-accent)}
+    .modal-section p{margin:0 0 12px;line-height:1.95;font-size:16px;color:#3b3b3b; transition: all 0.3s ease; border-left: 0px solid transparent;  /* 控制每行字數: max-width: 38ch; */}
+
+    /* --- 新播放器視覺設計 --- */
+    .playerBar{
+        display: flex;
+        align-items: center;
+        background: var(--white-100);
+        border: 1px solid #eee;
+        border-radius: 20px;
+        padding: 8px 16px;
+        gap: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+    .playerBar button:disabled{
+      opacity:.45;
+      cursor:not-allowed;
+    }
+    .playerControls{display:flex;gap:12px;align-items:center;}
+    .iconBtn-small{
+        width: 36px; height: 36px;
+        border-radius: 50%;
+        border: 1px solid #f0f0f0;
+        background: var(--white-100);
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer;
+        color: #999;
+        transition: 0.2s;
+    }
+    .iconBtn-small:hover{background: #f9f9f9; color: #333;transform: scale(1.05);}
+    .iconBtn-small svg{width:16px;height:16px;}
+
+    .playBtn-main{
+        width: 40px; height: 40px;
+        border-radius: 50%;
+        background: #FF6B4A !important; /* 固定品牌橙色 */
+        border: none;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer;
+        color: var(--white-100);
+        box-shadow: 0 6px 16px rgba(228, 91, 23, 0.3);
+        transition: transform 0.2s;
+    }
+    .playBtn-main:hover{transform: scale(1.1); box-shadow: 0 10px 24px rgba(255, 107, 74, 0.4);}
+    .playBtn-main svg{width:24px;height:24px; fill:currentColor;}
+
+    .playerInfoArea{flex:1; display:flex; flex-direction:column; gap:6px;}
+    .playerStatusRow{display:flex; justify-content:space-between; align-items:center; font-size:14px; font-weight:700;}
+    .statusText{color:#333;}
+    .posText{color:#999;}
+
+    .progressBarContainer{
+    width:100%; height:4px; background:#eee; border-radius:2px; overflow:hidden;
+    }
+    .progressBarFill{
+    width:0%; height:100%; background:#FF6B4A !important; transition: width 0.3s ease;
+    }
+
+    .langSelect{
+    border:1px solid rgba(0,0,0,.08);
+    background:var(--white-100);
+    padding:8px 12px;
+    border-radius:12px;
+    font-weight:700;
+    font-size:13px;
+    cursor:pointer;
+    outline:none;
+    }
+
+    /* 段落高亮樣式 */
+    .tts-speaking{
+        background: color-mix(in srgb, var(--color-accent) 3%, var(--white-100));
+        border-left: 4px solid var(--color-accent) !important;
+        padding-left: 12px !important;
+        color: #000 !important;
+    }
+
+    /* ===== TTS Keyboard Hint (Desktop/Tablet) ===== */
+    .tts-kbd-hint{
+      position: absolute;
+      right: 12px;
+      bottom: -12px;                 /* 貼住 playerBar 下緣 */
+      transform: translateY(100%);
+      background: rgba(0,0,0,.72);
+      color: rgba(255,255,255,.92);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .2px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.18);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease, transform .25s ease;
+      z-index: 2;
+      white-space: nowrap;
+    }
+
+    .tts-kbd-hint.show{
+      opacity: 1;
+      transform: translateY(100%) translateY(-4px);
+    }
+
+    /* 手機唔顯示（就算觸發都唔出） */
+    @media (max-width: 600px){
+      .tts-kbd-hint{ display:none !important; }
+    }
+
+
+    .compatHint{
+    border-radius:14px; padding:12px; border:1px dashed rgba(0,0,0,.1);
+    background:rgba(0,0,0,.02); color:#999; font-weight:700; font-size:12px; margin-bottom:16px;
+    }
+
+    /* video */
+    .mediaBox{border:1px solid rgba(0,0,0,.08);border-radius:18px;padding:16px;background:rgba(0,0,0,.02);}
+    .videoWrap{position:relative;width:100%;padding-top:56.25%;border-radius:18px;overflow:hidden;background:#000;margin-top:10px;isolation: isolate;}
+    .videoWrap iframe{position:absolute; inset:0;width:100%;height:100%;border:0;}
+    .mediaHint{font-size:13px;color:rgba(0,0,0,.55);line-height:1.6;margin:0;}
+
+
+    /* 認識 Section 專用樣式 */
+    #introGrid{ margin-top: 30px; }
+    .intro-card {
+        overflow: hidden;
+        position: relative;
+        background: var(--white-100);
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .intro-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow);
+    }
+    .intro-card-img {
+        width: 100%;
+        aspect-ratio: 2.2 / 1;
+        background-color: #f0f0f0;
+        background-size: cover;
+        background-position: center;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    .intro-card-content { padding: 18px 20px; }
+    /* 認識卡標題（intro card title） */
+    .introTitle{
+      margin: 18px 0 10px;
+      font-size: 18px;        /* 比 storyCard title 略細，層級更清楚 */
+      font-weight: 900;
+      line-height: 1.4;
+      color: #1e293b;
+
+      /* 可選：避免標題過長撐高卡片 */
+      display: -webkit-box;
+      line-clamp: 2;
+      -webkit-line-clamp: 2;  /* 最多兩行 */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .introDesc{
+      margin: 6px 0 14px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: rgba(0,0,0,.55);
+
+      display: -webkit-box;
+      line-clamp: 2;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Stepper 樣式 */
+    .stepper-content { display: flex; flex-direction: column; gap: 20px; }
+    .step-media-box {
+        width: 100%;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        margin-bottom: 10px;
+    }
+    .step-media-box img { width: 100%; display: block; object-fit: cover; }
+    .step-text-area { padding: 10px 0; }
+    .step-title-row {
+        font-size: 22px;
+        font-weight: 900;
+        color: var(--color-accent);
+        margin-bottom: 12px;
+        line-height: 1.4;
+    }
+    .step-desc { font-size: 16px; line-height: 1.8; color: #444; margin-bottom: 15px; }
+
+    .step-verse-block { 
+      padding-left: 12px; margin: 16px 0; color: var(--muted); line-height: 1.8; }
+
+    .step-verse-block strong { display: block; margin-bottom: 6px; font-weight: 700; }
+    .step-verse-block span { display: block; font-weight: 400; }
+    .step-verse.active {
+        color: #333333 !important; /* 強制固定為深灰色 */
+        font-weight: 700;
+    }
+    .stepper-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(0,0,0,0.06);
+    }
+    .step-dot-info { font-size: 14px; font-weight: 800; color: rgba(0,0,0,0.4); }
+
+    /* Fullscreen Gallery */
+    .fullscreen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      display: flex;
+      flex-direction: column;
+      z-index: 10000;
+      opacity: 0;
+      animation: fadeIn 0.3s forwards;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .fullscreen-head {
+      position: absolute;
+      top: 0; left: 0; width: 100%;
+      padding: 20px;
+      display: flex;
+      justify-content: flex-end;
+      z-index: 10002;
+    }
+    .fullscreen-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: relative;
+    }
+    .gallery-image {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .gallery-image img {
+      max-width: 100%;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    .gallery-info-overlay {
+      position: absolute;
+      top: 0; left: 0; width: auto;
+      background: radial-gradient(circle at top left, rgba(0,0,0,0.6) 0%, transparent 70%);
+      padding: 20px 40px;
+      color: var(--white-100);
+      z-index: 10003;
+      pointer-events: none;
+    }
+    .gallery-info-content { text-align: left; pointer-events: auto; }
+    .gallery-info-content h4 { font-size: 24px; margin: 0; font-weight: 900; letter-spacing: 1px;color: var(--white-92); }
+
+    .gallery-arrow {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      color: var(--white-100);
+      font-size: 24px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 10001;
+    }
+    .gallery-arrow:hover:not(:disabled) { background: var(--color-accent); transform: scale(1.1); }
+    .gallery-arrow:disabled { opacity: 0.2; cursor: not-allowed; }
+
+    /* Responsive Adjustments */
+    @media (min-width:1280px){
+      .modal-card{
+        max-width: 720px; /* 或 760px */
+      }
+    }
+    /* iPad Pro + */
+    @media (min-width:1024px){
+      .modal-card{
+        width: min(70vw, 720px);
+      }
+    }
+    @media(max-width:600px){
+      .modal-wrap {
+        width: 100%;
+        height: 100%;
+        --offset-x: 8px; /* 手機版外框位移縮小 */
+        --offset-y: 8px;
+      }
+      .modal-head {
+        padding: 12px 24px 8px;
+        flex-wrap: wrap;
+      }
+      
+      .modal-head-main {
+        flex-wrap: wrap;        /* 允許內部換行 */
+        width: 100%;
+        row-gap: 3px;
+      }
+
+      .modal-title {
+        flex: 0 0 auto;
+        font-size:28px;
+        padding-bottom: 0;
+        line-height: 1.1;
+      }
+
+      /* Tabs 強制換行到下面 */
+      .formatTabs {
+        flex-basis: 100%;
+        margin-left: 0;
+        margin-top: 0;
+        justify-content: flex-start;
+      }
+    .modal-shell{max-width:92vw}
+    .modal-scroll{padding:20px 24px 40px}
+
+
+    /* ========== Mobile Player: One-line toolbar  ========== */
+
+      /* 1) 狀態文字隱藏（保留頁數） */
+      .statusText{
+        display: none;
+      }
+      .posText{
+        font-size: 12px;
+        font-weight: 700;
+        color: #999;
+        min-width: 52px;       /* 夠放 "1 / 34" */
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      /* 2) Player bar：一行、降低高度 */
+      .playerBar{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 14px;
+      }
+
+      /* 3) 控制區：只留播放鍵（Prev/Next 不顯示） */
+      .iconBtn-small[data-prev-tts],
+      .iconBtn-small[data-next-tts]{
+        display: none;
+      }
+
+      .playerControls{
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      /* Play：視覺細，但保留可按區（避免太難按） */
+      .playBtn-main{
+        width: 36px;           /* hit area */
+        height: 36px;
+        border-radius: 50%;
+      }
+      .playBtn-main svg{
+        width: 18px;           /* icon size */
+        height: 18px;
+      }
+
+      /* 4) 中間資訊區：讓 progress 有足夠空間 */
+      .playerInfoArea{
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .playerStatusRow{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+        line-height: 1.2;
+      }
+
+      /* 5) 進度條：變薄、可 click/drag（skip） */
+      .progressBarContainer{
+        height: 3px;
+        border-radius: 999px;
+        overflow: hidden;
+        margin-top: 2px;
+
+        /* 需要可以互動 */
+        cursor: pointer;
+        touch-action: pan-x;
+      }
+      .progressBarFill{
+        height: 100%;
+      }
+
+      /* 6) 語言選單：縮成 chip */
+      .langSelect{
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 999px;
+      }
+
+
+    .gallery-arrow { width: 44px; height: 44px; font-size: 18px; }
+    .gallery-info-content h4 { font-size: 18px; }
+    }
+
+    @media (max-width: 768px) {
+      .gallery-image { padding: 20px; }
+      .gallery-info-overlay { padding: 40px 20px 20px; }
+    }
+
+    @media (max-width:900px){
+      .iconBtn-small[data-prev-tts],
+      .iconBtn-small[data-next-tts]{
+        display:none;
+      }
+    }
+
+    /* 當 Modal 打開時，加在 body 上的樣式 */
+    body.modal-open {
+        overflow: hidden !important;
+        height: 100vh; /* 強制高度等於視窗，防止背景還能動 */
+        /* 隱藏 scrollbar 的「視覺」 */
+        scrollbar-width: none;        /* Firefox */
+        -ms-overflow-style: none;     /* IE / Edge Legacy */
+    }
+    /* WebKit 系（Chrome / Edge / Safari） */
+    body.modal-open::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+    body.modal-open #hero-header,
+    body.modal-open .header {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background: rgba(255,255,255,1) !important; /* 或者 transparent 都得 */
+    }
+
+  </style>
+</head>
+
+<body class="theme-stories" data-barba="wrapper">
+    <!-- 這是你的全站通用 SVG 容器 -->
+  <div id="global-watermark" class="watermark-overlay"></div>  
+  <div id="site-menu"></div>
+
+      <!-- HERO -->
+    <section class="hero-section" style="--hero-photo: url('/assets/img/sectionHero_gospel-testimonies.jpg');">
+      <div class="content-wrapper">
+        <div class="title-group">
+          <span class="en-shadow">Witness</span>
+          <h1 class="zh-title">福音與見證</h1>
+        </div>
+        <p class="description">
+          透過不同的文章和見證，分享神的愛與恩典，看見祂的奇妙作為，並帶領人更深體會信仰的意義和生命更新。
+        </p>
+      </div>
+    </section>
+
+  <main data-barba="container" data-barba-namespace="stories">
+    <!-- 認識 Section -->
+    <section class="section">
+      <div class="container">
+        <div class="section-title theme-peach">
+          <!-- 裝飾泡泡 -->
+          <div class="particle p1"></div>
+          <div class="particle p2"></div>
+          <div class="particle p3"></div>
+          <div class="particle p4"></div>
+
+          <div class="text-content">
+            <span class="text-main">認識</span>
+            <span class="text-sub">福音</span>
+            <span class="diamond"></span>
+          </div>
+        </div>
+
+        <div class="grid" id="introGrid"></div>
+        <div class="pager" id="introPager">
+          <div class="pagerNums" id="introPagerNums"></div>
+        </div>
+        <!-- JS 會根據 INTRO_DATA 自動生成多個 intro-card -->
+      </div>
+    </section>
+
+    <!-- 見證分享 Section -->
+    <section class="section section--compact">
+      <div class="container">
+        <div class="section-title theme-lavender reveal">
+          <!-- 裝飾泡泡 -->
+          <div class="particle p1"></div>
+          <div class="particle p2"></div>
+          <div class="particle p3"></div>
+          <div class="particle p4"></div>
+
+          <div class="text-content">
+            <span class="text-main">見證</span>
+            <span class="text-sub">分享</span>
+            <span class="diamond"></span>
+          </div>
+        </div>
+
+        <div class="filtersWrap reveal" id="filtersWrap">
+          <div class="filters" id="filters"></div>
+        </div>
+
+        <div class="chapter">
+          <div class="chapter-head reveal">
+              <h2 class="chapter-title">精選故事</h2>
+          </div>
+          <div class="grid reveal" id="featuredGrid"></div>
+          <div class="divider reveal"></div>
+        </div>
+
+        <div class="chapter">
+          <div class="chapter-head reveal">
+            <h2 class="chapter-title">所有故事</h2>
+            <p class="chapter-sub" id="pageInfo"></p>
+          </div>
+          <div class="grid reveal" id="mainGrid"></div>
+          <div class="pager" id="pager">
+            <div class="pagerNums" id="pagerNums"></div>
+          </div>
+        </div>
+      </div>  
+    </section>
+
+  </main>
+
+    <!-- 統一 Modal 結構 -->
+    <div class="modal-overlay" id="modalOverlay" aria-hidden="true">
+      <div class="modal-shell" id="modalShell" role="dialog" aria-modal="true">
+        <div id="modalInner"></div>
+          <!-- modal-card 內容 -->
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="site-footer"></div>
+  
+<script>
+
+/* ========= 1. 基礎配置與數據 ========= */
+const SAMPLE_YT_ID = "B_SWAJCOctk"; // *** 必須定義這個變數 ***
+
+const ICON_DOC = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+  <path d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M11 13V19" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+  <path d="M14 15V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+  <path d="M8 15V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+</svg>`;
+const ICON_VIDEO = `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="3"></rect><path class="fillPlay" d="M11 10l4 2-4 2z"></path></svg>`;
+const ICON_IMG = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`;
+const ICON_PLAY = `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>`;
+const ICON_PAUSE = `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg>`;
+const ICON_PREV = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 20L9 12l10-8v16zM5 19V5"></path></svg>`;
+const ICON_NEXT = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4l10 8-10 8V4zM19 5v14"></path></svg>`;
+
+const CATEGORY_CONFIG = {
+  all: { label:'全部', accent:'#FF6B4A', soft:'#ffffff', show:true },
+  cat01: { label:'個人見證', accent:'#d35400', soft:'#FDE2D9', show:true },
+  cat02: { label:'感恩見證', accent:'#6c5ce7', soft:'#E5E1F4', show:true },
+  cat03: { label:'醫治見證', accent:'#16a085', soft:'#D9E9E8', show:true },
+  cat04: { label:'工作見證', accent:'#1E3A8A', soft:'#DBEAFE', show:true },
+  cat05: { label:'生命見證', accent:'#9D174D', soft:'#FCE7F3', show:true },
+  cat06: { label:'其他', accent:'#92400E', soft:'#FEF3C7', show:false }
+};
+
+
+const stories = [
+  {
+    id: 1,
+    catKey: 'cat05',
+    featured: false,
+    isNew: false,
+    author: '吳倩潔姊妹',
+    title: '恩典同行的二十五年',
+    cardDesc: '回顧這廿五年，經歷了神奇的醫治和生命的祝福，見證祂在我工作與生活中的帶領。',
+    subheaders: ['生命見證 | 經歷醫治與祝福'],
+    youtubeId: SAMPLE_YT_ID,
+    sections: [
+      {
+        h: '',
+        p: [
+          '回想這廿五年的光陰，有很多大大小小的經歷。廿五年的路走來不易，在艱難的路上，卻充滿著神的祝福和感恩。'
+        ]
+      },
+      {
+        h: '神奇的身心靈的醫治',
+        p: [
+          '在2000年教會初成立的時候，我去一次長途旅遊。其中有一天我很有信心地相信神會保守我們的路程，不會被雨淋濕；最後，就在我們進入車站後才下起大雨來，實在感恩神的保守。',
+          '回港後，在一位教會姊妹的家中祈禱聚會，當時宋牧師帶領唱詩歌期間，我心裡面卻另有一聲音，說我們所唱的並不是真的。我當刻很懼怕，因這不是我的想法。我就在心中宣告敵擋這些負面的想法，之後就不自控地流淚不止。靜下來後，我發現我的信心是這樣忽高忽低的，也懷疑自己是否真的有信心，於是便約宋牧師傾談了解一下。',
+          '後來，宋牧師跟我討論信仰，又了解我的成長。他發現我不正常地沒有了小時候的記憶，（我最早的記憶是5歲來香港時，摟著我二哥，不肯離開)。宋牧師表示在申請來港期間，因為多次來來回回，環境常轉變，使我沒有安全感，他為我進行內在醫治的禱告。我一向以為自己是一個很理性的人，在這次禱告經歷中，卻發現自己原來是一個喊包。牧師常笑說我淚濕了他的整盒紙巾。在這次禱告醫治中，神拿走了我的憂傷，又給我喜樂代替這些憂愁，並讓我認識到自己感性的一面，明白唯有靠主喜樂才是勝過情緒的關鍵，感謝主。',
+          '2023年初我覆診時，醫生照到我肚腹裡有個腫瘤。於是我告訴教會請為我禱告。神應許會奇妙的醫治我，覆診時再照，醫生也覺得很奇怪，腫瘤確實消失了，感謝神的醫治。',
+          '2024年初，我的胃部不適，持續了3個月沒有饑餓的感覺，當然也沒有胃口進食，每餐只吃一點食物（最多半盒飯）便已覺得胃脹和很飽。為了生存，我會迫自己吃東西。2024年4月首次看醫生，之後好了一個月，又再沒有饑餓感！之後再看醫生，也是好了一陣子。後來我放棄看醫生了，只是禱告及照常飲食注意營養。在9月的一個主日，我發現自己可以吃完整個飯盒。感謝神醫治了我，現在可以吃很多了。'
+        ]
+      },
+      {
+        h: '工作和生命蒙福',
+        p: [
+          '工作了廿多個年頭，在工作中及生活中從不缺乏。作為一個社工，我試過當教師、參與社區發展和復康服務等工作。2022年疫情期間，很多社福機構都嚴格要求社工必須打疫苗，神為我開路，另外預備了工作，使我不會因不打疫苗而丟了工作。此外，因著轉換工作，神也帶領我搬離一直倚賴的屋企，要我學習過獨立的生活。感謝神在這兩年裡，祂賜福我能升職加薪，來供應我搬離屋企的一切生活所需。',
+          '在廿多年的工作中，神讓我看到自己的自我中心，透過環境來拆毀我舊的生命，並建立我的生命。以往我是一個工作狂，事事都要關心，事事都想參與，不能放手，工作甚至成為我的神，我也會為工作抓狂。感謝神不斷的教導和提醒，教我把工作放在祂手中，才是工作順利的秘訣。現在每遇工作重擔就交託神，祂就為我開路，使我在工作中既得力又感到輕省！'
+        ]
+      }
+    ]
+  },
+  {
+    id: 2,
+    catKey: 'cat05',
+    featured: false,
+    isNew: false,
+    author: '梁易晴姊妹',
+    title: '恩典中的回轉',
+    cardDesc: '從童年信仰到迷失，再到重回教會，經歷主的醫治與更新。',
+    subheaders: [''],
+    youtubeId: '',
+    sections: [
+      {
+        h: '童年初遇主',
+        p: [
+          '大概在八歲的時候，有機會返教會，參加兒童主日學。記得當時的我每次聽到有關耶穌的事，都會很雀躍，唱詩時也受感動。當時在教會聽過關於罪、悔改的道，也知道禱告是很有能力的。記得其中有一首詩歌裡面說「祈禱的必得勝，我以性命來做證」這句歌詞在我心裡一直很深刻。在主日學的好幾年時間，也是很開心。直到大概在我十一歲的那年，到了差不多要離開主日學的歲數，因著抗拒面對自己內在生命的罪性，害怕面對屬靈爭戰，內心逃避於是離開了教會。'
+        ]
+      },
+      {
+        h: '迷失與痛苦',
+        p: [
+          '往後幾年發生了好些事，父母離異，自己學業成績也不理想，失去正規中學學位，曾多次在香港內地往返求職求學，花了很長時間生活也未能穩定下來。最後在香港就讀夜校，偶爾日間返工，整個人失去方向，情緒也很低落。那時生活作息長時間日夜癲倒，煙癮也很嚴重，每天都要抽一包煙，常跟朋友出去流連酒吧，內心很壓抑，身體健康也出現問題。有一段時間心口和背脊都像有一塊很硬的鐵板壓著，令每呼吸一口氣都感到痛楚。每年平安夜聽到街上報佳音的詩歌都泣不成聲，因為心裡知道從小所聽見關於上帝的說話是真實的，但自己已很難再單純，那些年間我做了很多錯誤的決定，對於自身價值、前途方向已很絕望，雖然仍會記起主耶穌，但卻只會哭著告訴自己已回不去了。'
+        ]
+      },
+      {
+        h: '重回教會',
+        p: [
+          '2017年4月份，在離開教會十多年後，我再次參加復活節聚會。那天在台前牧師為我禱告，我經歷到聖靈的觸摸，那一刻感到痛楚鬆開了，也確知主耶穌仍很愛我。那次聚會後，我重新回到教會，開始恆常參與主日崇拜，那時身體和心靈的痛楚仍存在，但神藉著詩歌和話語讓我知道，絕大部份的痛楚都跟自己的罪性和慣性的恐懼有關，主耶穌用不離不棄的愛一步一步的醫治、釋放我心靈裡壓抑和恐懼，帶領我逐步改變生活習慣，身體也漸漸回復，呼吸不再疼痛，也不再容易頭暈。'
+        ]
+      },
+      {
+        h: '戒除煙癮',
+        p: [
+          '感謝主藉著一篇講道賜給我信心戒煙，道裡面說若我們認定自己是個吸煙者，那麼身體所有反應都會被放大，會讓你以為是真的戒不掉，感到要戒掉是非常困難痛苦的事。因為我們會成為自己所想像的模樣。但因著耶穌基督已經為我死，並且復活賜給我新生命，當我相信在基督裡我是新造的人，我已是個非吸煙者。感謝神！那天把我從十年多的煙癮中釋放了！'
+        ]
+      },
+      {
+        h: '工作中的恩典',
+        p: [
+          '以往的日子因著自己的恐懼和身體狀況，我一直都未能應付工作生活，每份工最多只能做三個月。到2021年，主很奇妙地為我預備了一份文職工作。我從小數學成績極差，老師都說我沒有數理邏輯，但主卻帶領我加入了一個全職管理數據和財務的部門。在工作中主讓我認識到自己裡面有很多框架限制，做不到是因為自己未嘗試已順從了感覺，認定是不可能的。當我放開，其實處理這些事並不可怕。主又藉著不同的際遇，幫助我認識真正的自己，翻開我裡面一直不願意面對的軟弱，讓我重新學習單單倚靠他，感謝神每天拖帶，保守我在工作場所走過三年半的年日。'
+        ]
+      },
+      {
+        h: '恩典的冠冕',
+        p: [
+          '聖經詩篇65篇提到「你以恩典為年歲的冠冕」，感謝主耶穌沒有放棄我，縱然我曾選擇逃避離開，但天父的恩典又再一次領我回來。因著偏行己路，我裡面的三觀、態度都變得消極扭曲，但主耶穌卻接納、饒恕。我把自己的心靈和肉體弄得傷痕累累，但主耶穌卻用很多方法去更新、醫治。感謝耶穌堅持的愛。'
+        ]
+      }
+    ]
+  },
+  {
+    id: 3,
+    catKey: 'cat05',
+    featured: false,
+    isNew: false,
+    author: '黃志君姊妹',
+    title: '回轉的恩典',
+    cardDesc: '在人生起伏中經歷神的醫治與接納，重新回到祂的懷抱。',
+    subheaders: [''],
+    youtubeId: '',
+    sections: [
+      {
+        h: '',
+        p: [
+          '回顧人生已走過三十多個年頭，在不同的處境都看到神與自己同行﹐發現到很多愛、祝福、恩典和管教……更體會到認識主耶穌基督真是生命中最可貴的。'
+        ]
+      },
+      {
+        h: '中學初信',
+        p: [
+          '中學時，經同學邀請來到香港基督教磐石教會，當時的我都是「柴娃娃」地信耶穌。直到有一次在祈禱服侍中，神對我說：「你為什麼聽了又看了，卻對我仍疑惑呢？」當下神說中了自己心中所想﹐才知道原來神是真實的﹐因為神能辨明我一切的心思意念！在讀中五那段日子更因著婦科問題令自己很困擾，記得那段日子我經常睇醫生卻一直未能痊癒。直到有一次我禱告﹐求天父醫治我﹐經過那一次禱告我的婦科問題已經被神完全醫治了！感謝神！'
+        ]
+      },
+      {
+        h: '離開與迷失',
+        p: [
+          '過了幾年天父帶領自己再次讀書進修，但因著自己貪愛世界和情慾﹐在讀書的期間和一位男同學拍拖，我知道這不是神的心意，但因無法面對天父，我也離開了神和教會。當下一方面知道自己做錯了事情﹐卻沒有勇氣面對天父﹐另一方面卻想奔向世界﹐想尋找自己想要的「自由」。在離開天父的六年裡﹐我好像真的得到了「自由」，自己想做甚麼就做甚麼﹐在世界尋找到很多滿足。一開始的確很開心，但這份開心卻很短暫。很快我就意識到在心靈深處很空虛，很無助，沒有盼望。我發現我沒有了依靠，不是肉體的依靠，而是心靈的依靠。原來我把我生命裡面最重要的拼圖扔掉了，我變得不完整。就算我擁有物質，在世上吃喝玩樂，我得到了自己想要的，我仍然不滿足不開心。原來我一點也沒有得著「自由」，反而被罪捆綁了！我開始感到痛苦，會反問自己當初為甚麼要離開天父？我知道罪的工價是死﹐到神回來審判的那一日﹐我必定下地獄﹐永遠與神分開。'
+        ]
+      },
+      {
+        h: '回轉與接納',
+        p: [
+          '在一個平常的一天我想起了教會﹐我心裡看到了一個圖畫：在一個跑道場上看見自己在中途停下來﹐沒有繼續跑。看見教會中的弟兄姊妹在前面好努力地向著標杆奔跑。當下我好想好想重新再起跑﹐我不想繼續停下來。然後我就鼓起勇氣聯絡教會的姊妹﹐好奇妙地神再一次帶領我回到衪的家﹐能與熟悉的牧師和弟兄姊妹團聚。神沒有因為自己所犯的罪而離棄我﹐我知道在這六年裡, 神一直在我身邊看顧我。離棄神的是我﹐神卻無條件包容接納我﹐用愛去寬恕我。讚美神！'
+        ]
+      }
+    ]
+  },
+  {
+    id: 4,
+    catKey: 'cat04',
+    featured: false,
+    isNew: false,
+    author: '黃志君姊妹',
+    title: '工作的帶領與祝福',
+    cardDesc: '在失業、轉工與挑戰中，經歷神奇妙的供應與恩典。',
+    subheaders: [''],
+    youtubeId: '',
+    sections: [
+      {
+        h: '',
+        p: [
+          '感謝天父在這幾年間在我工作上的帶領、祝福和眷顧。'
+        ]
+      },
+      {
+        h: '疫情中的轉工',
+        p: [
+          '在2022年因著疫情的緣故﹐我被工作了七年的公司解僱。收到解僱信當刻真的很徬徨和失落，但好感謝天父很快就為自己預備了另一份文職的工作。很奇妙，天父在疫情艱難的時期，帶領自己從做了七年以上的銷售行業成功轉行，而薪金方面也沒有太大的落差，感謝神的供應和祝福！'
+        ]
+      },
+      {
+        h: '家庭需要與供應',
+        p: [
+          '到了2023年年初﹐當時與前夫的關係出現了問題﹐因此家庭上的開支需平均承擔。以自己當時的薪金是難以應付家裡各項開支﹐就在禱告上呼求主為我開路。好奇妙﹐神好快回應了自己的禱告！幾天後舊同事突然聯絡自己﹐說她哥哥剛成立的清酒公司需要請行政文員，而薪金待遇更是超出我的所想所求！神祝福我在試用期後薪金能調整，加薪$2000。好感謝神顧念我的需要﹐垂聽了我的禱告！'
+        ]
+      },
+      {
+        h: '新工作的開始',
+        p: [
+          '在2024年8月﹐天父又帶領我展開一個新開始。神帶領我裸辭，神也應許自己在未來一個月內會找到新工作和各方面都會更好。在向舊公司提出辭職的時候﹐上司說以現時的經濟環境難以找到新工作﹐而薪金也沒有可能會比現在的更好﹐讓我考慮清楚是否真的要辭職。',
+          '當時我在Jobsdb看見一間光學儀器的公司正在招聘行政助理的職位﹐了解工作內容後也為此禱告求主開路和帶領。感謝主﹐在send CV後的幾天就收到了該公司HR的通知約見面試。在第一次面試的過程中很順利﹐與老闆娘和HR同事傾談的過程感到很輕鬆和愉快﹐之後很快就預約第二次的面試。在第二次面試後的一天，HR同事便通知我被錄取了，感謝主！感謝神的祝福，除了薪金方面有好的調整外，新公司更由本來每年才發放一次的獎金改為雙糧！好感謝神豐盛的恩典和信實的應許。'
+        ]
+      },
+      {
+        h: '生命的學習',
+        p: [
+          '確實自己在行政工作的經驗不多，但主卻為我預備很好的公司﹐工作環境和老闆同事。好感謝主，在新公司讓我能夠學習到以前未學習過的事情﹐令我獲益良多。也感謝主透過工作和與他人共事時，讓自己看見生命中仍有很多不足、驕傲、脾氣等，幫助自己在性格和生命上能不斷悔改和進步。縱使自己在當中有信心軟弱和恐懼﹐但主仍然用衪的恩手帶領我﹐看顧我﹐願意為我預備最好的！好感謝天父﹐讚美主！'
+        ]
+      }
+    ]
+  },
+  {
+    id: 5,
+    catKey: 'cat03',
+    featured: false,
+    isNew: false,
+    author: '黃志君姊妹',
+    title: '偏頭痛與睡眠的醫治',
+    cardDesc: '在多年偏頭痛與睡眠困擾中，因著神的醫治得著改善。',
+    subheaders: [''],
+    youtubeId: '',
+    sections: [
+      {
+        h: '偏頭痛的開始',
+        p: [
+          '我在十四歲讀中三的時候就開始出現頭痛，因為當時年紀輕不知道這是甚麼狀況，只知道一頭痛放學就要立刻回家睡覺。到年紀開始漸長，才知道自己這是偏頭痛。也向父母了解過，家族都沒有偏頭痛的病史，所以會為此感到不解。'
+        ]
+      },
+      {
+        h: '疾病的折磨',
+        p: [
+          '偏頭痛對自己而言可以說是一種折磨的疾病，可以因著環境、天氣、食物、情緒、氣味、壓力等等誘發，也永遠不知道「它」會何時突襲。',
+          '多年前有一份工作是做銷售員，當時因為店舖的射燈和燈光非常強烈，導致上班初期幾乎每天都會頭痛，甚至痛到在公司嘔吐，最後不得不向公司提出辭職。但好感恩當時公司建議停薪留職讓我休養身體，待休養過後再回去工作。',
+          '偏頭痛嚴重的時候會嘔吐、渾身無力、頭暈、非常畏光等等，使我無辦法正常做事情，也會因為太痛的緣故不能睡着，像是好多根鐵柱在擊打你的頭部，甚至連眼睛和眼球都不能避免感到痛楚。而多年的頭痛導致需要經常食止痛藥，身體對止痛藥也已經免疫了。'
+        ]
+      },
+      {
+        h: '神的醫治',
+        p: [
+          '現在我已經三十五歲，好感謝神在這幾年透過禱告不斷醫治自己的身體。由嚴重到一個月頭痛十多次，到現在減至一個月痛一次，甚至一兩個月都沒有出現頭痛的情況。當中也好感謝神透過教會讓我認識到一位針灸醫師，經過幾次的針灸治療確實有改善頭痛的情況。'
+        ]
+      },
+      {
+        h: '睡眠的改善',
+        p: [
+          '感謝神同樣也改善和醫治了我多年來不太好的睡眠質素。',
+          '自己從來都不是一個容易睡著的人，就算很疲累也要在床上待一段時間才能入睡，也容易驚醒和做惡夢，以致翌日起床後會無精神和導致偏頭痛發作。嘗試過食褪黑激素和Gaba幫助入睡，有時效果也未如理想。但在這一兩年間，發覺自己睡眠質素比以前有明顯的改善。以前我不明白為什麼別人可以一上床就立刻睡著，對於自己來說卻是很困難。好感謝神在最近的日子讓自己也能經歷到，到現在幾乎可以不用食褪黑激素也可以好快入睡，甚至連自己睡着了也不知道，翌日也是滿有精神。'
+        ]
+      },
+      {
+        h: '',
+        p: [
+          '好感謝神在自己身上神蹟的醫治！無論是偏頭痛和睡眠質素，感謝神都看顧保守我的健康，令這個無法「根治」的偏頭痛被神的權能大大醫治，讚美主！'
+        ]
+      }
+    ]
+  },
+  {
+    id: 6,
+    catKey: 'cat04',
+    featured: false,
+    isNew: false,
+    author: '梁易晴姊妹',
+    title: '工作的恩典與帶領',
+    cardDesc: '從工程公司到物管公司，經歷神奇妙的供應與生命的塑造。',
+    subheaders: [''],
+    youtubeId: '',
+    sections: [
+      {
+        h: '',
+        p: [
+          '感恩天父上帝在我工作上的恩典、祝福和帶領。'
+        ]
+      },
+      {
+        h: '初入工程公司',
+        p: [
+          '2021年，天父很奇妙地為我預備一份文職工作，是在一間工程公司的工料測量部門裡處理文件。當時的我在修畢夜校中六課程後，因為身體和情緒問題，已有數年時間沒有踏足社會。但當時天父很奇妙地感動我在招聘平台申請這份工作，經過一次面試後，公司聘請了沒有學歷也沒有工作經驗的我。',
+          '由於工作內容是我從未接觸過的範疇，加上自身的情緒問題尚未處理好，在每一天的工作和生活裡都帶著很大的恐懼，天父每一天都藉著詩歌、藉著身邊的人和事鼓勵我堅持下去。天父讓我漸漸更認識自己，看清自己的框架，當遇到未知的領域就會恐懼、想逃避，總是有很多「不可能」，不願意離開自己的舒適圈。當我將自己交託給天父，坦誠自己裡面的情緒和困難，天父就使我能平靜下來，慢慢去理解擺在前面的事。就這樣日復一日，我開始有勇氣去面對工作上和人際關係上的挑戰，也在工作中學到一些知識，和同事的關係和相處變得越來越自然。'
+        ]
+      },
+      {
+        h: '恩典中的成長',
+        p: [
+          '我在工程公司工作了將近四年，這段時間蒙神很大的恩典，在頭一年有好幾位資深的同事很樂意指教我，之後又有機會轉到不同崗位學習，及後又受邀加入了培訓計劃，有進修的機會。從剛入職到最後離職，薪金加幅差不多有一倍。更寶貴的是天父很多提醒和保守，很實在地看到神怎樣介入自己的工作，解決了很多困難。'
+        ]
+      },
+      {
+        h: '辭職與新方向',
+        p: [
+          '直到2025年，公司出現財務問題，當中也有很多不義的事揭露了，由於公司拖欠薪金問題嚴重，加上在某些事上我不能再認同公司的處事手法，年頭我決定辭職，並於2025年2月15日正式離開公司。',
+          '很感恩天父為我預備了新的工作，供應我一切生活和經濟所需，在2025年2月18日，我開始在幼兒園上班，幫忙處理文件和照顧小朋友，有機會認識學校的運作，氣氛跟以往在商界是不一樣的。 但由於在幼兒園工作，中午沒有固定休息時間，體力消耗也較大，大概一個月後，開始發現幼兒園不是適合自己長遠發展的地方，於是開始向天父祈求。'
+        ]
+      },
+      {
+        h: '祈求與回應',
+        p: [
+          '我祈求天父帶領我回到商界向會計方向發展，求主為我預備一個安靜的工作環境，能有自己的座位，能有更多的學習，也希望公司人事不會太複雜。另外又求主預備新的工作地點跟居所距離不要太遠。',
+          '過了不久，天父像當初感動我申請工程公司職位時一樣，也感動我在招聘平台申請了一間物業管理公司的會計文員職位，對方也很快有回應，在經過一次愉快的面試後的幾天，便收到對方電話回覆，所提出的薪金福利都比我以往的工作要好得多。'
+        ]
+      },
+      {
+        h: '新工作的祝福',
+        p: [
+          '2025年4月份，我開始正式在物管公司上班，每一天都見證天父超過我所想所求的回應禱告！新工作地點是我從居住地方出門三十分鐘內可以到達的。主管安排了一個在最後排窗邊的座位給我，每一日都在很安靜的環境下工作。同事們也很友善，溝通相處都很直接，我們經常會在下午分享食物。工作內容涉及一些電腦系統、財務報告是我沒有處理過的，經上司和同事教導下也我學習到更多。最近大病了一場，公司的醫療福利也能覆蓋了絕大部份的醫療開支，而連續五天的病假薪金是全數補發，沒有扣錢，很感謝天父極大的恩典和供應！'
+        ]
+      },
+      {
+        h: '生命的塑造',
+        p: [
+          '我到現在還是會在面對陌生的領域時，出現恐懼等情緒，但經歷天父長年的愛護和教導後，今天我會比以往更快跑向祂，求主賜下恩典幫助我去面對、克服，不再放任自己逃避。',
+          '感謝主帶領我踏足社會負起責任，好好的生活，感謝讚美主藉著工作對我生命的塑造和管教，也在不同際遇裡保守、供應我一切所需，又帶我進到更大的祝福裡。'
+        ]
+      }
+    ]
+  },
+  {
+    id: 7,
+    catKey: 'cat01',
+    featured: false,
+    isNew: true,
+    author: '吳麗喜姊妹',
+    title: '醫治與管教中的恩典',
+    cardDesc: '在耳鳴與鼻竇炎的困境中，經歷神的醫治、管教與愛的保守。',
+    subheaders: [''],
+    youtubeId: '',
+    sections: [
+      {
+        h: '',
+        p: [
+          '好感謝神在自己身上的醫治和奇妙的安排。',
+          '在2024年年頭，我因耳鳴及聽覺問題被轉介到政府的耳鼻喉科，好感恩，我只排期三至四日便安排到見醫生。'
+        ]
+      },
+      {
+        h: '檢查與診斷',
+        p: [
+          '我當日做了聽力測試，醫生建議我做耳至頸的超聲波檢查和磁力共振檢查，及後繼續跟進…當時政府照磁力共震的約期排到2025年4月，到同年8月覆診看報告時醫生告知耳仔方面沒有嚴重的問題，但從報告顯示我的蝶竇發炎已殃及眼神經外框，醫生怕再嚴重下去會影響視力，建議要做手術清除發炎部份及在蝶竇開孔以減低復發的風險。當刻自己心裡甚是忐忑，便把我的情況放上了教會祈禱會的代禱事項上，求神醫治，若真要做手術的都求主保守。'
+        ]
+      },
+      {
+        h: '禱告中的醫治',
+        p: [
+          '一直到九月尾，與教會林牧師和兩位執事一次禱告中經歷神大能臨在，神醫治了我的鼻竇炎。我的情況得到大大的改善，再沒有半夜濁醒和視覺上出現重影的現象。我很感謝神奇妙的工作，我很清楚知道神已經醫治。'
+        ]
+      },
+      {
+        h: '疑惑與罪性',
+        p: [
+          '後來十月份的檢查報告顯示蝶竇有發炎的跡象，手術仍要進行，我有一刻疑惑：「神已經醫治了，為什麼會這樣呢？是我又軟弱犯罪使這病重新臨到自己身上嗎？」（其實神多次提醒自己不要再犯罪）這裡說到的犯罪不是作奸犯科，而是聖經裡提到人心裡的醜惡。',
+          '我的工作是協助不同崗位的輪班同事處理公司的行政及文書工作，每天的工作包含同事們的指派、協助同事處理不同的文書或私人事務、核對文書的工作等…我總會想盡辦法去做，有時需要去摸索同事的心意。為了盡量滿足同事的需要和想法，以維持表面和諧的局面，甚至會將自己的需要也忘記。隨着同事們對工作環境的不滿情緒升溫和自己的工作量只有加、沒有減的情況下，我的內心充斥着胡思亂想、謊話、驕傲和埋怨等不同的罪性，和同事們傾談時又會很容易陷入批評論斷而不自知，對人有很多不同的想法，設了很多不同的框架，這些都是神不喜悅的。想到這裡，不禁求神赦免自己犯下了很多的罪，有很多不好的想法，幫助我放下一切框架同想法，救我脫離罪及依靠聖靈改變過來。'
+        ]
+      },
+      {
+        h: '手術中的保守',
+        p: [
+          '到十一月頭，我如期要做手術，由於這手術需要全身麻醉，我心底很懼怕自己身體負荷不來，但又知道神容許這事發生在自己身上，一定有神的心意在其中。我很感恩的是，我縱然是這麼不濟又是個罪人，神都保守了我整個手術，微小到自己的心靈陰影，主都看顧也醫治，連手術後的調養也安排了。我實在是感恩感到不知用什麼言語表達…',
+          '我手術後醒來那一刻，知道神藉醫生的手幫助我身體上的更新，也醫治了我心靈的傷口，使我不再懼怕全身麻醉這個醫療程序，醒來亦真是全沒懼怕，只有感恩，知道神同自己一齊去經歷的…實在是很感恩！'
+        ]
+      },
+      {
+        h: '管教與釋放',
+        p: [
+          '記得聖經有講到：罪的工價就是死，神也讓我認知到雖然自己是神的兒女，但犯罪會破壞人與神的關係，也破壞神在自己身上的計劃和工作，留下裂縫使魔鬼撒但有機會可以進入生命及心思意念中帶來破壞，只有真心順服神的帶領，神會幫助自己悔改並帶來新希望與盼望。我感謝神藉這次疾病讓我感受到神的管教、神的醫治與釋放。'
+        ]
+      },
+      {
+        h: '愛的看顧',
+        p: [
+          '神也藉着今次的手術讓我感受到神好大的愛、看顧與保守，在我身邊安插好多好好的小天使幫助自己，讓我手術後有好好的調理，也讓我浸潤在愛中，身心靈都有煥然一新，我好感謝神讓自己經歷前所未有的愛。在此也好感謝林牧師和家麗執事的包容、提醒和愛，讓我感受到真正家人的愛，多謝妳們的付出，我會努力靠着神去改變，不再犯罪。'
+        ]
+      }
+    ]
+  },
+  {
+    id: 8,
+    catKey: 'cat02',
+    featured: false,
+    isNew: true,
+    author: '梁麗霞姊妹',
+    title: '數算神的恩典',
+    cardDesc: '從工作、經濟到生命管教，見證神二十三年的不離不棄與祝福。',
+    subheaders: [''],
+    youtubeId: '',
+    sections: [
+      {
+        h: '初遇聖靈工作',
+        p: [
+          '我在2001年底參加香港基督教磐石教會的聖誕聚餐，在筵席上聽到一位弟兄的見證分享，他說到禱告時有震抖的感覺，而當時的我也有過同樣的經歷，於是我向宋牧師了解，他回覆說這是聖靈的工作，當時聖靈向他啟示了一些關於我生命中的問題，因為那時我在工作上遇到一位十分不友善的上司，她處處在工作上為難我，使我內心充滿怨憤，晚上也不能安睡，我為了解決這些問題，於是我決定在2002年1月開始參加香港基督教磐石教會的主日崇拜。當時宋牧師教導我：「寧可讓步，聽憑主怒」，於是我學習寬恕那位上司，也常常為她禱告。當我按聖經教導而行時，奇妙地我整個人變得輕省，晚上也可以安眠，而那位上司一年半後也自行離職。'
+        ]
+      },
+      {
+        h: '經濟的供應',
+        p: [
+          '此外，我也經歷過經濟困難時得到神奇妙的供應。那時妹妹失業，我每月需要支付樓宇按揭及供養母親，家庭開支很大，記得有一次公司出糧，那天正是公司從四月至八月加薪後一次過把調整後的薪金補發給我，我收到那筆額外的款項時向神祈求，我說希望每月能多幾千元收入，好讓我能應付每月支出。垂聽禱告的神很快回應了我的禱求，不久後我獲得推薦升職，也因著升職後薪金也有調整。過了幾年，連同每年的增薪點，我的工資是我當年祈求的雙倍，神給予我的恩典真是大於我的想像，還有在教會崇拜中經歷過神多次的醫治，若要數算神的恩典，實在要花很長時才能完成。'
+        ]
+      },
+      {
+        h: '生命的管教',
+        p: [
+          '在教會裡除了經歷神的各種祝福外，同時牧師也會指出我們生命中的問題，好叫我們能夠改變。有時候一些看似沒有問題的態度和做法，原來會攔阻我們與神的關係，以致我們得不到更大的祝福。記得十月底有天早上聆聽靈命日糧(其中一個「基督教」YouTube 頻道)，那天講到約拿希望那個充滿罪惡的尼尼微城人民受到神的審判，但神卻告訴約拿祂愛尼尼微城的人，我反省到自己正如約拿一樣，看到別人犯錯時希望他們受到神審判，但神卻愛每一個人，正如我犯罪時，神仍給我機會悔改一樣，霎時間我明白到甚麼是驕傲及自義，原來神透過我們身邊的環境讓我看到自己的罪性。祂不是要來指責及懲罰我，相反地，祂要我看到自己的罪時，幫助我去擺脫那些罪，不想看到我受罪轄制，使我活得更快樂。'
+        ]
+      },
+      {
+        h: '二十三年的恩典',
+        p: [
+          '二十三年過去，若要數算神的恩典，實在多不勝數。但我最感恩的是神沒有放棄我這個罪人，這二十三年來的經歷，祂叫我明白到聖經的道理是可以應用在生活及工作上，祂也讓我看到神是何等真實及美善。感謝神不斷的管教又不斷的祝福，感謝神沒有放棄我，即使在我極悖逆的時候，祂對我仍是不離不棄，感謝主的恩慈及憐憫，認識神是我一生最大的福氣。'
+        ]
+      }
+    ]
+  },
+  {
+    id: 9,
+    catKey: 'cat02',
+    featured: false,
+    isNew: true,
+    author: '梁麗珠姊妹',
+    title: '悔改中的自由與喜樂',
+    cardDesc: '從嫉妒與自卑到身份的更新，經歷神的管教與恩典。',
+    subheaders: [''],
+    youtubeId: '',
+    sections: [
+      {
+        h: '初信與自卑',
+        p: [
+          '我自幼跟隨姊姊返教會，但信主及受洗後未曾真正認識聖經真理，直至2004年參加香港基督教磐石教會主日崇拜，從牧師講道中得知基督徒的生活應該跟從聖經的教導。這使我回想到從前的自己因為學業成績欠佳，個人沒有自信及安全感，眼見姊姊及其他朋友讀書成績好而產生自卑感，加上她們長得漂亮又多才多藝，反觀自己一無事處，嫉妒比較的性格從此而生，我希望得到別人關注，於是愛裝假，又模仿他人有學識，也不覺得嫉妒比較是神不喜悅的罪行。'
+        ]
+      },
+      {
+        h: '神學與罪性',
+        p: [
+          '在1999年我辭職進修神學，希望能作全職傳道人，自此我以為自己的屬靈生命比別人更勝一籌。 然而讀書進修並不能解決個人罪性的問題，而我更不想別人好過自己，我開始認知到自己的真實想法, 我其實並不想別人好過自己，我內心充滿了對別人的苦毒嫉妒。在磐石教會的教導中，兩位牧師多次提醒我們要悔改，從那時開始學習到甚麼是罪性、如何面對及解決生命罪惡問題。起初我聽牧師提醒我生命問題時，我會感到好害怕，內心又好抗拒，自己並不同意牧師的看法，又感到自己並非如此差劣。有次宋牧師在祈禱中並領受中提醒我: 若不脫離嫉妒的罪性，身體會產生很多疾病。聽後有點害怕，於是想努力尋求改變，但過了一段時間後就開始懶散下來。'
+        ]
+      },
+      {
+        h: '疾病的警號',
+        p: [
+          '近年果然身體的疾病不繼增加，這使我認真反省自己的罪性問題，若果不是因為疾病產生警號也不會使我醒悟過來，於是我認真尋求神的幫助，求主給我勇氣面對罪惡。很感恩神奇妙的作為，有次看一個基督教youtube 頻道，內容提到我是誰，當神讓我知道自己的身份時，是神兒女的身份，我不是孤兒，我對嫉妒比較有了不同的睇法。以往覺得有成就及受人歡迎才重要，但神讓我知道，肯定我的身份是神的話語，人生的價值不是建基在外面的事物上，若是價值建立在世界便不會穩妥，因為人生隨時都會有變化，神説我是誰我就是誰，因此我感到滿足，神的説話給了我改變的起點。'
+        ]
+      },
+      {
+        h: '真理的提醒',
+        p: [
+          '記得一位牧師講過，人並非讀書多或頭腦好就會成功，相反，人成功的因素是要好好相信耶穌，因為聖靈與我們同在，祂叫我們作首不作尾，要靠耶穌的恩典與寶血的大能每天滋潤我，讓我能從自卑和挫折中擺脫出來，得著一個新生命。'
+        ]
+      },
+      {
+        h: '悔改與更新',
+        p: [
+          '悔改不是短暫的事情，也不能靠自己的血氣去改變，生命要改變惟有依靠耶穌及聖靈。生命改變後令我感到自由及喜樂，知道自己仍有不足，我會繼續努力尋求改變。'
+        ]
+      },
+      {
+        h: '感恩與保守',
+        p: [
+          '感謝主帶領我到磐石教會，讓我認識自己, 並給我悔改的機會，感謝主在這20多年來都沒有離棄我，也使我生活不致缺乏；感謝主給我們有好好的真理教導，有兩位好好的牧師，亦有好好的弟兄姊妹；感恩在耶穌基督裡一切都是豐盛；感謝主的看顧保護。'
+        ]
+      }
+    ]
+  },
+  {
+    id: 10,
+    catKey: 'cat01',
+    featured: false,
+    isNew: true,
+    author: '李頌怡姊妹',
+    title: '從嫉妒中得釋放',
+    cardDesc: '在真理與神的愛中，從嫉妒比較的罪中得自由與喜樂。',
+    subheaders: [''],
+    youtubeId: '',
+    sections: [
+      {
+        h: '嫉妒的捆綁',
+        p: [
+          '感謝天父從嫉妒比較的罪中釋放了我。',
+          '從小時候開始，我已經常會因身邊的人好過自己、比自己得到更多關注認同而感到酸溜溜、唔開心和「唔抵得」。在成長的過程中，這性格亦沒有改變過，但因為人長大了，懂得偽裝和掩飾，雖然平時和別人相處也相安無事，但心裏的唔開心卻越滾越大。'
+        ]
+      },
+      {
+        h: '努力卻失敗',
+        p: [
+          '相信了主耶穌後，在真理中明白這些嫉妒比較的思想全是罪，自己也希望悔改。但我以為靠自己的努力可以改變，於是我不斷禁止自己內心嫉妒比較的想法，結果適得其反，內心反有更多嫉妒比較的意念彈出來。',
+          '後來我又以成長經歷作為藉口，覺得我有這個性格是因為身邊的人造成的，錯在別人。即使天父已經有很多恩典傾倒在我身上，但我仍覺唔夠，多次的勸導和管教，結果不單沒有悔改，還一味苛索神的愛、憐憫和釋放，最後更埋怨神和咒詛別人，性格愈見扭曲。'
+        ]
+      },
+      {
+        h: '神的提醒',
+        p: [
+          '但即使這樣的我，天父仍然沒有放棄。多年來祂因為愛我，所以繼續透過真理、宋牧師、林牧師和弟兄姊妹，讓我明白自己嫉妒比較的罪傷害了很多人，讓我體會到我所渴望擁有的東西，例如別人的關注認同、金錢、權力、地位等，絕對不能滿足我，即使得到也不會有長久的快樂，反之會更擔心失去，這個罪只是個長久的痛苦循環，我為此爭取了這麼多年根本是錯的。'
+        ]
+      },
+      {
+        h: '真正的滿足',
+        p: [
+          '現在我明白到，因為我是天父所創造的，唯有連結於天父、在生命中實踐真理和順服祂的引導，才是我最深的渴望，這樣行我才會有真正長久的滿足和喜樂。'
+        ]
+      },
+      {
+        h: '靠主得釋放',
+        p: [
+          '但經過多次的失敗，我已明白到我沒能力靠自己的力量去改變自己，於是我學習坦白同神講我靠自己做不到，靠主耶穌十字架赦罪之恩，求祂幫助我悔改。之後我每一次對主耶穌坦白求赦免，從天父而來的平安與接納便一次又一次的充滿我，內心能比以前更平靜下來去親近祂。'
+        ]
+      },
+      {
+        h: '生命的更新',
+        p: [
+          '直至最近一次林牧師在教會為弟兄姊妹祈禱祝福時，我經歷到內心居然會因別人得祝福而十分喜樂，那天起我知道天父已經在過去的困苦中釋放我，改變已經在我生命中發生。',
+          '深知道這只是一個開始，我仍然要單單倚靠主耶穌去成長去愛，多謝主多年來的不捨不棄，用愛去挽回我這個罪人。希望生命能成為別人的祝福，能見證主基督耶穌的愛和榮耀神。'
+        ]
+      }
+    ]
+  },
+  {
+    id: 11,
+    catKey: 'cat03',
+    featured: false,
+    isNew: true,
+    author: '吳倩潔姊妹',
+    title: '神的預備與醫治',
+    cardDesc: '在身體軟弱與搬遷中，經歷神的保守、醫治與奇妙安排。',
+    subheaders: [''],
+    youtubeId: '',
+    sections: [
+      {
+        h: '神的預備和醫治',
+        p: [
+          '2025年8月尾時，我的血壓高、心跳快，經醫生檢查及驗血後，發現癌症指數很高。感謝神為我預備了很細心又謹慎的醫生，替我做手術醫治我的身體，又恢復我的精神狀態。',
+          '由9月初至9月中，我的身體非常虛弱，每天的精神只能維持半天工作，餘下時間需要請假或休息 。當時醫生說如果我的身體仍然虛弱, 手術前一晚便需要提前入院輸血。感謝神保守，我在到9月尾逐漸恢復精神；10月初驗血後，醫生表示我可以無須預早入院輸血，即日入院便可在當日接受手術治療。',
+          '在整個手術過程中，醫生安排了同步化驗有沒有惡性的腫瘤。感謝主保守醫治，手術後經確認，沒有發現任何惡性腫瘤，我的手術也順利完成，最後亦無須附加惡性腫瘤的手術治療及費用。',
+          '手術後，我的心跳、血壓都回復正常，並順利出院了，感謝神保守一切順利。',
+          '此外，我也很感謝神在這段期間，讓我體會到自己是多麼的軟弱無能，同時也看到祂的信實和大能托著我！',
+          '另一方面，由於舊居所的租約將滿，快要決定新居所。就在9月初，我身體最軟弱的那一天，祂給了我精神和體力去尋找新的居所，祂就是那位在我願意行出去的時候，給我力量的神。亦是在當天，遇到了神為我預備最適合我居住的地方。感謝神的預備。'
+        ]
+      }
+    ]
+  },
+  {
+    id: 12,
+    catKey: 'cat02',
+    featured: false,
+    isNew: true,
+    author: '吳倩鑽姊妹',
+    title: '二十五週年的感恩',
+    cardDesc: '在疾病、疫症與生命挑戰中，經歷神的醫治、保護與改變。',
+    subheaders: [''],
+    youtubeId: '',
+    sections: [
+      {
+        h: '牧師的教導與神的愛',
+        p: [
+          '時光飛逝，教會建立二十五週年，感謝主為我們預備二位好牧師，對頑梗勃逆的自己不斷教導及永不放棄，更感謝主的愛不斷給自己改過自新的機會，求主加能賜力給我前行。',
+          '在最初返教會時，我對聖經真理不明白，很多質疑，甚至質疑在舊約聖經中神殺好多人，又點會係愛呢？幸好牧師很有耐性解釋聖經的真理，明白到是因為人犯罪，必定要受審判承擔惡果。感謝主給我智慧，開我眼目，明白神的話語。說真的至今自己仍未能完全明白掌握聖經真理，仍需要神不斷鞭策教導，求主赦免自己的罪，希望能夠真正成為神合用的器皿。神是信實的，不斷賜福給我，救我脱離疾病的痛苦。'
+        ]
+      },
+      {
+        h: '身體的醫治',
+        p: [
+          '我自小就經常嘔吐頭暈，經常出入急症室，又有鼻敏感，尤其早上更甚，只靠藥物治療控制病情。返教會後，聖經裡提到神是醫治的神，我就不斷祈禱求神醫治，真的好奇妙，神真的醫治好了，已經再沒有因天氣變化而流鼻水，不再有突然的頭暈嘔吐，感謝天父的醫治。'
+        ]
+      },
+      {
+        h: 'SARS中的保守',
+        p: [
+          '香港爆發SARS疫症期間，衪救我脫離兇惡，給我生命氣息。疫症初期防護衣物缺乏，我在醫院餵飼一位婆婆，餵餐時她突然嘔吐，嘔吐物四散，約一星期後那位婆婆証實患SARS及死亡，於是院方要所有工作人員做身體檢查，我因發燒被迫在家裡隔離一星期。那時我未返教會，只有我妹妹返教會，後來才知道神曾應許保護教會每個弟兄姐妹及其家人， 神是信實，應許沒有落空，感謝讚美主。'
+        ]
+      },
+      {
+        h: '頸痛的醫治',
+        p: [
+          '幾年前我頸痛得厲害且有刺痛反射至頭部，大力轉就很暈，做了「梗頸四」，我入醫院做了磁力共震素描，發現椎間盤異位，醫生提出可以做物理治療減輕痛楚或做手術，但由於做手術風險太高，我選擇做物理治療及食止痛藥。有－天教會聚會後，牧師為教會長者按手祈禱醫治時，我自己將雙手放在頸項上不斷祈禱求神的醫治，神蹟真的發生，聚會後發現頸痛止息，頸項活動自如，頭已經可以左右轉動，感謝主的醫治。'
+        ]
+      },
+      {
+        h: '新冠中的保護',
+        p: [
+          '香港爆發新冠疫情期間，衪救我脫離兇惡不受感染，當時工作雖然忙碌，感恩主給我健康身體及充足體力，有平安喜樂。感謝主的保護，神的恩典數之不盡。'
+        ]
+      },
+      {
+        h: '生命的改變',
+        p: [
+          '感謝主讓我知道無論出現什麼困難，祂都與我同在。如果沒有神，相信我仍活在痛苦中！我的生命是神用重價買贖的，有神同在，我的生活、心靈得著平安穩妥。從前我在別人的眼中非常兇惡，但認識神以後，祂改變了我的生命、性格，我不再像從前一樣經常發脾氣，平安與喜樂就與我同在，神卸去我的重擔，給我安穩的生活，今天我依然活在神的祝福中，讚美主！'
+        ]
+      }
+    ]
+  },
+  {
+    id: 13,
+    catKey: 'cat02',
+    featured: false,
+    isNew: true,
+    author: '曾詠皚姊妹',
+    title: '二十年的管教與祝福',
+    cardDesc: '從破碎到更新，見證神在生命、家庭與教會中的管教與祝福。',
+    subheaders: [''],
+    youtubeId: '',
+    sections: [
+      {
+        p: [
+          '我是2005年加入教會的，好感謝主在這20年來，在我的人生和我們教會各樣的祝福！'
+        ]
+      },
+      {  
+        h: '感謝主對我的管教，塑造我生命！',
+        p: [
+          '我成長於破碎家庭，從小缺乏愛，內心常常很痛苦。我常希望快快長大，以為環境改變了痛苦就會過去。然而，當我信主後，主耶穌教導我，要活得快樂，不能單靠改變外在環境，更重要是要對付在我裡面的罪。在20年間，主漸漸開我眼睛看清自己的內心世界。',
+          '原來很多時候我表面很平靜，內心世界卻時常風起雲湧，一點小事就能令我崩潰，別人一個表情或眼神，足以令我很不安，覺得被拒絕了。我也很習慣與人比較，即使信主後，也曾猜疑天父好像比較愛其他姊妹，而不怎麼愛我。這樣敏感、多疑、愛比較、看人不順眼，又怎會快樂呢？',
+          '我又發現原來自己很容易受傷，且會放大了受傷的感覺，一點皮外傷，我會感覺是刀割，我甚至覺得要記住受過的傷、認住那些傷害過我的人，才能保護自己免受下次傷害，所以我很記仇，內心很多苦毒。',
+          '主花了20年的時間，一直到今日，都在幫我除掉這些負面想法，我曾經好埋怨神，覺得丟臉，覺得神偏愛其他人，總是對付我。但慢慢我發現主在一直幫助我洗滌靈魂，叫我心靈變得強健，不用再依賴人的肯定，也能感到滿足、平安。',
+          '主又教導我，放下怨恨，祝福傷害我的人，我自己會首先蒙福。早前公司有些人事問題，鄰桌同事和我出現了不和，但當我每天奉主名祝福那些逼迫我的同事，且為這些逼迫感謝神時，我自己內心得著很大的釋放，很舒暢，不久神蹟發生了，公司突然安排我調位，遠離了攻擊我的人。',
+          '現在我終於明白天父的苦心，原來神的管教是出於愛，不想我走差而再吃苦，惟有悔改的生命才能承接神的祝福。'
+        ]
+      },
+      {
+        h: '感謝天父在我人生中全方位的祝福帶領！',
+        p: [
+          '感謝主在這20年裡，帶我媽媽和家姐都歸信了主耶穌，我看到她們的生命也在漸漸更新，我們彼此的關係也親近了許多。',
+          '感謝主賜我圓滿的家庭，每天回家都好療癒，因為可以見到一起在主裡同行的丈夫、可愛的女兒，和熱烈歡迎我的小狗。以前我以為祝福只屬於其他人的，很難想像今天我竟能如此幸福，原來天父從不偏心！',
+          '又好感恩，在我懷孕前幾個月，天父突然帶領我們搬到一個3房單位，又奇妙地帶領我轉工，新公司待遇福利很好，有很好的醫療保險還有產科保障，當時未懷孕的我是不太在乎的。原來天父是首先預備好了一切，才安排BB來到。',
+          '又感謝天父為我的事業舖路，我不會為自己籌謀，學歷也不高，但神很祝福我，出身後每次轉工都好順利，一直有加薪，現在我是律師樓的秘書，收入豐厚，不用再捱窮了。'
+        ]
+      },
+      {
+        h: '感謝神在磐石教會的帶領！',
+        p: [
+          '感謝主帶領我們教會，無論環境如何，神一直帶領我們教會禱告，在禱告中挽回了我們很多弟兄姊妹。感謝主賜我們兩位非常好的牧師，一直忠心事奉，甘願委身和犧牲，非常愛護我們，願意用愛心向我們說誠實話，又為我們樹立了很好的榜樣。人生中可以遇到這樣的良師益友，真是我們的福氣！',
+          '回望這20年，我覺得不可思議，不堪如我，天父竟這樣看顧祝福，上帝真信實！最近，我常覺得自己好像舊約聖經中的雅各，他人品不好，神卻揀選了他，管教、熬煉，並大大祝福他。當年雅各為逃避哥哥追殺，隻身離開家鄉，期間神賜他十三個兒女和極多財產，許多年後，雅各終於回鄉了，他對神說：「你向僕人所施的一切慈愛和誠實，我一點也不配得；我先前只拿着我的杖過這約旦河，如今我卻成了兩隊了。」同樣，我也想對天父說，20年前，我孤苦伶仃來到祢面前，今天我是一家人侍立祢跟前了，主祢向我所施的慈愛和誠實，我一點也不配得。願一切頌讚、榮耀歸與主耶和華上帝！'
+        ]
+      }
+    ]
+  },
+  {
+    id: 14,
+    catKey: 'cat01',
+    featured: false,
+    isNew: true,
+    author: '周英偉弟兄',
+    title: '恩典中的更新',
+    cardDesc: '從愛世界到悔改更新，見證神的憐憫與信實。',
+    subheaders: [''],
+    youtubeId: '',
+    sections: [
+      {
+        h: '神的恩典與憐憫',
+        p: [
+          '感謝天父的恩典和憐憫，使我能在磐石教會中成長，明白各樣的真理，察驗自己的罪性，屬靈生命得以更新！',
+          '自2017年6月25日由天主教轉會，感謝天父的帶領，我逐漸察覺自己愛世界的罪性，包括以往的迷信、貪婪、情慾、驕傲，使我一直與神的恩典隔絕，故經歷無數的事業，感情的失敗後，漸漸迷失自我，過著世俗糜爛不堪的生活。',
+          '自從我恆常返教會崇拜，不斷經歷神的恩典和神蹟奇事，尤其在我的事業上，神救我脫離很大的事業和財務的危機；甚至在疫情期間，神亦保守了我，不但沒有失業或扣薪，相反還有加底薪，加佣金。另外，神亦安排了一段婚姻給我，可惜我最初自己沒有好好控制自己的慾念，破壞了神原先的計劃，最終雖然我們自主結婚了，但在不久後便面臨分居的結果；然而，感謝神在我們決定分居後，透過聽道和閱讀屬靈的書籍，神帶領我更明白和了解自己罪的根源，亦深深感受到神的大愛和同在，使自己下定了決心，尋求改變，最後神亦給了我們復合的機會，之後還賜給我們一個健康可愛，開心快樂的女兒。',
+          '這些經歷使我確實相信神的信實，只要自己真心祈求，認罪悔改，祂的應許，沒有一個是落空的，甚至超乎自己的所想所求。但願自己能夠持守真理，過一個得勝的生活，透過分享自身的經歷和見證，能夠引領自己未信主的家人和朋友歸主。'
+        ]
+      }
+    ]
+  }
+];
+
+const INTRO_DATA = [
+  {
+    id: 'intro-1',
+    catKey: 'cat04',
+    types: ['reading', 'video', 'image'], 
+    coverImg: "../assets/gospel/intro-1/cover.jpg",
+    title: "認識福音的核心",
+    introHeading: "神的愛與救恩",
+    introSubheading: "了解罪的代價，以及耶穌基督為我們預備愛的禮物，帶領我們回到神裡。",
+    youtubeId: "B_SWAJCOctk",
+    steps: [
+      {
+        question: "為什麼神要將祂的獨生子賜給我們呢？",
+        img: "../assets/gospel/intro-1/01.jpg",
+        content: [
+          "我們都會因為收到突如其來的禮物而感到驚喜和快樂。創造天地萬物的真神，在二千年前就為我們預備了一份「愛的禮物」要送給我們，祂很希望我們能接受祂。"
+        ],
+        verses: [
+          { verse: "約翰福音 三章16節", text: "「神愛世人，甚至將祂的獨生子賜給他們，叫一切信祂的，不致滅亡，反得永生。」" }
+        ]
+      },
+      {
+        question: "那麼，人類犯罪的代價是甚麼？",
+        img: "../assets/gospel/intro-1/02.jpg",
+        content: [
+          "根據聖誕樹的記載，起初神創造人類，神和人是有著相愛、和諧的父子關係。人隨時都能夠體驗到神的同在和慈愛，享受著與神同行的快樂。因為人類的始祖違背了神的吩咐，導致與神隔絕。從此，人類不能夠再經歷與神同在的快樂，這就是人類罪性的源頭。"
+        ],
+        verses: [
+          { verse: "羅馬書 三章23節", text: "「因為世人都犯了罪，虧缺了神的榮耀。」" }
+        ]
+      },
+      {
+        question: "人死後，還有甚麼事情會發生？",
+        img: "../assets/gospel/intro-1/03.jpg",
+        content: [
+          "人需要為自己所做的事情付上代價，而罪的代價就是「死亡」。不單只是肉體的死亡，而我們的靈魂也要與神隔絕。"
+        ],
+        verses: [
+          { verse: "羅馬書 六章23節", text: "「因為罪的工價乃是死，惟有神的恩賜，在我們的主基督耶穌裡，乃是永生。」" },
+          { verse: "希伯來書 九章27節", text: "「按著定命，人人都有一死，死後且有審判。」" }
+        ]
+      },
+      {
+        question: "怎樣可以回到神那裡?",
+        img: "../assets/gospel/intro-1/04.jpg",
+        content: [
+          "歷代以來，人試圖用種種方法，例如:好行為、道德、哲學或宗教...等方法，要回到神那裡去，但總是得不著。於是，神就為我們預備了一份「愛的禮物」送給我們。神差祂的獨生兒子，耶穌基督為我們的罪死於十字架上，修補了人和神之間的深溝。"
+        ],
+        verses: [
+          { verse: "羅馬書 五章8節", text: "「唯有基督在我們還作罪人的時候為我們死，神的愛就在此向我們顯明了。」" },
+          { verse: "哥林多前書 十五章3-4節", text: "「基督照聖經所說，為我們的罪死了，而且被埋葬了；又照聖經所說，第三天復活了。」" },
+          { verse: "提摩太前書 二章5節", text: "「因為只有一位神，在神和人中間，只有一位中保，乃是降世為人的基督耶穌。」" }
+        ]
+      },
+      {
+        question: "怎樣才可以得到這份愛的禮物呢？",
+        img: "../assets/gospel/intro-1/05.jpg",
+        content: [
+          "我們只要承認自己是個罪人，求主耶穌赦免自己所犯的罪，邀請主耶穌進入自己的心裡，做自己個人的救主和生命的主。我們即成為神的兒女，得著永生，並且得著神藉著耶穌基督所賜給我們豐盛的生命。"
+        ],
+        verses: [
+          { verse: "啟示錄 三章20節", text: "「看哪，我站在門外叩門，若有聽見我聲音就開門的，我要進到他那裡去，我與他，他與我一同坐席。」" }
+        ]
+      }
+    ]
+  },
+  // 未來可以新增更多 intro-x
+];
+
+/* ========= 2. 全域狀態與工具 ========= */
+let activeCatKey = 'all';
+let introPage = 1;
+let storypage = 1;
+const INTRO_PAGE_SIZE = 6;   // 你想每頁顯示幾張 intro
+const STORY_PAGE_SIZE = 6;
+let currentStepIdx = 0; // 用於 Stepper 和 Gallery
+let currentModalData = null;
+
+const esc = (s) => String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
+const themeByKey = (key) => CATEGORY_CONFIG[key] || CATEGORY_CONFIG.all;
+
+/* ========= 3. 語音系統 (TTS) ========= */
+const TTS = {
+  synth: window.speechSynthesis,
+  voices: [],
+  paras: [],
+  idx: 0,
+
+  lang: 'zh-HK',
+
+  // 各語言舒適語速（字/秒感覺）
+  rateByLang: {
+    'zh-HK': 0.9,   // 粵語：聲調密，慢少少
+    'zh-CN': 0.95,   // 普通話：可稍快
+    'zh-TW': 0.95
+  },
+
+  get rate() {
+    return this.rateByLang[this.lang] ?? 0.95;
+  },
+
+  refresh() {
+    this.voices = this.synth.getVoices();
+  },
+
+  pickVoice(lang) {
+    const cand = this.voices.filter(v =>
+      v.lang.toLowerCase().includes(
+        lang.toLowerCase().replace('zh-','')
+      )
+    );
+    return cand.find(v => v.name.includes('Google')) || cand[0] || null;
+  },
+
+  cancel() {
+    this.synth.cancel();
+  }
+};
+
+if (TTS.synth) {
+  TTS.synth.onvoiceschanged = () => TTS.refresh();
+  TTS.refresh();
+}
+
+/* ========= 4. 彈窗內容渲染器 (Unified Renderers) ========= */
+
+function getPlayerBarHTML() {
+  if(!TTS.synth) return `<div class="compatHint">您的瀏覽器不支援語音功能。</div>`;
+  return `
+  <div class="playerBar">
+    <div class="playerControls">
+      <button class="iconBtn-small" data-prev-tts>${ICON_PREV}</button>
+      <button class="playBtn-main" data-pp-tts>${ICON_PLAY}</button>
+      <button class="iconBtn-small" data-next-tts>${ICON_NEXT}</button>
+    </div>
+    <div class="playerInfoArea">
+      <div class="playerStatusRow"><span class="statusText">準備就緒</span><span class="posText">1 / 1</span></div>
+      <div class="progressBarContainer"><div class="progressBarFill"></div></div>
+    </div>
+    <select class="langSelect" data-lang-tts>
+      <option value="zh-HK" ${TTS.lang==='zh-HK'?'selected':''}>粵語</option>
+      <option value="zh-CN" ${TTS.lang==='zh-CN'?'selected':''}>普通話</option>
+    </select>
+  </div>`;
+}
+
+function renderVideoContent(ytId) {
+  return `<div class="mediaBox"><div class="videoWrap"><iframe src="https://www.youtube.com/embed/${ytId}" allowfullscreen></iframe></div></div>`;
+}
+
+
+function renderReadingContent(sections) {
+  return `
+    ${getPlayerBarHTML()}
+    ${sections.map((s, idx) => `
+      <div class="modal-section">
+        ${s.h ? `<h3 data-tts="p">${esc(s.h)}</h3>` : ''} 
+        ${s.p.map(p => `<p data-tts="p">${esc(p)}</p>`).join('')}
+      </div>
+      ${idx < sections.length - 1 ? '<div class="modal-divider"></div>' : ''}
+    `).join('')}
+  `;
+}
+
+
+function renderStepperContent(data) {
+  return `
+      ${getPlayerBarHTML()}
+        ${data.steps.map((step, idx) => `
+          <div class="modal-section">
+            <h3 class="step-title-row" data-tts="p">${esc(step.question)}</h3>
+            ${step.content.map(p => `<p class="step-desc" data-tts="p">${esc(p)}</p>`).join('')}
+            ${step.verses.map(v => `
+              <div class="step-verse-block">
+                <strong data-tts="p">${esc(v.verse)}</strong>
+                <span data-tts="p">${esc(v.text)}</span>
+              </div>
+            `).join('')}
+          </div>
+          ${idx < data.steps.length - 1 ? '<div class="modal-divider"></div>' : ''}
+        `).join('')}
+  `;
+}
+
+
+/* ========= 5. 彈窗管理器 (Modal Manager) ========= */
+const ModalManager = {
+  overlay: document.getElementById('modalOverlay'),
+  inner: document.getElementById('modalInner'),
+
+  open(data, initialTab = 'reading') {
+    currentModalData = data;
+    currentStepIdx = 0;
+    const cfg = themeByKey(data.catKey);
+    
+    // 判斷可用 Tabs
+    const hasReading = (data.sections && data.sections.length > 0) || (data.steps && data.steps.length > 0);
+    const hasVideo = !!data.youtubeId;
+    const hasImage = !!(data.steps && data.types && data.types.includes('image'));
+    
+    const tabs = [];
+    if(hasReading) tabs.push({id:'reading', label:'閱讀'});
+    if(hasVideo) tabs.push({id:'video', label:'影片'});
+    if(hasImage) tabs.push({id:'image', label:'圖像'});
+
+    // 決定實際要顯示的 tab
+    const availableTabIds = tabs.map(t => t.id);
+    const resolvedInitialTab = availableTabIds.includes(initialTab)
+      ? initialTab
+      : availableTabIds[0]; // fallback 到第一個可用 tab
+      
+    //<div class="modal-note">${data.subheaders.map(h => `<div>${esc(h)}</div>`).join('')}</div>
+    this.inner.innerHTML = `
+      <div class="modal-wrap" style="--color-accent:${cfg.accent};--soft:${cfg.soft};" onclick="event.stopPropagation()">
+        <div class="modal-bg"></div>
+        <div class="modal-card">
+          <div class="modal-head">
+            <div class="modal-head-main">
+              <h2 class="modal-title">${esc(data.title)}</h2>
+              ${tabs.length > 1 ? `
+                <div class="formatTabs">
+                  ${tabs.map(t => `<button class="tabBtn ${t.id===initialTab?'active':''}" data-tab="${t.id}">${t.label}</button>`).join('')}
+                </div>
+              ` : ''}
+            </div>
+           <button class="close-btn" onclick="ModalManager.close()">
+              <svg width="16" height="16">
+                <line x1="2" y1="2" x2="14" y2="14" stroke="currentColor" stroke-width="2"/>
+                <line x1="14" y1="2" x2="2" y2="14" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </button>
+          </div>            
+          <div class="modal-body">
+            <div class="modal-scroll"><div id="modalContent"></div></div>
+          </div>
+        </div>
+      </div>`;
+
+    this.overlay.classList.add('active');
+    this.overlay.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+    this.switchTab(resolvedInitialTab);
+    
+    
+    // 綁定 Tab 事件
+    this.inner.querySelectorAll('.tabBtn').forEach(btn => {
+      btn.onclick = () => this.switchTab(btn.dataset.tab);
+    });
+
+    // === 隱藏 menu bar 和 widget ===
+   UIVisibility.hideAll();
+
+
+    // 記低開 modal 前嘅焦點，關閉時回復
+    this.__lastFocus = document.activeElement;
+
+    // focus 先落去 close button（或第一個 tab）
+    const wrap = this.inner.querySelector('.modal-wrap');
+    const playBtn = this.inner.querySelector('.playBtn-main');
+    
+    if (window.ModalFocus) {
+      ModalFocus.activateFocusTrap(this.overlay, playBtn || wrap);
+    }
+
+  },
+
+  switchTab(tabId) {
+      const container = document.getElementById('modalContent');
+      const tabs = this.inner.querySelectorAll('.tabBtn');
+      tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === tabId));
+      
+      if (window.__ttsStopPlayback) window.__ttsStopPlayback();
+
+      
+      if(tabId === 'video') {
+        container.innerHTML = renderVideoContent(currentModalData.youtubeId);
+      } else if(tabId === 'image') {
+        // 先把資料存起來，避免關閉 Modal 後 currentModalData 變成 null
+        const dataToPass = currentModalData; 
+        
+        // fullscreen 關閉後固定回到「閱讀」
+        // UX rule:
+        // Fullscreen gallery is a temporary focus mode,
+        // user always returns to reading context.
+        window.__returnTabAfterFullscreen = 'reading';
+
+        // 先解除 modal 的 focus trap
+        if (window.ModalFocus) ModalFocus.deactivateFocusTrap();
+
+        // 延遲一小段時間執行，確保 DOM 狀態穩定
+        setTimeout(() => {
+          openGalleryFullscreen(dataToPass); 
+        }, 100);
+      } else {
+        if(currentModalData.steps) {
+          container.innerHTML = renderStepperContent(currentModalData, currentStepIdx);
+        } else {
+          container.innerHTML = renderReadingContent(currentModalData.sections);
+        }
+        bindTTSControls();
+      }
+    },
+
+  close() {
+    // 先停播放（令 token 失效 + cancel）
+    if (window.__ttsStopPlayback) {
+      window.__ttsStopPlayback();
+    } else {
+      // fallback：就算 stopPlayback 不存在都會停到
+      TTS.cancel();
+      setTimeout(() => TTS.cancel(), 0);
+    }
+
+    // 關 modal
+    this.overlay.classList.remove('active');
+    this.overlay.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-open');
+    this.inner.innerHTML = '';
+    currentModalData = null;
+
+    // 清理 keyboard / hint
+    if (window.__ttsKeyHandler) {
+      window.removeEventListener('keydown', window.__ttsKeyHandler);
+      window.__ttsKeyHandler = null;
+    }
+    if (window.__ttsHintTimer) {
+      clearTimeout(window.__ttsHintTimer);
+      window.__ttsHintTimer = null;
+    }
+
+    // **最後清掉全域 stopPlayback（重點）**
+    window.__ttsStopPlayback = null;
+
+    // === 恢復 menu bar 和 widget ===
+    UIVisibility.show();
+
+    // 關閉 modal：解除 focus trap
+    if (window.ModalFocus) ModalFocus.deactivateFocusTrap();
+
+    // 回復焦點到開 modal 前
+    if (this.__lastFocus && window.ModalFocus) {
+      ModalFocus.restoreFocus(this.__lastFocus);
+    }
+    this.__lastFocus = null;
+
+  }
+};
+
+/* ========= 6. TTS 邏輯控制 ========= */
+function bindTTSControls() {
+  const container = document.getElementById('modalInner');
+  TTS.paras = Array.from(container.querySelectorAll('[data-tts="p"]'));
+  TTS.idx = 0;
+  
+  const ppBtn = container.querySelector('[data-pp-tts]');
+  const langSel = container.querySelector('[data-lang-tts]');
+  const prevBtn = container.querySelector('[data-prev-tts]');
+  const nextBtn = container.querySelector('[data-next-tts]');
+
+  if(!ppBtn) return;
+  if(TTS.paras.length === 0) {
+    ppBtn.disabled = true;
+    return;
+  }
+
+  const updateUI = () => {
+    const bar = container.querySelector('.progressBarFill');
+    const pos = container.querySelector('.posText');
+    if(bar) bar.style.width = ((TTS.idx + 1) / TTS.paras.length * 100) + '%';
+    if(pos) pos.textContent = `${TTS.idx + 1} / ${TTS.paras.length}`;
+  };
+
+
+  // ===== 播放狀態控制（避免 cancel 後 onend 繼續播）=====
+  let playToken = 0;          // 每次 stop/close 都會令 token +1，舊 utterance 會自動失效 (Playback guard: Token invalidates stale utterance callbacks after stop/close)
+  let isPausedByUser = false; // 我哋自己管理 pause 狀態（唔用 synth.pause/resume）
+  let playDelayTimer = null;
+
+  const stopPlayback = () => {
+    playToken++;              // 令所有舊 utterance onend 無效
+    isPausedByUser = false;
+
+    if (playDelayTimer) {
+      clearTimeout(playDelayTimer);
+      playDelayTimer = null;
+    }
+
+    TTS.cancel();
+    // Chrome 有時 cancel 後仍殘留，補一刀更乾淨（可減少 tab 喇叭 icon 殘留）
+    setTimeout(() => TTS.cancel(), 0);
+
+    TTS.paras.forEach(p => p.classList.remove('tts-speaking'));
+    ppBtn.innerHTML = ICON_PLAY;
+    const statusEl = container.querySelector('.statusText');
+    if (statusEl) statusEl.textContent = '';
+  };
+
+  window.__ttsStopPlayback = stopPlayback;
+
+  const startPlayback = () => {
+    isPausedByUser = false;
+    playToken++;
+
+    // 立即回饋 UI
+    const statusEl0 = container.querySelector('.statusText');
+    if (statusEl0) statusEl0.textContent = '準備中…';
+    ppBtn.innerHTML = ICON_PAUSE;
+
+    // 清掉上一次的 timer（避免連按）
+    if (playDelayTimer) clearTimeout(playDelayTimer);
+
+    const token = playToken;
+    playDelayTimer = setTimeout(() => {
+      speak(token);
+    }, 300); // 可調 200~400
+  };
+
+  const restartPlaybackAtCurrentIdx = () => {
+    isPausedByUser = false;
+    playToken++;
+    const token = playToken;
+
+    if (playDelayTimer) clearTimeout(playDelayTimer);
+    playDelayTimer = setTimeout(() => speak(token), 150);
+  };
+
+  // ==============================
+  // Adaptive speaking rate by paragraph length
+  // ==============================
+  // Google voice 判斷（一定要有，否則會播唔到）
+  const isGoogleVoice = (voice) =>
+    voice && voice.name && voice.name.includes('Google');
+
+  // 段落長度微調 + 安全上下限（修正你現有 getAdaptiveRate）
+  // UX tuning:
+  // Clamp rate to avoid unnatural speed for long/short paragraphs.
+  const getAdaptiveRate = (baseRate, text) => {
+    const len = (text || '').length;
+    let rate = baseRate;
+
+    if (len <= 20)       rate = baseRate + 0.05;
+    else if (len <= 60)  rate = baseRate;
+    else if (len <= 120) rate = baseRate - 0.05;
+    else                 rate = baseRate - 0.1;
+
+    // 安全上下限（避免太慢/太快）
+    rate = Math.min(1.05, Math.max(0.8, rate));
+    return rate;
+  };
+
+  const speak = (token) => {
+
+  // 如果已經被 stop / close（token 唔同），直接唔做
+  if (token !== playToken) return;
+  // 停止任何正在播放的語音
+  TTS.cancel();
+  TTS.cancel();
+
+  // 取得當前段落文字
+  const text = TTS.paras[TTS.idx].textContent || '';
+
+  // 建立語音物件
+  const utter = new SpeechSynthesisUtterance(text);
+
+  // 語言與語音
+  utter.lang = TTS.lang;
+  // voice 可能未載入/搵唔到，記得做 guard
+  const picked = TTS.pickVoice(TTS.lang);
+  if (picked) utter.voice = picked;
+
+  // ==============================
+  // 語速計算（語言 baseline + Google bias + 段落微調）
+  // ==============================
+  const baseRate = TTS.rate; // 來自 rateByLang / getter
+  const voiceBias = isGoogleVoice(utter.voice) ? -0.05 : 0;
+
+  utter.rate = getAdaptiveRate(baseRate + voiceBias, text);
+
+  // 立即更新 UI，令「按 Play 反應慢」感覺改善（先顯示準備中）
+  const statusEl0 = container.querySelector('.statusText');
+  if (statusEl0) statusEl0.textContent = '準備中…';
+  ppBtn.innerHTML = ICON_PAUSE;
+
+  // ==============================
+  // 開始朗讀
+  // ==============================
+  utter.onstart = () => {
+    if (token !== playToken) return;
+
+    const statusEl = container.querySelector('.statusText');
+    if (statusEl) statusEl.textContent = '正在朗讀';
+
+    ppBtn.innerHTML = ICON_PAUSE;
+
+    // 高亮目前段落
+    TTS.paras.forEach(p => p.classList.remove('tts-speaking'));
+    TTS.paras[TTS.idx].classList.add('tts-speaking');
+
+    // 捲動到目前段落
+    TTS.paras[TTS.idx].scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
+
+    updateUI();
+  };
+
+  // ==============================
+  // 朗讀結束
+  // ==============================
+  utter.onend = () => {
+    // 如果 token 唔同，代表已 stop/close，唔好續播
+    if (token !== playToken) return;
+    if (isPausedByUser) return; // 如果用戶 pause 咗，唔好自動播下一段
+
+    if (TTS.idx < TTS.paras.length - 1) {
+      // 自動播放下一段
+      TTS.idx++;
+      speak(token);
+    } else {
+      // 全部朗讀完成
+      const statusEl = container.querySelector('.statusText');
+      if (statusEl) statusEl.textContent = '朗讀完成';
+
+      ppBtn.innerHTML = ICON_PLAY;
+    }
+  };
+
+  // 加 error handler，避免無聲時你唔知原因（例如 not-allowed / voice-unavailable 等）
+  utter.onerror = (e) => {
+    if (token !== playToken) return;
+    console.error('TTS error:', e.error || e);
+    const statusEl = container.querySelector('.statusText');
+    if (statusEl) statusEl.textContent = '播放失敗';
+    ppBtn.innerHTML = ICON_PLAY;
+  };
+
+  // 開始播放
+  TTS.synth.speak(utter);
+};
+
+  // ==============================
+  // Seek / Scrub: click + drag 跳段
+  // ==============================
+  const barContainer = container.querySelector('.progressBarContainer');
+  const barFill = container.querySelector('.progressBarFill');
+
+  // 小工具：限制範圍
+  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+  // 根據 X 位置計算要跳去第幾段
+  const calcTargetIdxFromClientX = (clientX) => {
+    if (!barContainer || !TTS.paras || TTS.paras.length === 0) return 0;
+    const rect = barContainer.getBoundingClientRect();
+    const ratio = clamp((clientX - rect.left) / rect.width, 0, 1);
+    // 用 round 令跳段更自然（你亦可改 floor）
+    return Math.round(ratio * (TTS.paras.length - 1));
+  };
+
+  // 拖動時先顯示進度（不一定立即播）
+  const previewToIdx = (idx) => {
+    idx = clamp(idx, 0, TTS.paras.length - 1);
+    TTS.idx = idx;
+
+    // 即時更新 UI（進度條與 1/34）
+    const percent = ((TTS.idx + 1) / TTS.paras.length) * 100;
+    if (barFill) barFill.style.width = percent + '%';
+    const pos = container.querySelector('.posText');
+    if (pos) pos.textContent = `${TTS.idx + 1} / ${TTS.paras.length}`;
+  };
+
+  // 放手／點擊後真正跳段
+  const seekToIdx = (idx) => {
+    idx = clamp(idx, 0, TTS.paras.length - 1);
+    TTS.idx = idx;
+
+    // 若正在播放/暫停，跳段後繼續播；否則只更新 UI 
+    if (TTS.synth && TTS.synth.speaking) {
+      restartPlaybackAtCurrentIdx();
+    } else {
+      updateUI();
+    }
+  };
+
+  // 綁定：click
+  if (barContainer) {
+    barContainer.addEventListener('click', (e) => {
+      const idx = calcTargetIdxFromClientX(e.clientX);
+      seekToIdx(idx);
+    });
+  }
+
+  // 綁定：drag（Pointer Events，支援滑鼠 + 觸控）
+  let isScrubbing = false;
+
+  const onPointerMove = (e) => {
+    if (!isScrubbing) return;
+    // 避免頁面滾動干擾拖曳
+    if (e.cancelable) e.preventDefault();
+
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const idx = calcTargetIdxFromClientX(clientX);
+    previewToIdx(idx);
+  };
+
+  const onPointerUp = (e) => {
+    if (!isScrubbing) return;
+    if (e.cancelable) e.preventDefault();
+    isScrubbing = false;
+
+    const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+    const idx = calcTargetIdxFromClientX(clientX);
+    seekToIdx(idx);
+
+    window.removeEventListener('mousemove', onPointerMove);
+    window.removeEventListener('mouseup', onPointerUp);
+    window.removeEventListener('touchmove', onPointerMove);
+    window.removeEventListener('touchend', onPointerUp);
+  };
+
+
+  if (barContainer) {
+    const onPointerDown = (e) => {
+      // 避免點擊變成選取文字 / 觸控變滾動
+      if (e.cancelable) e.preventDefault();
+      isScrubbing = true;
+
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const idx = calcTargetIdxFromClientX(clientX);
+      previewToIdx(idx);
+
+      window.addEventListener('mousemove', onPointerMove, { passive: false });
+      window.addEventListener('mouseup', onPointerUp, { passive: false });
+      window.addEventListener('touchmove', onPointerMove, { passive: false });
+      window.addEventListener('touchend', onPointerUp, { passive: false });
+    };
+
+    // 同時支援 mouse + touch
+    barContainer.addEventListener('mousedown', onPointerDown, { passive: false });
+    barContainer.addEventListener('touchstart', onPointerDown, { passive: false });
+  }
+
+
+  // ==============================
+  // (1) First-play keyboard hint (Desktop/Tablet)
+  // 顯示一次：Space 播放/暫停 · ← → 跳段
+  // ==============================
+  const shouldShowHint = () => window.matchMedia('(min-width: 601px)').matches;
+
+  const ensureHintEl = () => {
+    // 將 hint 放喺 playerBar 附近（較自然）
+    const bar = container.querySelector('.playerBar');
+    if (!bar) return null;
+
+    // playerBar 需要 relative，hint 用 absolute
+    if (getComputedStyle(bar).position === 'static') {
+      bar.style.position = 'relative';
+    }
+
+    let hint = bar.querySelector('.tts-kbd-hint');
+    if (!hint) {
+      hint = document.createElement('div');
+      hint.className = 'tts-kbd-hint';
+      hint.textContent = '⌨︎ 快捷鍵：Space 播放/暫停 · ← → 跳段';
+      bar.appendChild(hint);
+    }
+    return hint;
+  };
+
+  const showHintOnce = () => {
+    if (!shouldShowHint()) return;
+
+    // 用 localStorage 記錄：同一個瀏覽器只顯示一次
+    // 如果你唔想跨頁記錄，可改用 sessionStorage
+    const key = 'tts_kbd_hint_shown_v1';
+    try {
+      if (localStorage.getItem(key) === '1') return;
+      localStorage.setItem(key, '1');
+    } catch(e) {
+      // storage 被禁用都無所謂：最壞情況只係每次開 modal 都顯示一次
+    }
+
+    const hint = ensureHintEl();
+    if (!hint) return;
+
+    // 顯示 3.5 秒自動淡出
+    hint.classList.add('show');
+    clearTimeout(window.__ttsHintTimer);
+    window.__ttsHintTimer = setTimeout(() => {
+      hint.classList.remove('show');
+    }, 3500);
+  };
+
+  // ==============================
+  // Others  ← 定義 onclick（就可安全呼叫 showHintOnce）
+  // ==============================
+
+  ppBtn.onclick = () => {
+    // 如果正在播放（speaking），我哋當作 pause：用 cancel 停止
+    if (TTS.synth.speaking) {
+
+      // 清掉延遲播放 timer
+      if (playDelayTimer) {
+        clearTimeout(playDelayTimer);
+        playDelayTimer = null;
+      }
+
+      isPausedByUser = true;
+      playToken++;      // 令當前 utterance 的 onend 失效
+      TTS.cancel();
+      setTimeout(() => TTS.cancel(), 0);
+      ppBtn.innerHTML = ICON_PLAY;
+
+      const statusEl = container.querySelector('.statusText');
+      if (statusEl) statusEl.textContent = '已暫停';
+      return;
+    }
+
+    // 如果唔係播放中：按 Play
+    showHintOnce?.();
+    startPlayback();
+  };
+
+  if (langSel) langSel.onchange = () => {
+    TTS.lang = langSel.value;     // 更新語言
+    isPausedByUser = false;
+
+    // 如果正在播，立即用新語言重新播（從當前段落開始）
+    if (TTS.synth && TTS.synth.speaking) {
+      restartPlaybackAtCurrentIdx();
+    } else {
+      // 沒播就只更新 UI（可選）
+      updateUI();
+    }
+  };
+
+  if (prevBtn) prevBtn.onclick = () => {
+    TTS.idx = Math.max(0, TTS.idx - 1);
+    if (TTS.synth.speaking) restartPlaybackAtCurrentIdx();
+      else updateUI();
+  };
+
+  if (nextBtn) nextBtn.onclick = () => {
+    TTS.idx = Math.min(TTS.paras.length - 1, TTS.idx + 1);
+    if (TTS.synth.speaking) restartPlaybackAtCurrentIdx();
+      else updateUI();
+  };
+
+  // ==============================
+  // Keyboard shortcuts (Desktop/Tablet)
+  // ← : previous segment, → : next segment
+  // Space : play / pause / resume
+  // ==============================
+
+  // 先移除舊的 handler（避免重複綁定）
+  if (window.__ttsKeyHandler) {
+    window.removeEventListener('keydown', window.__ttsKeyHandler);
+    window.__ttsKeyHandler = null;
+  }
+
+  window.__ttsKeyHandler = (e) => {
+    // 只在 Modal 開啟時生效
+    const overlay = document.getElementById('modalOverlay');
+    if (!overlay || !overlay.classList.contains('active')) return;  // Scope control: Keyboard shortcuts are active only inside the modal
+
+    if (e.repeat) return; // 避免長按連發
+
+    // 如果焦點在輸入/互動元件上，唔攔截（避免影響打字/表單/按鈕操作）
+    const activeEl = document.activeElement;
+    const tag = (activeEl && activeEl.tagName || '').toLowerCase();
+
+    // 只要在可輸入元件，就完全唔攔截（避免影響打字）
+    if (tag === 'input' || tag === 'textarea' || tag === 'select' || (activeEl && activeEl.isContentEditable)) {
+      return;
+    }
+
+    if (activeEl && activeEl.isContentEditable) return;
+
+    // --- Space：播放 / 暫停 / 繼續 ---
+    // e.code = 'Space' 較穩定（唔受鍵盤語系影響）
+    if (e.code === 'Space') {
+
+      if (document.activeElement === ppBtn) {
+        e.preventDefault();
+        ppBtn.click(); // 直接重用你已有的播放按鈕邏輯（最穩、最少重複）
+      }
+
+      return;
+    }
+
+    // --- 左右鍵：跳上一段 / 下一段 ---
+    if (e.code !== 'ArrowLeft' && e.code !== 'ArrowRight') return;
+    e.preventDefault(); // 避免水平滾動／其他預設
+
+    if (!TTS.paras || TTS.paras.length === 0) return;
+
+    const dir = (e.code === 'ArrowLeft') ? -1 : 1;
+    const target = Math.max(0, Math.min(TTS.paras.length - 1, TTS.idx + dir));
+    if (target === TTS.idx) return;
+
+    TTS.idx = target;
+
+    // 播放中/暫停中：跳段後繼續播；未播放：只更新顯示
+    if (TTS.synth.speaking) {
+      restartPlaybackAtCurrentIdx();
+    } else {
+      updateUI();
+    }
+  };
+
+  window.addEventListener('keydown', window.__ttsKeyHandler);
+
+  // update
+  updateUI();
+
+}
+
+/* ========= 7. Stepper 切換 ========= */
+function changeStep(dir) {
+  currentStepIdx += dir;
+  ModalManager.switchTab('reading');
+}
+
+/* ========= 8. 全螢幕圖庫 (Gallery) ========= */
+// 定義完 ModalManager 後
+window.ModalManager = ModalManager;
+
+function openGalleryFullscreen(data) {
+  // 1. 安全檢查：確保有資料且有步驟
+  if (!data || !data.steps || data.steps.length === 0) {
+    console.error("沒有可顯示的圖片資料", data);
+    alert("抱歉，此內容沒有可顯示的圖片。");
+    return;
+  }
+
+
+  // 初始化索引
+  let galleryIdx = 0;
+
+  
+  // 記低開 fullscreen 前狀態
+  const __prevOverflow = document.body.style.overflow;
+  const __lastFocus = document.activeElement;
+
+
+  // 2. 建立或獲取全螢幕容器
+  let fs = document.getElementById('galleryFullscreen');
+  if (!fs) {
+    fs = document.createElement('div');
+    fs.id = 'galleryFullscreen';
+    fs.className = 'fullscreen';
+    document.body.appendChild(fs);
+  }
+  
+  // 鎖定背景捲動
+  document.body.style.overflow = 'hidden';
+
+  // 3. 定義渲染函數
+  const render = () => {
+    const step = data.steps[galleryIdx];
+    const imgSrc = step.img || ''; 
+    const title = typeof esc === 'function' ? esc(data.title || '') : (data.title || '');
+
+    fs.innerHTML = `
+      <div class="fullscreen-head">
+        <button class="close-btn" onclick="closeGallery()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="fullscreen-body">
+        <button class="gallery-arrow" id="galPrev" ${galleryIdx === 0 ? 'style="visibility:hidden"' : ''}>
+          <svg width="22" height="22" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round">
+            <path d="M15 6l-6 6 6 6" />
+          </svg>
+        </button>
+        
+        <div class="gallery-image">
+          ${imgSrc ? 
+            `<img src="${imgSrc}" alt="Step Image">` : 
+            `<div style="color:white">此步驟無圖片</div>`
+          }
+        </div>
+
+        <button class="gallery-arrow" id="galNext" ${galleryIdx === data.steps.length - 1 ? 'style="visibility:hidden"' : ''}>
+          <svg width="22" height="22" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </button>
+      </div>
+      <div class="gallery-info-overlay">
+        <div class="gallery-info-content">
+          <h4>${title}</h4>
+          <div style="font-size:14px; opacity:0.6; margin-top:10px;"> ${galleryIdx + 1} / ${data.steps.length} </div>
+        </div>
+      </div>
+    `;
+
+    // 重新綁定按鈕事件 (因為 innerHTML 會清空事件)
+    const pBtn = fs.querySelector('#galPrev');
+    const nBtn = fs.querySelector('#galNext');
+    if(pBtn) pBtn.onclick = () => moveGallery(-1);
+    if(nBtn) nBtn.onclick = () => moveGallery(1);
+
+    // 每次 render 完都確保 trap 仍有效（因為你會 innerHTML 重畫）
+    requestAnimationFrame(() => {
+      const closeBtn = fs.querySelector('.close-btn');
+      if (window.ModalFocus) ModalFocus.activateFocusTrap(fs, closeBtn);
+    });
+
+  };
+
+
+
+  // 4. 定義控制函數並掛載到 window
+  window.moveGallery = (dir) => {
+    galleryIdx += dir;
+    if (galleryIdx < 0) galleryIdx = 0;
+    if (galleryIdx >= data.steps.length) galleryIdx = data.steps.length - 1;
+    render();
+  };
+
+  // Restore chain:
+  // Fullscreen → Modal → original focus
+  // Must be restored in this order
+  window.closeGallery = () => {
+    
+    // 先解除 fullscreen trap
+    if (window.ModalFocus) ModalFocus.deactivateFocusTrap()
+
+    const el = document.getElementById('galleryFullscreen');
+    if (el) el.remove();
+    
+    // 還原 overflow（唔好硬 set hidden）
+    document.body.style.overflow = __prevOverflow;
+
+
+    // 回到 modal 時，tab 切回「閱讀」
+    const tabToReturn = window.__returnTabAfterFullscreen || 'reading';
+    window.__returnTabAfterFullscreen = null;
+
+    if (window.ModalManager && typeof window.ModalManager.switchTab === 'function') {
+      window.ModalManager.switchTab(tabToReturn);
+    }
+
+    
+    // 還原 focus（回到開 fullscreen 前那個元素）
+    if (window.ModalFocus) ModalFocus.restoreFocus(__lastFocus);
+
+    // 清理全域函數避免污染
+    delete window.moveGallery;
+    delete window.closeGallery;
+
+  };
+
+  // 執行首次渲染
+  render();
+
+  
+}
+
+
+/* ========= 9. 列表渲染與初始化 ========= */
+// | 層面              | intro            | stories        |
+// |-------------------|-----------------|-----------------|
+// | section           | 認識福音         | 見證分享         |
+// | data              | INTRO_DATA      | stories         |
+// | page state        | introPage       | storypage       |
+// | page size         | INTRO_PAGE_SIZE | STORY_PAGE_SIZE |
+// | render            | renderIntro()   | renderStories() |
+// | filter            | ❌ 無           | activeCatKey |
+// | setActiveCat 影響 | ❌              |              |
+
+
+// Section 1
+/* ========= 1. 生成card ========= */
+function renderIntro() {
+  const grid = document.getElementById('introGrid');
+  if(!grid) return;
+
+  const totalPages = Math.max(1, Math.ceil(INTRO_DATA.length / INTRO_PAGE_SIZE));
+  if (introPage > totalPages) introPage = totalPages;
+
+  const items = INTRO_DATA.slice(
+    (introPage - 1) * INTRO_PAGE_SIZE,
+    introPage * INTRO_PAGE_SIZE
+  );
+
+  grid.innerHTML = items.length
+    ? items.map(item => `
+        <article class="intro-card">
+          <div class="intro-card-img" style="background-image:url('${item.coverImg || 'fallback.jpg'}')"></div>
+          <div class="intro-card-content">
+            <div class="formatRow">
+              ${item.types.includes('reading') ? `<span class="formatItem">${ICON_DOC}<span>閱讀</span></span>` : ''}
+              ${item.types.includes('video') ? `<span class="formatItem">${ICON_VIDEO}<span>影片</span></span>` : ''}
+              ${item.types.includes('image') ? `<span class="formatItem">${ICON_IMG}<span>圖像</span></span>` : ''}
+            </div>
+            <h3 class="introTitle">${esc(item.introHeading)}</h3>
+            <p class="introDesc">${esc(item.introSubheading)}</p>
+            <div class="storyAuthor">
+              <span></span>
+              <span class="readMore" onclick="ModalManager.open(INTRO_DATA.find(x => x.id=='${item.id}'))">
+                了解更多 <span class="arrow">→</span>
+              </span>
+            </div>
+          </div>
+        </article>
+      `).join('')
+    : `<div style="grid-column:1/-1; opacity:.6; font-weight:800; padding:20px;">暫無內容</div>`;
+
+  if (window.initReveal) window.initReveal();
+
+  // 同時生成 intro 分頁
+  renderIntroPager(totalPages);
+}
+
+/* ========= 2. 生成數字分頁 ========= */
+function renderIntroPager(totalPages){
+  const pagerNums = document.getElementById('introPagerNums');
+  if(!pagerNums) return;
+
+  if(totalPages <= 1){
+    pagerNums.innerHTML = '';
+    return;
+  }
+
+  pagerNums.innerHTML = Array.from({ length: totalPages }, (_, i) => {
+    const p = i + 1;
+    return `
+      <button class="pageNum ${p === introPage ? 'active' : ''}"
+        onclick="goToIntroPage(${p})">
+        ${p}
+      </button>
+    `;
+  }).join('');
+}
+
+window.goToIntroPage = function(p){
+  introPage = p;
+  renderIntro();
+};
+
+// Section 2
+/* ========= 1. 分類篩選 ========= */
+function renderFilters() {
+  const filtersEl = document.getElementById('filters');
+  if(!filtersEl) return;
+
+  filtersEl.innerHTML = Object.keys(CATEGORY_CONFIG)
+    .filter(k => CATEGORY_CONFIG[k].show)
+    .map(k => {
+      const cfg = CATEGORY_CONFIG[k];
+      return `<button class="filterBtn ${k === activeCatKey ? 'active' : ''}"
+                onclick="setActiveCat('${k}')"
+                style="--btn-accent:${cfg.accent}">${esc(cfg.label)}</button>`;
+    }).join('');
+}
+
+function setActiveCat(key) {
+  activeCatKey = key;
+  storypage = 1; // 切換分類時重置到第一頁
+  renderStories(); // 呼叫統一入口
+}
+
+function getSortedStories(){
+  return stories.slice().sort((a,b) => (b.id ?? 0) - (a.id ?? 0));
+}
+
+/* ========= 2. 卡片模板 ========= */
+// 所有都有blob效果
+//<article class="storyCard reveal emotion-panel emotion-calm emotion-calm-float">
+
+  // 只有精選有blob效果
+//  <article class="
+//   storyCard
+//   ${isFeatured ? 'storyCard--featured' : 'storyCard--list'}
+//   reveal
+//   ${isFeatured ? 'emotion-panel emotion-calm' : ''}
+// ">
+function cardHTML(s){
+  const cfg = themeByKey(s.catKey);
+  const showNew = !!(s.isNew ?? s.new ?? s.is_new);
+
+  return `
+    <article class="storyCard reveal" style="color:${cfg.accent};">
+      <span class="tagRow">
+        ${showNew ? `<span class="tagNewBadge">新</span>` : ``}
+
+        <span class="storyTag" style="--color-accent:${cfg.accent};--soft:${cfg.soft}">
+          ${esc(cfg.label)}
+        </span>
+      </span>
+
+
+      <div class="formatRow">
+        ${(s.sections && s.sections.length) ? `<span class="formatItem">${ICON_DOC}<span>閱讀</span></span>` : ''}
+        ${s.youtubeId ? `<span class="formatItem">${ICON_VIDEO}<span>影片</span></span>` : ''}
+        ${(s.steps && s.types && s.types.includes('image')) ? `<span class="formatItem">${ICON_IMG}<span>圖像</span></span>` : ''}
+      </div>
+
+      <h3 class="storyTitle">${esc(s.title)}</h3>
+      ${s.cardDesc ? `<p class="cardDesc">${esc(s.cardDesc)}</p>` : ''}
+
+      <div class="storyAuthor">
+        <span>— ${esc(s.author)}</span>
+        <span class="readMore" onclick="ModalManager.open(stories.find(x => x.id == ${s.id}))">
+          了解更多 <span class="arrow">→</span>
+        </span>
+      </div>
+    </article>`;
+}
+
+/* ========= 3. Featured 區塊 ========= */
+const ENABLE_FEATURED = false;   // 要暫時關精選就改 false
+function renderFeatured() {
+  const featuredGrid = document.getElementById('featuredGrid');
+  if(!featuredGrid) return;
+
+  const featuredChapter = featuredGrid.closest('.chapter');
+
+  // 找到「所有故事」章節（featured chapter 後面那個）
+  const storiesChapter = featuredChapter ? featuredChapter.nextElementSibling : null;
+  const allTitleEl = storiesChapter ? storiesChapter.querySelector('.chapter-title') : null;
+
+  // === 1) 如果你關閉精選：隱藏精選 chapter + 同步隱藏「所有故事」標題 ===
+  if(!ENABLE_FEATURED){
+    if (featuredChapter) featuredChapter.style.display = 'none';
+    if (allTitleEl) allTitleEl.style.display = 'none';   // 關掉「所有故事」字
+    return;
+  }
+
+  // === 2) 顯示精選 chapter ===
+  if (featuredChapter) featuredChapter.style.display = '';
+
+  const inCat = (s) => activeCatKey === 'all' || s.catKey === activeCatKey;
+  const featured = getSortedStories().filter(s => s.featured).filter(inCat).slice(0, 3);
+
+  featuredGrid.innerHTML = featured.length
+    ? featured.map(s => cardHTML(s)).join('')
+    : `<div style="grid-column:1/-1; opacity:.6; font-weight:800; padding:20px;">此分類暫無精選故事</div>`;
+
+  // === 3) 如果精選實際上冇內容：等同「精選冇顯示」→ 隱藏「所有故事」標題 ===
+  // 你想要的效果：精選沒顯示時，所有故事那句都不顯示
+  if (allTitleEl) allTitleEl.style.display = featured.length ? '' : 'none';
+
+  if (window.initReveal) window.initReveal();
+}
+
+/* ========= 4. Main 區塊 + 分頁 ========= */
+function renderMain() {
+  const mainGrid = document.getElementById('mainGrid');
+  const pager = document.getElementById('pager');
+
+  const inCat = (s) => activeCatKey === 'all' || s.catKey === activeCatKey;
+
+  const list = getSortedStories().filter(inCat);  // 最新 id 最大 → 排最前
+
+  const totalPages = Math.max(1, Math.ceil(list.length / STORY_PAGE_SIZE));
+  if (storypage > totalPages) storypage = totalPages;
+
+  // 只有 1 頁：隱藏整個分頁 UI；多頁：顯示
+  if (pager) pager.style.display = (totalPages <= 1) ? 'none' : 'flex';
+
+  const items = list.slice((storypage - 1) * STORY_PAGE_SIZE, storypage * STORY_PAGE_SIZE);
+
+  mainGrid.innerHTML = items.length
+    ? items.map(s => cardHTML(s)).join('')
+    : `<div style="grid-column:1/-1; opacity:.6; font-weight:800; padding:20px;">此分類暫無故事</div>`;
+
+  if (window.initReveal) window.initReveal();
+
+  // 生成數字分頁
+  renderPagerNums(totalPages);
+}
+
+/* ========= 5. 生成數字分頁 ========= */
+function renderPagerNums(totalPages){
+  const pagerNums = document.getElementById('pagerNums');
+  if(!pagerNums) return;
+
+  // 只有 1 頁就唔顯示
+  if(totalPages <= 1){
+    pagerNums.innerHTML = '';
+    return;
+  }
+
+  pagerNums.innerHTML = Array.from({ length: totalPages }, (_, i) => {
+    const p = i + 1;
+    return `
+      <button
+        class="pageNum ${p === storypage ? 'active' : ''}"
+        onclick="goToPage(${p})">
+        ${p}
+      </button>
+    `;
+  }).join('');
+}
+window.goToPage = function(p){
+  storypage = p;
+  renderMain();
+}
+/* ========= 6. 統一入口 ========= */
+function renderStories() {
+  renderFilters();
+  renderFeatured();
+  renderMain();
+}
+
+/* ========= 7. 初始化 ========= */
+document.addEventListener('DOMContentLoaded', () => {
+  renderStories(); // 初始化時呼叫統一入口
+  renderIntro();
+});
+
+  // 點擊 Overlay 關閉
+  document.getElementById('modalOverlay').onclick = (e) => {
+    if(e.target.id === 'modalOverlay') ModalManager.close();
+  };
+
+
+</script>
+</body>
+</html>
