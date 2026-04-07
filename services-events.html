@@ -7,26 +7,26 @@
 
   
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
 
   <!-- Core styles -->
-  <link rel="stylesheet" href="../assets/css/shared.css">
-  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/shared.css">
+  <link rel="stylesheet" href="assets/css/main.css">
 
   <!-- menu bar -->
-  <link rel="stylesheet" href="../assets/css/menu.css">
-  <link rel="stylesheet" href="../assets/css/mobile-menu.css">
+  <link rel="stylesheet" href="assets/css/menu.css">
+  <link rel="stylesheet" href="assets/css/mobile-menu.css">
 
     
   <!-- JS -->
   <!-- Core scripts -->
-  <script src="../assets/js/main.js"></script>
+  <script src="assets/js/main.js"></script>
 
   <!-- Partials loader -->
-  <script src="../assets/js/include-partials.js"></script>
+  <script src="assets/js/include-partials.js"></script>
 
   <!-- Widget -->
-  <script src="../assets/js/widget_msgbox_scrolltop.js" defer></script>
+  <script src="assets/js/widget_msgbox_scrolltop.js" defer></script>
 
 
   <style>
@@ -1537,27 +1537,27 @@ main[data-barba="container"] {
     ============================ */
     //其他聚會
     const OTHER_MEETUPS = [
-      { id: 1, thumb:"../assets/events/OTHER_MEETUPS_thumb_1.jpg", full:"../assets/events/OTHER_MEETUPS_full_1.jpg", alt:"Poster",
+      { id: 1, thumb:"assets/events/OTHER_MEETUPS_thumb_1.jpg", full:"assets/events/OTHER_MEETUPS_full_1.jpg", alt:"Poster",
           title:"Good Friday 受難日默想聚會",
           hint:"教會活動 · 2024年3月20日"
       },
-      { id: 2, thumb:"../assets/events/OTHER_MEETUPS_thumb_2.jpg", full:"../assets/events/OTHER_MEETUPS_full_2.jpg", alt:"Poster",
+      { id: 2, thumb:"assets/events/OTHER_MEETUPS_thumb_2.jpg", full:"assets/events/OTHER_MEETUPS_full_2.jpg", alt:"Poster",
           title:"教會同樂日",
           hint:"教會活動 · 2024年3月30日"
       },
-      { id: 3, thumb:"../assets/events/OTHER_MEETUPS_thumb_3.jpg", full:"../assets/events/OTHER_MEETUPS_full_3.jpg", alt:"Poster",
+      { id: 3, thumb:"assets/events/OTHER_MEETUPS_thumb_3.jpg", full:"assets/events/OTHER_MEETUPS_full_3.jpg", alt:"Poster",
           title:"中秋節愛筵",
           hint:"教會活動 · 2024年9月14日" 
       },
-      { id: 4, thumb:"../assets/events/OTHER_MEETUPS_thumb_4.jpg", full:"../assets/events/OTHER_MEETUPS_full_4.jpg", alt:"Poster",
+      { id: 4, thumb:"assets/events/OTHER_MEETUPS_thumb_4.jpg", full:"assets/events/OTHER_MEETUPS_full_4.jpg", alt:"Poster",
           title:"平安夜 佳音夜",
           hint:"教會活動 · 2024年12月24日" 
       },
-      { id: 5, thumb:"../assets/events/OTHER_MEETUPS_thumb_5.jpg", full:"../assets/events/OTHER_MEETUPS_full_5.jpg", alt:"Poster",
+      { id: 5, thumb:"assets/events/OTHER_MEETUPS_thumb_5.jpg", full:"assets/events/OTHER_MEETUPS_full_5.jpg", alt:"Poster",
           title:"聖誕崇拜暨聚餐",
           hint:"佈道聚會 · 2024年12月25日" 
       },
-      { id: 6, thumb:"../assets/events/OTHER_MEETUPS_thumb_6.jpg", full:"../assets/events/OTHER_MEETUPS_full_6.jpg", alt:"Poster",
+      { id: 6, thumb:"assets/events/OTHER_MEETUPS_thumb_6.jpg", full:"assets/events/OTHER_MEETUPS_full_6.jpg", alt:"Poster",
           title:"25週年感恩慶典聖誕餐會",
           hint:"教會活動 · 2025年12月25日" 
       }
@@ -1568,7 +1568,7 @@ main[data-barba="container"] {
       {
         id: 1,
         title: "2024年平安夜 佳音夜",
-        folder: "../assets/galley/g1",
+        folder: "assets/galley/g1",
 
         thumb: "thumb.jpg",
         full: "cover.jpg",
@@ -1758,7 +1758,7 @@ main[data-barba="container"] {
     }
 
     // 只供顯示的相片清單載入（不涉及相簿下載/選取下載）
-    // 會讀取 ../assets/galley/gX/files.json
+    // 會讀取 assets/galley/gX/files.json
     async function loadGalleryList(act){
       const manifestUrl = `${act.folder}/files.json`;
       const resp = await fetch(manifestUrl, { cache: "no-cache" });

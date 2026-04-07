@@ -187,7 +187,7 @@ body > main {
     pointer-events: none;
     z-index: 0;
     /* SVG 路徑 */
-    background-image: url("../img/bg1.svg");
+    background-image: url("img/bg1.svg");
     background-repeat: no-repeat;
     opacity: 0.08;
     mix-blend-mode: multiply;
