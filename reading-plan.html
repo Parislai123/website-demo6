@@ -288,6 +288,18 @@
       letter-spacing: 0.15rem;
     }
 
+    @media (max-width: 640px) {
+      .stats-number-group {
+        display: inline;   /* 整組當成文字的一部分 */
+        white-space: normal; /* 允許自動換行 */
+      }
+      .big-number, .unit {
+        display: inline;   /* 讓它們像文字一樣連在一起 */
+        vertical-align: baseline;
+      }
+      .big-number { font-size: 1.75rem; }
+      .unit { font-size: 1rem; letter-spacing: 0.05rem; }
+    }
 
     /* ===== Responsive ===== */
     @media (min-width:768px) and (max-width:1024px){
