@@ -83,7 +83,7 @@ html.is-hero:not(.hero-scrolled) #site-menu #hero-header{
 #hero-header .logo{
   width: 100%;
   height: 85%;
-  background: url("/assets/img/logoFull.png") center / contain no-repeat;
+  background: url("../img/logoFull.png") center / contain no-repeat;
   transform: scale(1.15);  
   display: block;
 }
