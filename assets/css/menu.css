@@ -88,7 +88,7 @@ html.is-hero:not(.hero-scrolled) #site-menu #hero-header{
   display: block;
 }
 #hero-header .logo:hover {
-  transform: translateY(-2px); 
+  transform: scale(1.15) translateY(-2px); 
 }
 /* 陰影 */
 /* #hero-header .logo-container{
