@@ -473,13 +473,26 @@ Do NOT remove unless page has no hero section
     .contactNote{
       color: var(--section-accent);
     }  
+    @media (max-width: 640px) {
+      .contactNote{
+      font-size: 26px;
+    }  
+    }
+    .contactText span{
+      letter-spacing: 1px;
+    }  
+    @media (max-width: 480px) {
+      .contactText span{
+        display: block;
+    }  
+    }
     
     .btn-cta{
     display:inline-flex;
     align-items:center;
     gap:10px;
     padding:16px 36px;
-    background:var(--text);  /*--section-accent*/
+    background:#3C4142;  /*--section-accent*/
     color:var(--white-100);
     text-decoration:none;
     border-radius:var(--radius-xl);
@@ -487,6 +500,7 @@ Do NOT remove unless page has no hero section
     transition:.3s var(--ease);
     box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
     transform: translateY(0);
+    margin-bottom:20px;
   }
 
   .btn-cta:hover{
@@ -774,19 +788,13 @@ Do NOT remove unless page has no hero section
         <div class="contactAlign reveal">
           <h2 class="contactNote">想知道如何奉獻或與我們聯繫嗎？</h2>
 
-          <!-- tab 內容區（只有文字） -->
-          <div class="tab-content">
-            <div id="contact-1" class="tab-pane">
-              <div class="tab-text">
-                <p>
-                  願神的愛和祝福臨到您和您的家庭，天天充滿平安喜樂!
-                </p>
-                <a href="donate-contact.html" class="btn-cta">
-                  前往頁面
-                </a>
-              </div>
-            </div>
-          </div> 
+          <a href="donate-contact.html" class="btn-cta">
+            了解詳情
+          </a>
+
+          <div class="contactText">
+            <span>願神的愛和祝福臨到您和您的家庭，</span><span>天天充滿平安喜樂!</span>
+          </div>
 
         </div>
       </div>
