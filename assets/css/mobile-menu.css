@@ -360,7 +360,7 @@ html.menu-open .fab-wrap {
 /* ---- logo container-mobile：唯一控制點 ---- */
 .logo-container-mobile{
   position: absolute;
-  top: 12px;       
+  top: 8px;       
   left: 56px;         
   width: 100px;
   height: 70px;
