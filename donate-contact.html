@@ -120,7 +120,7 @@
     .method--bank .method-icon { background: var(--sky-bg); color: var(--sky); }
     .method--fps  .method-icon { background: var(--success-bg); color: var(--success); }
     /* 支票卡 icon  */
-      .method--check .method-icon {
+      .method--cheque .method-icon {
       background: var(--color-lavender);   
       color: var(--purple);               
     }
@@ -523,7 +523,7 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.08);
     }
     .contact-card:hover { 
-      border-color: var(--color-peach); 
+      border-color: rgba(139, 92, 246, 0.42); 
       /* background: linear-gradient(145deg, #ffffff, #fffaf9);  */
       transform: translateY(-4px);
       box-shadow: 0 8px 20px rgba(0,0,0,0.12);
@@ -720,16 +720,17 @@
       .btn-copy { width: 100%;  min-width: 0;}
       .donation-aftercare{
         margin-top: 28px;
-      }
+      }   
+    }
+    @media (max-width: 640px) {
       .donation-aftercare .hint {
         flex-direction: column;
         align-items: flex-start; 
         gap: 6px;
       }
-
       .donation-aftercare .pill {
         margin-left: 0; 
-      }
+      }      
     }
 
   </style>
@@ -870,12 +871,12 @@
             </div>
           </div>
 
-          <!-- Check 右（白底同銀行一致） -->
-          <div class="method-card method--check" style="order: 2;">
+          <!-- Cheque 右（白底同銀行一致） -->
+          <div class="method-card method--cheque" style="order: 2;">
             <div class="method-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.7"><path stroke-linecap="round" d="M7 11H6c-3.31 0-4 .69-4 4v3c0 3.31.69 4 4 4h12c3.31 0 4-.69 4-4v-3c0-2.211-.308-3.253-1.5-3.701M12 18h6"/><path d="M17.244 3.133c.447-.485.67-.728.908-.87a1.86 1.86 0 0 1 1.862-.027c.242.134.472.37.933.841c.46.472.691.707.823.954a1.98 1.98 0 0 1-.028 1.905c-.138.243-.375.472-.85.93l-5.642 5.442c-1.494 1.441-2.42 1.74-4.49 1.686c-.377-.01-.565-.015-.674-.139s-.094-.316-.064-.7c.137-1.767.449-2.673 1.652-3.978z"/></g></svg>
             </div>
-            <span class="method-label">BY CHECK</span>
+            <span class="method-label">BY CHEQUE</span>
             <div class="method-title">支票</div>
 
             <div class="method-detail">

@@ -575,9 +575,9 @@
             transform: scale(0.84); 
             transform-origin: center;
         }
-    }
+    } 
     /* tablet Orbit Adjustments */
-    @media (min-width: 768px) and (max-width: 1340px) {
+    @media (min-width: 768px) and (max-width: 1250px) {
         .mv .mv-card .orbit[data-type="mission"] {
             transform: scale(0.88); /* 桌面版不縮小，保持視覺張力 */
             transform-origin: center;
@@ -587,28 +587,29 @@
             transform-origin: center;
         }
     }
-    /* Desktop Orbit Adjustments */
-    @media (min-width: 1200px) and (max-width: 1340px) {
+    /* notebook Orbit Adjustments */
+    @media (min-width: 1151px) and (max-width: 1340px) {
         .mv .mv-card .orbit[data-type="mission"] {
-            transform: scale(0.88); /* 桌面版不縮小，保持視覺張力 */
+            transform: scale(0.88); 
             transform-origin: left;
         }
         .mv .mv-card .orbit[data-type="vision"] {
             transform: scale(0.88); 
             transform-origin: right;
         }
-    }
-        @media (min-width: 1341px) {
+    }       
+    /* Desktop Orbit Adjustments */
+    @media (min-width: 1341px) {
         .mv .mv-card .orbit[data-type="mission"] {
-            transform: scale(1); /* 桌面版不縮小，保持視覺張力 */
-            transform-origin: center;
+            transform: scale(1); 
+            transform-origin: left;
         }
         .mv .mv-card .orbit[data-type="vision"] {
             transform: scale(1); 
-            transform-origin: center;
+            transform-origin: right;
         }
     }
-
+    
     /* Mission / Vision Line Spec */
     .mv .orbit[data-type="mission"] {
         --line-static-opacity: .35;

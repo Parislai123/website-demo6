@@ -179,6 +179,21 @@ body > main {
   z-index: 1;
 }
 
+/* Remove iOS tap highlight */
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Remove active/focus shadows */
+a:active,
+a:focus,
+button:active,
+button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 /* Background SVG*/
 /* 基礎容器設定：完全繼承原本 body::after 的邏輯 */
 .watermark-overlay {
@@ -242,7 +257,7 @@ body > main {
     .watermark-overlay {
         background-position: 220% -10%;
         background-size: min(75vw, 780px) min(65vh, 860px);
-        opacity: 0.08;
+        opacity: 0.09;
     }
 }
 
@@ -254,7 +269,7 @@ body > main {
         /* 高度主導，並加上限，避免 Pro 過大 */
         background-size: auto min(82vh, 720px);
 
-        opacity: 0.08;
+        opacity: 0.09;
     }
 }
 
@@ -263,7 +278,7 @@ body > main {
     .watermark-overlay {
         background-position: 170% 10%;
         background-size: min(75vw, 780px) min(65vh, 860px);
-        opacity: 0.05;
+        opacity: 0.09;
     }
 }
 
@@ -272,7 +287,7 @@ body > main {
     .watermark-overlay {
         background-position: 120% 12%;
         background-size: auto min(120vh, 560px);
-        opacity: 0.05;
+        opacity: 0.09;
     }
 }
 
@@ -586,6 +601,89 @@ section + section{
     .diamond {margin-left: -2px;}
 }
 
+/* =========================================================
+   Blob system — Component-level emotion (Hero / Card)
+   用途：About / Stories 精選卡
+========================================================= */
+.emotion-panel{
+  position:relative;
+  overflow:hidden;
+}
+.emotion-panel > *{
+  position:relative;
+  z-index:1;
+}
+.emotion-panel::before,
+.emotion-panel::after{
+  content:"";
+  position:absolute;
+  border-radius:45% 55% 55% 45% / 55% 45% 55% 45%;
+  pointer-events:none;
+  opacity:.18;
+  z-index:0;
+  mix-blend-mode:normal;
+}
+
+/* calm preset（只管：大小 + 顏色） */
+.emotion-calm::before{
+  width:220px;
+  height:220px;
+  background:var(--color-lavender);
+}
+.emotion-calm::after{
+  width:144px;
+  height:144px;
+  background:var(--color-peach);
+}
+
+/* =========================================================
+   Emotion Panel — Story Card Positioning (Final Locked)
+   右上輕、左下穩（閱讀友善）
+========================================================= */
+.storyCard.emotion-panel::before{
+  top:-28px;
+  right:-34px;
+  left:auto;
+  bottom:auto;
+}
+.storyCard.emotion-panel::after{
+  bottom:-32px;
+  left:-24px;
+  top:auto;
+  right:auto;
+}
+
+/* =========================================================
+   Emotion — Calm Float（B：微微覺）
+========================================================= */
+.emotion-calm-float::before{
+  animation:calm-float-b1 24s ease-in-out infinite;
+}
+.emotion-calm-float::after{
+  animation:calm-float-b2 28s ease-in-out infinite;
+}
+@keyframes calm-float-b1{
+  0%   { transform:translate3d(0,0,0) scale(1); }
+  50%  { transform:translate3d(0,-7px,0) scale(1.012); }
+  100% { transform:translate3d(0,0,0) scale(1); }
+}
+@keyframes calm-float-b2{
+  0%   { transform:translate3d(0,0,0) scale(1); }
+  50%  { transform:translate3d(0,5px,0) scale(1.01); }
+  100% { transform:translate3d(0,0,0) scale(1); }
+}
+@media (min-width: 641px) and (max-width: 1120px) {
+.emotion-panel::before,
+.emotion-panel::after{
+  opacity:.20;
+}
+}
+@media (max-width: 640px) {
+.emotion-panel::before,
+.emotion-panel::after{
+  opacity:.24;
+}
+}
  /* =========================
     銜接文字區
     ========================= */
@@ -1010,7 +1108,7 @@ Mobile Large (481–767px)
     font-size: 44px; 
     top: -12px; 
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-35%);
   }
   
   .description{ margin:0 auto; }
