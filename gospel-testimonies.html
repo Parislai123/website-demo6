@@ -1718,12 +1718,13 @@ const TTS = {
   paras: [],
   idx: 0,
 
+  // 當前語言
   lang: 'zh-HK',
 
-  // 各語言舒適語速（字/秒感覺）
+  // 各語言舒適語速
   rateByLang: {
     'zh-HK': 0.9,   // 粵語：聲調密，慢少少
-    'zh-CN': 0.95,  // 普通話：可稍快
+    'zh-CN': 0.95,  // 普通話
     'zh-TW': 0.95
   },
 
@@ -1731,41 +1732,138 @@ const TTS = {
     return this.rateByLang[this.lang] ?? 0.95;
   },
 
+  /* --------------------------------------------------
+   * Voice handling
+   * -------------------------------------------------- */
+
   refresh() {
-    this.voices = this.synth.getVoices();
+    this.voices = this.synth?.getVoices?.() || [];
   },
 
+  // 嚴格檢查指定語言是否存在
+  hasExactVoice(lang) {
+    if (!this.voices || !this.voices.length) return false;
+    return this.voices.some(v => v.lang === lang);
+  },
+
+  /**
+   * 智能選聲策略（定稿級）
+   * - 嚴格語言 match
+   * - 再按「好聽 / 常見」優先順序揀
+   * - 冇就用該語言系統第一把
+   */
   pickVoice(lang) {
-    const cand = this.voices.filter(v =>
-      v.lang.toLowerCase().startsWith(lang.toLowerCase())
+    if (!this.voices || !this.voices.length) return null;
+    if (!lang) return null;
+
+    const lc = lang.toLowerCase();
+
+    // 1️⃣ 只揀完全同語言的 voice（避免播錯語言）
+    const sameLang = this.voices.filter(v =>
+      v.lang && v.lang.toLowerCase() === lc
     );
+    if (!sameLang.length) return null;
 
-    let voice = null;
+    // 2️⃣ 語言對應的「優先名單」
+    //    👉 先女聲 / 自然聲，再 Google，再 fallback
+    const preferredNamesByLang = {
+      'zh-hk': [
+        'Sin-Ji',      // Apple 粵語女聲（最好）
+        'Ting-Ting',  // Apple 粵語／國語都常見
+        'Google'      // Google 粵語（非 Apple）
+      ],
+      'zh-cn': [
+        'Ting-Ting',  // Apple 普通話女聲（最自然）
+        'Mei',        // Apple 一般女聲（不同版本叫法）
+        'Yu',         // Apple 男/女聲備選
+        'Google'      // Google 普通話
+      ]
+    };
 
-    // 判斷是否 iOS
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const prefs = preferredNamesByLang[lc] || [];
 
-    if (isIOS) {
-      // iOS → 用 Apple Preferred voices
-      const applePreferred = ['Ting-Ting', 'Mei-Jia', 'Sin-Ji', 'Liang-Liang'];
-      voice = cand.find(v => applePreferred.includes(v.name));
-    } else {
-      // Android / 其他 → 先找 Google voice
-      voice = cand.find(v => v.name.includes('Google'));
+    // 3️⃣ 依優先順序揀
+    for (const keyword of prefs) {
+      const found = sameLang.find(v =>
+        v.name && v.name.includes(keyword)
+      );
+      if (found) return found;
     }
 
-    // 如果還是沒有，就用第一個
-    return voice || cand[0] || null;
+    // 4️⃣ 冇中排名 → 用該語言系統第一把
+    return sameLang[0];
   },
 
+  /* --------------------------------------------------
+   * Language switch
+   * -------------------------------------------------- */
+
+  setLang(lang) {
+    this.lang = lang;
+  },
+
+  /* --------------------------------------------------
+   * Cancel
+   * -------------------------------------------------- */
+
   cancel() {
-    this.synth.cancel();
+    if (!this.synth) return;
+    if (this.synth.speaking || this.synth.pending) {
+      this.synth.cancel();
+    }
   }
 };
 
+/* --------------------------------------------------
+ * Init
+ * -------------------------------------------------- */
+
 if (TTS.synth) {
-  TTS.synth.onvoiceschanged = () => TTS.refresh();
+  // iOS / Safari：voices 需要等 onvoiceschanged
+  TTS.synth.onvoiceschanged = () => {
+    TTS.refresh();
+  };
   TTS.refresh();
+}
+
+// 裝置不支援語音時pop up
+function showTTSNotSupportedMessage(lang) {
+  let label;
+  if (lang === 'zh-HK') label = '粵語';
+  else if (lang === 'zh-CN') label = '普通話';
+  else label = '所選語言';
+
+  const container = document.getElementById('modalInner');
+  if (!container) return;
+
+  const bar = container.querySelector('.playerBar');
+  if (!bar) return;
+
+  // 確保定位
+  if (getComputedStyle(bar).position === 'static') {
+    bar.style.position = 'relative';
+  }
+
+  // 使用獨立 class，避免同 keyboard hint 撞
+  let hint = bar.querySelector('.tts-support-hint');
+  if (!hint) {
+    hint = document.createElement('div');
+    hint.className = 'tts-support-hint';
+    bar.appendChild(hint);
+  }
+
+  hint.textContent =
+    `你的裝置暫未支援「${label}」語音，` +
+    `請先到系統設定下載語音。`;
+
+  // 顯示
+  hint.classList.add('show');
+
+  // 自動淡出（重覆呼叫會 reset timer）
+  clearTimeout(hint.__hideTimer);
+  hint.__hideTimer = setTimeout(() => {
+    hint.classList.remove('show');
+  }, 3500);
 }
 
 
@@ -2004,6 +2102,57 @@ function bindTTSControls() {
   const prevBtn = container.querySelector('[data-prev-tts]');
   const nextBtn = container.querySelector('[data-next-tts]');
 
+  // === 語言可用性檢查（UI 層） ===
+  if (langSel) {
+    if (!TTS.voices.length) {
+      TTS.refresh();
+    }
+    const hasZH_HK = TTS.hasExactVoice('zh-HK');
+    const hasZH_CN = TTS.hasExactVoice('zh-CN');
+
+    const optHK = langSel.querySelector('option[value="zh-HK"]');
+    const optCN = langSel.querySelector('option[value="zh-CN"]');
+
+    // 粵語
+    if (optHK) {
+      optHK.disabled = !hasZH_HK;
+      if (!hasZH_HK) {
+        optHK.textContent = '粵語（未支援）';
+      }
+    }
+
+    // 國語
+    if (optCN) {
+      optCN.disabled = !hasZH_CN;
+      if (!hasZH_CN) {
+        optCN.textContent = '普通話（未支援）';
+      }
+    }
+
+    // 如果目前選中的是「不支援語言」，自動切去另一個可用語言
+    const current = langSel.value;
+    if (
+      (current === 'zh-HK' && !hasZH_HK) ||
+      (current === 'zh-CN' && !hasZH_CN)
+    ) {
+      if (hasZH_HK) {
+        langSel.value = 'zh-HK';
+        TTS.lang = 'zh-HK';
+      } else if (hasZH_CN) {
+        langSel.value = 'zh-CN';
+        TTS.lang = 'zh-CN';
+      }
+    }
+
+    // 都唔支援 → 清空選擇（保持狀態乾淨）
+    if (!hasZH_HK && !hasZH_CN) {
+      langSel.value = '';
+      TTS.lang = '';
+    }
+  }
+
+
+
   if(!ppBtn) return;
   if(TTS.paras.length === 0) {
     ppBtn.disabled = true;
@@ -2044,7 +2193,16 @@ function bindTTSControls() {
 
   window.__ttsStopPlayback = stopPlayback;
 
+  let startWatchdog = null;
   const startPlayback = () => {
+    
+    // 嚴格語音支援檢查（核心）
+    if (!TTS.hasExactVoice(TTS.lang)) {
+      showTTSNotSupportedMessage(TTS.lang);
+      stopPlayback();   // 確保狀態清乾淨
+      return;           // 絕對唔播
+    }
+
     isPausedByUser = false;
     playToken++;
 
@@ -2057,6 +2215,20 @@ function bindTTSControls() {
     if (playDelayTimer) clearTimeout(playDelayTimer);
 
     const token = playToken;
+    
+    // watchdog：若 1.5 秒內未 onstart，當失敗處理
+    if (startWatchdog) clearTimeout(startWatchdog);
+    startWatchdog = setTimeout(() => {
+      if (token !== playToken) return;
+      // 尚未開始講（iOS 偶發會咁）
+      if (!TTS.synth.speaking) {
+        stopPlayback();
+        const statusEl = container.querySelector('.statusText');
+        if (statusEl) statusEl.textContent = '未能開始播放（請再按一次）';
+      }
+    }, 1500);
+
+
     playDelayTimer = setTimeout(() => {
       speak(token);
     }, 300); // 可調 200~400
@@ -2074,9 +2246,10 @@ function bindTTSControls() {
   // ==============================
   // Adaptive speaking rate by paragraph length
   // ==============================
-  // Google voice 判斷（一定要有，否則會播唔到）
-  const isGoogleVoice = (voice) =>
-    voice && voice.name && voice.name.includes('Google');
+
+  const isRemoteVoice = (voice) =>
+    voice && voice.localService === false;
+
 
   // 段落長度微調 + 安全上下限（修正你現有 getAdaptiveRate）
   // UX tuning:
@@ -2097,94 +2270,105 @@ function bindTTSControls() {
 
   const speak = (token) => {
 
-  // 如果已經被 stop / close（token 唔同），直接唔做
-  if (token !== playToken) return;
-  // 停止任何正在播放的語音
-  TTS.cancel();
-  TTS.cancel();
-
-  // 取得當前段落文字
-  const text = TTS.paras[TTS.idx].textContent || '';
-
-  // 建立語音物件
-  const utter = new SpeechSynthesisUtterance(text);
-
-  // 語言與語音
-  utter.lang = TTS.lang;
-  // voice 可能未載入/搵唔到，記得做 guard
-  const picked = TTS.pickVoice(TTS.lang);
-  if (picked) utter.voice = picked;
-
-  // ==============================
-  // 語速計算（語言 baseline + Google bias + 段落微調）
-  // ==============================
-  const baseRate = TTS.rate; // 來自 rateByLang / getter
-  const voiceBias = isGoogleVoice(utter.voice) ? -0.05 : 0;
-
-  utter.rate = getAdaptiveRate(baseRate + voiceBias, text);
-
-  // 立即更新 UI，令「按 Play 反應慢」感覺改善（先顯示準備中）
-  const statusEl0 = container.querySelector('.statusText');
-  if (statusEl0) statusEl0.textContent = '準備中…';
-  ppBtn.innerHTML = ICON_PAUSE;
-
-  // ==============================
-  // 開始朗讀
-  // ==============================
-  utter.onstart = () => {
+    // token guard
     if (token !== playToken) return;
 
-    const statusEl = container.querySelector('.statusText');
-    if (statusEl) statusEl.textContent = '正在朗讀';
+    // 取得當前段落文字
+    const text = TTS.paras[TTS.idx]?.textContent || '';
+    if (!text) return;
 
+    // 建立語音物件
+    const utter = new SpeechSynthesisUtterance(text);
+
+    // ===== iOS safety：voices 有時未 ready =====
+    if (!TTS.voices.length) {
+      TTS.refresh();
+    }
+
+    // 語言與語音必須同時對齊（iOS關鍵）
+    utter.lang = TTS.lang;
+    const picked = TTS.pickVoice(TTS.lang);
+    if (picked) utter.voice = picked;
+
+    // 語速：語言 baseline + remote voice bias + 段落調整
+    const baseRate = TTS.rate;
+    const voiceBias = isRemoteVoice(utter.voice) ? -0.05 : 0;
+    utter.rate = getAdaptiveRate(baseRate + voiceBias, text);
+
+    // ===== UI 立即反饋 =====
+    const statusEl0 = container.querySelector('.statusText');
+    if (statusEl0) statusEl0.textContent = '準備中…';
     ppBtn.innerHTML = ICON_PAUSE;
 
-    // 高亮目前段落
-    TTS.paras.forEach(p => p.classList.remove('tts-speaking'));
-    TTS.paras[TTS.idx].classList.add('tts-speaking');
+    // ===== 清 watchdog（由 onstart 接管）=====
+    // （watchdog 已喺 startPlayback 設好）
 
-    // 捲動到目前段落
-    TTS.paras[TTS.idx].scrollIntoView({
-      behavior: 'smooth',
-      block: 'center'
-    });
+    // ===== onstart =====
+    utter.onstart = () => {
+      if (startWatchdog) {
+        clearTimeout(startWatchdog);
+        startWatchdog = null;
+      }
+      if (token !== playToken) return;
 
-    updateUI();
-  };
-
-  // ==============================
-  // 朗讀結束
-  // ==============================
-  utter.onend = () => {
-    // 如果 token 唔同，代表已 stop/close，唔好續播
-    if (token !== playToken) return;
-    if (isPausedByUser) return; // 如果用戶 pause 咗，唔好自動播下一段
-
-    if (TTS.idx < TTS.paras.length - 1) {
-      // 自動播放下一段
-      TTS.idx++;
-      speak(token);
-    } else {
-      // 全部朗讀完成
       const statusEl = container.querySelector('.statusText');
-      if (statusEl) statusEl.textContent = '朗讀完成';
+      if (statusEl) statusEl.textContent = '正在朗讀';
 
+      TTS.paras.forEach(p => p.classList.remove('tts-speaking'));
+      TTS.paras[TTS.idx].classList.add('tts-speaking');
+
+      TTS.paras[TTS.idx].scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+
+      updateUI();
+    };
+
+    // ===== onend =====
+    utter.onend = () => {
+      if (token !== playToken) return;
+      if (isPausedByUser) return;
+
+      if (TTS.idx < TTS.paras.length - 1) {
+        TTS.idx++;
+        speak(token);
+      } else {
+        const statusEl = container.querySelector('.statusText');
+        if (statusEl) statusEl.textContent = '朗讀完成';
+        ppBtn.innerHTML = ICON_PLAY;
+      }
+    };
+
+    // ===== onerror =====
+    let retried = false;
+    utter.onerror = () => {
+      if (token !== playToken) return;
+
+      if (!retried) {
+        retried = true;
+        const fb =
+          TTS.voices.find(v => v.lang === TTS.lang) ||
+          TTS.voices.find(v => v.lang.startsWith('zh'));
+        if (fb) {
+          utter.voice = fb;
+          setTimeout(() => TTS.synth.speak(utter), 50);
+          return;
+        }
+      }
+
+      const statusEl = container.querySelector('.statusText');
+      if (statusEl) statusEl.textContent = '播放失敗';
       ppBtn.innerHTML = ICON_PLAY;
-    }
-  };
+    };
 
-  // 加 error handler，避免無聲時你唔知原因（例如 not-allowed / voice-unavailable 等）
-  utter.onerror = (e) => {
-    if (token !== playToken) return;
-    console.error('TTS error:', e.error || e);
-    const statusEl = container.querySelector('.statusText');
-    if (statusEl) statusEl.textContent = '播放失敗';
-    ppBtn.innerHTML = ICON_PLAY;
+    // ===== 關鍵修正：cancel 後延遲 speak =====
+    TTS.cancel();
+    setTimeout(() => {
+      if (token !== playToken) return;
+      TTS.synth.speak(utter);
+    }, 50);
   };
-
-  // 開始播放
-  TTS.synth.speak(utter);
-};
 
   // ==============================
   // Seek / Scrub: click + drag 跳段
