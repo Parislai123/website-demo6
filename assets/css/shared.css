@@ -233,7 +233,7 @@ body > main {
     .watermark-overlay {
         background-position: 220% 6%;
         background-size: min(80vw, 820px) min(70vh, 900px);
-        opacity: 0.06;
+        opacity: 0.08;
     }
 }
 
@@ -242,7 +242,7 @@ body > main {
     .watermark-overlay {
         background-position: 220% -10%;
         background-size: min(75vw, 780px) min(65vh, 860px);
-        opacity: 0.06;
+        opacity: 0.08;
     }
 }
 
@@ -254,7 +254,7 @@ body > main {
         /* 高度主導，並加上限，避免 Pro 過大 */
         background-size: auto min(82vh, 720px);
 
-        opacity: 0.06;
+        opacity: 0.08;
     }
 }
 
