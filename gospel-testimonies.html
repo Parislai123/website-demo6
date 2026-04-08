@@ -1711,6 +1711,11 @@ let currentModalData = null;
 const esc = (s) => String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
 const themeByKey = (key) => CATEGORY_CONFIG[key] || CATEGORY_CONFIG.all;
 const NO_TTS_LANG = '';
+// === iOS Safari detection ===
+const isIOSSafari = () =>
+  /iP(hone|ad|od)/.test(navigator.platform) &&
+  /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
 
 /* ========= 3. 語音系統 (TTS) ========= */
 const TTS = {
@@ -2373,16 +2378,23 @@ async function bindTTSControls() {
       return;
     }
     utter.lang = lang;
-    const picked = TTS.pickVoice(lang);
-    if (picked) utter.voice = picked;
 
-    
-    // iOS Safari safety：voice / lang 嚴格一致
+    const picked = TTS.pickVoice(lang);
+
+    // iOS Safari 特例處理
+    // 普通話在 iOS Safari「唔指定 voice」，避免被鎖入粵語 family
+    if (isIOSSafari() && lang === 'zh-CN') {
+      utter.voice = null;
+    } else if (picked) {
+      utter.voice = picked;
+    }
+
+    // 最後保險：voice / lang 必須一致
     if (
       utter.voice &&
       TTS.normLang(utter.voice.lang) !== TTS.normLang(lang)
     ) {
-      utter.voice = null; // 交返俾系統，避免播錯（特別 Ting‑Ting）
+      utter.voice = null;
     }
 
     // 語速：語言 baseline + remote voice bias + 段落調整
