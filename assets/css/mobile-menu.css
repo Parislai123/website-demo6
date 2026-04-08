@@ -357,6 +357,34 @@ html.menu-open .fab-wrap {
   /* box-shadow: 0 8px 20px rgba(0,0,0,.05); */
 }
 
+/* ---- logo container-mobile：唯一控制點 ---- */
+.logo-container-mobile{
+  position: absolute;
+  top: 12px;       
+  left: 24px;         
+  width: 70px;
+  height: 70px;
+  display: grid;
+  place-items: center;
+  z-index: 50;      
+  pointer-events: auto;
+  transition: width 260ms ease, height 260ms ease, flex-basis 260ms ease;
+}
+
+.logo-container-mobile a{
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+/* ---- Logo visual ---- */
+.logo-mobile{
+  width: 100%;
+  height: 100%;
+  background: url("/assets/img/logoFull.png") center / contain no-repeat;
+  display: block;
+}
 
 /* ==============================
    超細 viewport fallback
