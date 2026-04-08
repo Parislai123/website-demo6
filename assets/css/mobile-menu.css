@@ -361,8 +361,8 @@ html.menu-open .fab-wrap {
 .logo-container-mobile{
   position: absolute;
   top: 12px;       
-  left: 24px;         
-  width: 70px;
+  left: 56px;         
+  width: 100px;
   height: 70px;
   display: grid;
   place-items: center;
@@ -382,7 +382,8 @@ html.menu-open .fab-wrap {
 .logo-mobile{
   width: 100%;
   height: 100%;
-  background: url("/assets/img/logoFull.png") center / contain no-repeat;
+  background: url("/assets/img/logo-landscape.png") center / contain no-repeat;
+  transform: scale(1.7);  
   display: block;
 }
 

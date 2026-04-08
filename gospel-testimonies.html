@@ -1710,6 +1710,7 @@ let currentModalData = null;
 
 const esc = (s) => String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
 const themeByKey = (key) => CATEGORY_CONFIG[key] || CATEGORY_CONFIG.all;
+const NO_TTS_LANG = '';
 
 /* ========= 3. 語音系統 (TTS) ========= */
 const TTS = {
@@ -1729,7 +1730,8 @@ const TTS = {
   },
 
   get rate() {
-    return this.rateByLang[this.lang] ?? 0.95;
+    if (this.lang === NO_TTS_LANG) return 0.95;
+      return this.rateByLang[this.lang] ?? 0.95;
   },
 
   /* --------------------------------------------------
@@ -1741,9 +1743,25 @@ const TTS = {
   },
 
   // 嚴格檢查指定語言是否存在
+  normLang(tag) {
+    return (tag || '').replace('_', '-').toLowerCase();
+  },
+
+  // 取代你原本的 hasExactVoice
   hasExactVoice(lang) {
     if (!this.voices || !this.voices.length) return false;
-    return this.voices.some(v => v.lang === lang);
+
+    const want = this.normLang(lang);
+
+    return this.voices.some(v => {
+      const got = this.normLang(v.lang);
+
+      // 粵語：接受 zh-HK 或 yue-HK（避免 iOS / 系統用 yue-HK 表示）
+      if (want === 'zh-hk') return got === 'zh-hk' || got === 'yue-hk';
+
+      // 其他：仍然嚴格相等（但已 lowercased）
+      return got === want;
+    });
   },
 
   /**
@@ -1756,13 +1774,22 @@ const TTS = {
     if (!this.voices || !this.voices.length) return null;
     if (!lang) return null;
 
-    const lc = lang.toLowerCase();
+    
+    const want = this.normLang(lang);
+
+    // 把「語言可接受集合」列出來（避免播錯語言）
+    const accepted = (want === 'zh-hk')
+      ? new Set(['zh-hk', 'yue-hk'])
+      : new Set([want]);
+
 
     // 1️⃣ 只揀完全同語言的 voice（避免播錯語言）
-    const sameLang = this.voices.filter(v =>
-      v.lang && v.lang.toLowerCase() === lc
-    );
+    const sameLang = this.voices.filter(v => {
+      const got = this.normLang(v.lang);
+      return accepted.has(got);
+    });
     if (!sameLang.length) return null;
+
 
     // 2️⃣ 語言對應的「優先名單」
     //    👉 先女聲 / 自然聲，再 Google，再 fallback
@@ -1777,10 +1804,15 @@ const TTS = {
         'Mei',        // Apple 一般女聲（不同版本叫法）
         'Yu',         // Apple 男/女聲備選
         'Google'      // Google 普通話
+      ],
+      'zh-tw': [
+        'Ting-Ting',  // Apple 普通話女聲（最自然）
+        'Mei',        // Apple 一般女聲（不同版本叫法）
+        'Google'      // Google 普通話
       ]
     };
 
-    const prefs = preferredNamesByLang[lc] || [];
+    const prefs = preferredNamesByLang[want] || [];
 
     // 3️⃣ 依優先順序揀
     for (const keyword of prefs) {
@@ -1819,10 +1851,16 @@ const TTS = {
  * -------------------------------------------------- */
 
 if (TTS.synth) {
-  // iOS / Safari：voices 需要等 onvoiceschanged
-  TTS.synth.onvoiceschanged = () => {
+  const handleVoicesChanged = () => {
     TTS.refresh();
   };
+
+  // 避免重複綁定
+  if (!TTS.__voicesListenerAttached) {
+    TTS.synth.addEventListener('voiceschanged', handleVoicesChanged);
+    TTS.__voicesListenerAttached = true;
+  }
+
   TTS.refresh();
 }
 
@@ -1964,7 +2002,7 @@ const ModalManager = {
               <h2 class="modal-title">${esc(data.title)}</h2>
               ${tabs.length > 1 ? `
                 <div class="formatTabs">
-                  ${tabs.map(t => `<button class="tabBtn ${t.id===initialTab?'active':''}" data-tab="${t.id}">${t.label}</button>`).join('')}
+                  ${tabs.map(t => `<button class="tabBtn ${t.id===resolvedInitialTab?'active':''}" data-tab="${t.id}">${t.label}</button>`).join('')}
                 </div>
               ` : ''}
             </div>
@@ -2042,7 +2080,7 @@ const ModalManager = {
         } else {
           container.innerHTML = renderReadingContent(currentModalData.sections);
         }
-        bindTTSControls();
+        void bindTTSControls();
       }
     },
 
@@ -2092,7 +2130,19 @@ const ModalManager = {
 };
 
 /* ========= 6. TTS 邏輯控制 ========= */
-function bindTTSControls() {
+function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+async function ensureVoicesReady(timeoutMs = 1200) {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    TTS.refresh();
+    if (TTS.voices && TTS.voices.length) return true;
+    await sleep(80);
+  }
+  return false;
+}
+
+async function bindTTSControls() {
   const container = document.getElementById('modalInner');
   TTS.paras = Array.from(container.querySelectorAll('[data-tts="p"]'));
   TTS.idx = 0;
@@ -2104,50 +2154,78 @@ function bindTTSControls() {
 
   // === 語言可用性檢查（UI 層） ===
   if (langSel) {
-    if (!TTS.voices.length) {
-      TTS.refresh();
-    }
-    const hasZH_HK = TTS.hasExactVoice('zh-HK');
-    const hasZH_CN = TTS.hasExactVoice('zh-CN');
-
+    // 1) 先嘗試等 voices ready（避免 iOS 初期返空造成誤判）
+    const ready = TTS.voices.length ? true : await ensureVoicesReady();
+    const statusEl = container.querySelector('.statusText');
     const optHK = langSel.querySelector('option[value="zh-HK"]');
     const optCN = langSel.querySelector('option[value="zh-CN"]');
 
-    // 粵語
+    if (!ready) {
+      // voices 未 ready：暫時唔 disable，唔改「未支援」
+      if (statusEl) statusEl.textContent = '語音載入中…';
+
+      if (optHK) { optHK.disabled = false; optHK.textContent = '粵語'; }
+      if (optCN) { optCN.disabled = false; optCN.textContent = '普通話'; }
+
+      // 播放按鈕暫時鎖住（避免用戶按咗又誤以為不支援）
+      if (ppBtn) ppBtn.disabled = true;
+
+      // 等 voiceschanged 再重跑一次 bind（iOS/Safari 常見做法）
+      // （避免用户要手動再開一次 modal）
+      if (!TTS.__rebinderAttached && TTS.synth) {
+        TTS.__rebinderAttached = true;
+
+        const rebindOnce = () => {
+          TTS.refresh();
+          TTS.__rebinderAttached = false;
+          setTimeout(() => { void bindTTSControls(); }, 0);
+        };
+
+        // 只 rebind 一次，避免無限 loop
+        TTS.synth.addEventListener('voiceschanged', rebindOnce, { once: true });
+      }
+
+
+      return; // ⚠️ UI 先停喺「載入中」狀態，避免下面誤判 disable
+    }
+
+    // 2) voices ready：解除 play lock
+    if (ppBtn) ppBtn.disabled = false;
+    if (statusEl && statusEl.textContent === '語音載入中…') statusEl.textContent = '準備就緒';
+
+    // 3) 正式判斷支援情況
+    const hasZH_HK = TTS.hasExactVoice('zh-HK');
+    const hasZH_CN = TTS.hasExactVoice('zh-CN');
+
     if (optHK) {
       optHK.disabled = !hasZH_HK;
-      if (!hasZH_HK) {
-        optHK.textContent = '粵語（未支援）';
-      }
+      optHK.textContent = hasZH_HK ? '粵語' : '粵語（未支援）';
     }
 
-    // 國語
     if (optCN) {
       optCN.disabled = !hasZH_CN;
-      if (!hasZH_CN) {
-        optCN.textContent = '普通話（未支援）';
-      }
+      optCN.textContent = hasZH_CN ? '普通話' : '普通話（未支援）';
     }
 
-    // 如果目前選中的是「不支援語言」，自動切去另一個可用語言
+    // 4) 若當前選中語言不支援 → 自動切換
     const current = langSel.value;
-    if (
-      (current === 'zh-HK' && !hasZH_HK) ||
-      (current === 'zh-CN' && !hasZH_CN)
-    ) {
+    if ((current === 'zh-HK' && !hasZH_HK) || (current === 'zh-CN' && !hasZH_CN)) {
       if (hasZH_HK) {
         langSel.value = 'zh-HK';
         TTS.lang = 'zh-HK';
       } else if (hasZH_CN) {
         langSel.value = 'zh-CN';
         TTS.lang = 'zh-CN';
+      } else {
+        langSel.value = '';
+        TTS.lang = '';
       }
     }
 
-    // 都唔支援 → 清空選擇（保持狀態乾淨）
+    // 5) 兩者都不支援 → 清空
     if (!hasZH_HK && !hasZH_CN) {
       langSel.value = '';
-      TTS.lang = '';
+      TTS.lang = NO_TTS_LANG;
     }
   }
 
@@ -2197,10 +2275,13 @@ function bindTTSControls() {
   const startPlayback = () => {
     
     // 嚴格語音支援檢查（核心）
-    if (!TTS.hasExactVoice(TTS.lang)) {
-      showTTSNotSupportedMessage(TTS.lang);
-      stopPlayback();   // 確保狀態清乾淨
-      return;           // 絕對唔播
+    const uiLang = container.querySelector('[data-lang-tts]')?.value;
+    const lang = uiLang || TTS.lang;
+
+    if (!lang || !TTS.hasExactVoice(lang)) {
+      showTTSNotSupportedMessage(lang || '');
+      stopPlayback();
+      return;
     }
 
     isPausedByUser = false;
@@ -2268,8 +2349,7 @@ function bindTTSControls() {
     return rate;
   };
 
-  const speak = (token) => {
-
+  const speak = async (token) => {
     // token guard
     if (token !== playToken) return;
 
@@ -2279,15 +2359,23 @@ function bindTTSControls() {
 
     // 建立語音物件
     const utter = new SpeechSynthesisUtterance(text);
-
-    // ===== iOS safety：voices 有時未 ready =====
     if (!TTS.voices.length) {
-      TTS.refresh();
+      await ensureVoicesReady();
     }
 
-    // 語言與語音必須同時對齊（iOS關鍵）
-    utter.lang = TTS.lang;
-    const picked = TTS.pickVoice(TTS.lang);
+    // ===== iOS safety：voices 有時未 ready =====
+    // 語言與語音必須同時對齊
+    // 以 UI 選擇為準（最可靠），其次先用 TTS.lang
+    const uiLang = container.querySelector('[data-lang-tts]')?.value;
+    const lang = uiLang || TTS.lang;
+
+    // 冇語言就唔播（保持乾淨，避免 Safari 亂 fallback）
+    if (!lang) {
+      showTTSNotSupportedMessage(''); // 或你自己顯示「請先選擇語言」
+      return;
+    }
+    utter.lang = lang;
+    const picked = TTS.pickVoice(lang);
     if (picked) utter.voice = picked;
 
     // 語速：語言 baseline + remote voice bias + 段落調整
@@ -2347,14 +2435,31 @@ function bindTTSControls() {
 
       if (!retried) {
         retried = true;
-        const fb =
-          TTS.voices.find(v => v.lang === TTS.lang) ||
-          TTS.voices.find(v => v.lang.startsWith('zh'));
+
+        const norm = (s) => (s || '').replace('_','-').toLowerCase();
+        const want = norm(lang); // 用上面那個 lang 變數
+
+
+        const fb = TTS.voices.find(v => {
+          const got = norm(v.lang);
+          // 粵語：zh-hk / yue-hk 都算同一組（同語言內）
+          if (want === 'zh-hk') return got === 'zh-hk' || got === 'yue-hk';
+          return got === want;
+        });
+
+
         if (fb) {
           utter.voice = fb;
+          utter.lang = lang;
           setTimeout(() => TTS.synth.speak(utter), 50);
           return;
         }
+
+        // 同語言都搵唔到：按你規格 → 不播 + 提示
+        showTTSNotSupportedMessage(lang);
+        ppBtn.innerHTML = ICON_PLAY;
+        return;
+
       }
 
       const statusEl = container.querySelector('.statusText');
