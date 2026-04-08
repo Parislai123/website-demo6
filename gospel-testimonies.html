@@ -1800,7 +1800,6 @@ const TTS = {
         'Google'      // Google 粵語（非 Apple）
       ],
       'zh-cn': [
-        'Ting-Ting',  // Apple 普通話女聲（最自然）
         'Mei',        // Apple 一般女聲（不同版本叫法）
         'Yu',         // Apple 男/女聲備選
         'Google'      // Google 普通話
@@ -2377,6 +2376,15 @@ async function bindTTSControls() {
     utter.lang = lang;
     const picked = TTS.pickVoice(lang);
     if (picked) utter.voice = picked;
+
+    
+    // iOS Safari safety：voice / lang 嚴格一致
+    if (
+      utter.voice &&
+      TTS.normLang(utter.voice.lang) !== TTS.normLang(lang)
+    ) {
+      utter.voice = null; // 交返俾系統，避免播錯（特別 Ting‑Ting）
+    }
 
     // 語速：語言 baseline + remote voice bias + 段落調整
     const baseRate = TTS.rate;
