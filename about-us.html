@@ -565,7 +565,28 @@
         align-items: center;
         justify-content: center;
     }
-
+    /* mobile Orbit Adjustments */
+    @media (max-width: 767px) {
+        .mv .mv-card .orbit[data-type="mission"] {
+            transform: scale(0.84); /* 桌面版不縮小，保持視覺張力 */
+            transform-origin: center;
+        }
+        .mv .mv-card .orbit[data-type="vision"] {
+            transform: scale(0.84); 
+            transform-origin: center;
+        }
+    }
+    /* tablet Orbit Adjustments */
+    @media (min-width: 768px) and (max-width: 1340px) {
+        .mv .mv-card .orbit[data-type="mission"] {
+            transform: scale(0.88); /* 桌面版不縮小，保持視覺張力 */
+            transform-origin: center;
+        }
+        .mv .mv-card .orbit[data-type="vision"] {
+            transform: scale(0.88); 
+            transform-origin: center;
+        }
+    }
     /* Desktop Orbit Adjustments */
     @media (min-width: 1200px) and (max-width: 1340px) {
         .mv .mv-card .orbit[data-type="mission"] {
@@ -857,13 +878,13 @@
       }
 
       .mv .row{
-        gap: 32px;
+        gap: 0;
       }
     }
 
     /* mobile */
     @media (max-width: 420px) {
-        .mv .row { align-items: center; gap: 28px; }
+        .mv .row { align-items: center; gap: 0; }
         .mv .content { width: 100%; max-width: 320px; margin: 0 auto; text-align: center; }
         .mv .head { justify-content: center; }
         .mv .content p { text-align: justify; text-align-last: left; }
