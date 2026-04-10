@@ -177,7 +177,7 @@ html.is-hero:not(.hero-scrolled) #site-menu .menu-items{
 /* HERO 初始（landing 未 scroll）：用返你原本的「Hero 字重 / padding」 */
 html.is-hero:not(.hero-scrolled) #site-menu .menu-item a{
   font-weight: 750;
-  padding: 10px 20px;
+  padding: 10px 18px;
   line-height: normal; /* 讓 hero 更鬆動，如你想固定可刪 */
 }
 
