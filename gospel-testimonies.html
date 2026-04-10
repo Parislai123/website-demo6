@@ -1710,6 +1710,9 @@ let currentModalData = null;
 
 const esc = (s) => String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
 const themeByKey = (key) => CATEGORY_CONFIG[key] || CATEGORY_CONFIG.all;
+// Apple 裝置（iOS + macOS）
+const isAppleDevice = () =>
+  /Mac|iPod|iPhone|iPad/.test(navigator.platform);
 
 /* ========= 3. 語音系統 (TTS) ========= */
 const TTS = {
@@ -1736,12 +1739,51 @@ const TTS = {
   },
 
   pickVoice(lang) {
-    const cand = this.voices.filter(v =>
-      v.lang.toLowerCase().includes(
-        lang.toLowerCase().replace('zh-','')
-      )
+    if (!this.voices || !this.voices.length || !lang) return null;
+
+    const norm = (s) => (s || '').replace('_','-').toLowerCase();
+    const want = norm(lang);
+
+    // ✅ 語言可接受集合（避免播錯語言）
+    const accepted = (() => {
+      if (want === 'zh-hk') return new Set([
+        'zh-hk','yue-hk','yue-hant-hk','zh-hant-hk','zh-hant','yue'
+      ]);
+      if (want === 'zh-cn') return new Set([
+        'zh-cn','zh-hans-cn','zh-hans','cmn-hans-cn','cmn-cn','cmn','zh'
+      ]);
+      if (want === 'zh-tw') return new Set([
+        'zh-tw','zh-hant-tw','zh-hant','cmn-hant-tw','cmn-tw'
+      ]);
+      return new Set([want]);
+    })();
+
+    // ✅ 只保留同語言 voice
+    const sameLang = this.voices.filter(v =>
+      accepted.has(norm(v.lang))
     );
-    return cand.find(v => v.name.includes('Google')) || cand[0] || null;
+
+    if (!sameLang.length) return null;
+
+    // ✅ 你指定的優先名單
+    const preferredNamesByLang = {
+      'zh-hk': ['Sin-Ji', 'Ting-Ting', 'Google'],
+      'zh-cn': ['Ting-Ting', 'Mei', 'Yu', 'Google'],
+      'zh-tw': ['Ting-Ting', 'Mei', 'Google']
+    };
+
+    const prefs = preferredNamesByLang[want] || [];
+
+    // ✅ 依優先順序揀
+    for (const key of prefs) {
+      const found = sameLang.find(v =>
+        v.name && v.name.includes(key)
+      );
+      if (found) return found;
+    }
+
+    // ✅ fallback：該語言系統第一把
+    return sameLang[0];
   },
 
   cancel() {
@@ -1755,25 +1797,39 @@ if (TTS.synth) {
 }
 
 /* ========= 4. 彈窗內容渲染器 (Unified Renderers) ========= */
-
 function getPlayerBarHTML() {
-  if(!TTS.synth) return `<div class="compatHint">您的瀏覽器不支援語音功能。</div>`;
-  return `
-  <div class="playerBar">
-    <div class="playerControls">
-      <button class="iconBtn-small" data-prev-tts>${ICON_PREV}</button>
-      <button class="playBtn-main" data-pp-tts>${ICON_PLAY}</button>
-      <button class="iconBtn-small" data-next-tts>${ICON_NEXT}</button>
-    </div>
-    <div class="playerInfoArea">
-      <div class="playerStatusRow"><span class="statusText">準備就緒</span><span class="posText">1 / 1</span></div>
-      <div class="progressBarContainer"><div class="progressBarFill"></div></div>
-    </div>
+  if (!TTS.synth) {
+    return `<div class="compatHint">您的瀏覽器不支援語音功能。</div>`;
+  }
+
+  const langSelectHTML = !isAppleDevice() ? `
     <select class="langSelect" data-lang-tts>
       <option value="zh-HK" ${TTS.lang==='zh-HK'?'selected':''}>粵語</option>
       <option value="zh-CN" ${TTS.lang==='zh-CN'?'selected':''}>普通話</option>
     </select>
-  </div>`;
+  ` : '';
+
+  return `
+    <div class="playerBar">
+      <div class="playerControls">
+        <button class="iconBtn-small" data-prev-tts>${ICON_PREV}</button>
+        <button class="playBtn-main" data-pp-tts>${ICON_PLAY}</button>
+        <button class="iconBtn-small" data-next-tts>${ICON_NEXT}</button>
+      </div>
+
+      <div class="playerInfoArea">
+        <div class="playerStatusRow">
+          <span class="statusText">準備就緒</span>
+          <span class="posText">1 / 1</span>
+        </div>
+        <div class="progressBarContainer">
+          <div class="progressBarFill"></div>
+        </div>
+      </div>
+
+      ${langSelectHTML}
+    </div>
+  `;
 }
 
 function renderVideoContent(ytId) {
