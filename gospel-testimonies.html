@@ -2307,12 +2307,10 @@ async function bindTTSControls() {
   utter.lang = TTS.lang;
   // voice 可能未載入/搵唔到，記得做 guard
   const picked = TTS.pickVoice(TTS.lang);
-  if (!picked) {
-    ppBtn.innerHTML = ICON_PLAY;
-    return;
+  if (picked) {
+    utter.voice = picked;
   }
 
-  utter.voice = picked;
 
   // ==============================
   // 語速計算（語言 baseline + Google bias + 段落微調）
