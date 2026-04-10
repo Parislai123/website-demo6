@@ -1840,36 +1840,41 @@ function showTTSNotSupportedMessage(lang) {
   }, 3500);
 }
 
-// ✅ UI 用：只判斷「系統有冇任何可播語音」
-// ⚠️ 不用嚴格，不負責揀靚聲，只避免誤判「未支援」
+// ✅ UI 用：判斷「系統有冇任何可播語音」
+// ⚠️ 只用於 UI 顯示，唔負責揀靚聲
 TTS.hasAnyVoiceForLang = function (lang) {
   if (!this.voices || !this.voices.length || !lang) return false;
 
   const want = lang.toLowerCase();
 
   return this.voices.some(v => {
-    const l = (v.lang || '').toLowerCase();
+    const l = (v.lang || '').replace('_', '-').toLowerCase();
 
-    // 粵語：zh-hk / yue / zh-hant 都算
+    // ===== 粵語（zh-HK / yue） =====
     if (want === 'zh-hk') {
       return (
         l === 'zh-hk' ||
-        l.startsWith('yue') ||
-        l.startsWith('zh-hant') ||
-        l === 'zh'
+        l.startsWith('zh-hk') ||       // zh-HK-x-xxx
+        l.startsWith('yue') ||          // yue / yue-HK
+        l.startsWith('zh-hant') ||      // zh-Hant / zh-Hant-HK
+        l === 'zh'                      // Android 常見 fallback
       );
     }
 
-    // 普通話（簡中）
+    // ===== 普通話（zh-CN）✅重點修正 =====
     if (want === 'zh-cn') {
       return (
         l === 'zh-cn' ||
-        l.startsWith('zh-hans') ||
-        l.startsWith('cmn') ||
-        l === 'zh'
+        l.startsWith('zh-cn') ||        // zh-CN-x-xxx ✅
+        l.includes('zh-cn') ||          // Android / Chrome ✅
+        l.startsWith('zh-hans') ||      // zh-Hans / zh-Hans-CN ✅
+        l.includes('hans') ||           // cmn-Hans-CN ✅
+        l.startsWith('cmn') ||          // cmn / cmn-CN ✅
+        l === 'zh'                      // fallback
       );
     }
 
+    // ===== 其他語言 fallback =====
     return l.startsWith(want);
   });
 };
