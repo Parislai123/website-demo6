@@ -17,10 +17,10 @@
 .hamburger-icon,
 .hamburger-icon * {
   -webkit-tap-highlight-color: transparent;
-  outline: none;
+  /* outline: none;
   box-shadow: none;
   user-select: none;
-  -webkit-user-select: none;
+  -webkit-user-select: none; */
 }
 
 /* ==============================

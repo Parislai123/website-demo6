@@ -747,8 +747,8 @@
 
       .modal-title {
         flex: 0 0 auto;
-        font-size:28px;
-        padding-bottom: 0;
+        font-size:26px;
+        padding-bottom: 6px;
         line-height: 1.1;
       }
 
@@ -1861,15 +1861,15 @@ TTS.hasAnyVoiceForLang = function (lang) {
       );
     }
 
-    // ===== 普通話（zh-CN）✅重點修正 =====
+    // ===== 普通話（zh-CN）重點修正 =====
     if (want === 'zh-cn') {
       return (
         l === 'zh-cn' ||
-        l.startsWith('zh-cn') ||        // zh-CN-x-xxx ✅
-        l.includes('zh-cn') ||          // Android / Chrome ✅
-        l.startsWith('zh-hans') ||      // zh-Hans / zh-Hans-CN ✅
-        l.includes('hans') ||           // cmn-Hans-CN ✅
-        l.startsWith('cmn') ||          // cmn / cmn-CN ✅
+        l.startsWith('zh-cn') ||        // zh-CN-x-xxx 
+        l.includes('zh-cn') ||          // Android / Chrome 
+        l.startsWith('zh-hans') ||      // zh-Hans / zh-Hans-CN 
+        l.includes('hans') ||           // cmn-Hans-CN 
+        l.startsWith('cmn') ||          // cmn / cmn-CN 
         l === 'zh'                      // fallback
       );
     }

@@ -179,20 +179,31 @@ body > main {
   z-index: 1;
 }
 
+
 /* Remove iOS tap highlight */
 a,
-button {
+button,
+label,
+input,
+span {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Remove active/focus shadows */
+/* Remove focus / active outline & shadow */
+/* a:focus,
 a:active,
-a:focus,
+button:focus,
 button:active,
-button:focus {
+label:focus,
+label:active,
+input:focus,
+input:active,
+span:focus,
+span:active {
   outline: none;
   box-shadow: none;
-}
+} */
+
 
 /* Background SVG*/
 /* 基礎容器設定：完全繼承原本 body::after 的邏輯 */
