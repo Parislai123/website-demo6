@@ -180,28 +180,19 @@ body > main {
 }
 
 /* Remove iOS tap highlight */
-
-/* Remove iOS tap highlight */
 a,
-button,
-label,
-input {
+button {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Remove focus / active outline & shadow */
-a:focus,
+/* Remove active/focus shadows */
 a:active,
-button:focus,
+a:focus,
 button:active,
-label:focus,
-label:active,
-input:focus,
-input:active {
+button:focus {
   outline: none;
   box-shadow: none;
 }
-
 
 /* Background SVG*/
 /* 基礎容器設定：完全繼承原本 body::after 的邏輯 */
@@ -723,8 +714,7 @@ section + section{
   text-align: left; 
   max-width: 60rem; 
   margin: 0 auto; 
-  padding-left: 1.5rem; 
-  padding-right: 1.5rem; }
+}
 
 /* Header */
 .intro-header{
@@ -743,8 +733,10 @@ section + section{
   gap: 28px;
   margin: 0 auto;
 }
+/* for reading-plan only*/
 .intro-list p{
   color: var(--muted);
+  text-align: justify;
 }
 .intro-item{
   position: relative;
@@ -773,7 +765,7 @@ section + section{
   line-height: 1.7;
   color: var(--muted);
   margin: 0;
-  text-align: left; 
+  text-align: justify; 
 }
 
 /* Mobile */
@@ -786,7 +778,7 @@ section + section{
     letter-spacing: 0;
   }
   .intro-section { 
-    max-width: 66rem; 
+    padding: 5rem 1rem; 
   }
 }
 
