@@ -1796,6 +1796,50 @@ if (TTS.synth) {
   TTS.refresh();
 }
 
+// ✅ 只負責顯示「不支援」提示
+function showTTSNotSupportedMessage(lang) {
+  const isApple = isAppleDevice();
+  let messageText;
+
+  if (isApple) {
+    messageText =
+      '你的裝置暫未下載可用語音，請到系統設定（Siri / 語音）下載語音後再試。';
+  } else {
+    let label;
+    if (lang === 'zh-HK') label = '粵語';
+    else if (lang === 'zh-CN') label = '普通話';
+    else label = '所選語言';
+
+    messageText =
+      `你的裝置暫未支援「${label}」語音，請先到系統設定下載語音。`;
+  }
+
+  const container = document.getElementById('modalInner');
+  if (!container) return;
+
+  const bar = container.querySelector('.playerBar');
+  if (!bar) return;
+
+  if (getComputedStyle(bar).position === 'static') {
+    bar.style.position = 'relative';
+  }
+
+  let hint = bar.querySelector('.tts-support-hint');
+  if (!hint) {
+    hint = document.createElement('div');
+    hint.className = 'tts-support-hint';
+    bar.appendChild(hint);
+  }
+
+  hint.textContent = messageText;
+  hint.classList.add('show');
+
+  clearTimeout(hint.__hideTimer);
+  hint.__hideTimer = setTimeout(() => {
+    hint.classList.remove('show');
+  }, 3500);
+}
+
 /* ========= 4. 彈窗內容渲染器 (Unified Renderers) ========= */
 function getPlayerBarHTML() {
   if (!TTS.synth) {
@@ -2035,7 +2079,7 @@ const ModalManager = {
 };
 
 /* ========= 6. TTS 邏輯控制 ========= */
-function bindTTSControls() {
+async function bindTTSControls() {
   const container = document.getElementById('modalInner');
   TTS.paras = Array.from(container.querySelectorAll('[data-tts="p"]'));
   TTS.idx = 0;
@@ -2044,6 +2088,72 @@ function bindTTSControls() {
   const langSel = container.querySelector('[data-lang-tts]');
   const prevBtn = container.querySelector('[data-prev-tts]');
   const nextBtn = container.querySelector('[data-next-tts]');
+
+  // === 語言可用性檢查（UI 層） ===
+  if (!isAppleDevice() && langSel) {
+    const statusEl = container.querySelector('.statusText');
+
+    const ready = TTS.voices.length ? true : await ensureVoicesReady?.();
+
+    const optHK = langSel.querySelector('option[value="zh-HK"]');
+    const optCN = langSel.querySelector('option[value="zh-CN"]');
+
+    if (!ready) {
+      if (statusEl) statusEl.textContent = '語音載入中…';
+
+      if (optHK) { optHK.disabled = false; optHK.textContent = '粵語'; }
+      if (optCN) { optCN.disabled = false; optCN.textContent = '普通話'; }
+
+      if (ppBtn) ppBtn.disabled = true;
+
+      // voiceschanged 後 rebind 一次
+      if (!TTS.__rebinderAttached && TTS.synth) {
+        TTS.__rebinderAttached = true;
+
+        TTS.synth.addEventListener('voiceschanged', () => {
+          TTS.refresh();
+          TTS.__rebinderAttached = false;
+          setTimeout(() => bindTTSControls(), 0);
+        }, { once: true });
+      }
+
+      return;
+    }
+
+    // voices ready
+    if (ppBtn) ppBtn.disabled = false;
+    if (statusEl && statusEl.textContent === '語音載入中…') {
+      statusEl.textContent = '準備就緒';
+    }
+
+    const hasZH_HK = TTS.pickVoice('zh-HK') !== null;
+    const hasZH_CN = TTS.pickVoice('zh-CN') !== null;
+
+    if (optHK) {
+      optHK.disabled = !hasZH_HK;
+      optHK.textContent = hasZH_HK ? '粵語' : '粵語（未支援）';
+    }
+
+    if (optCN) {
+      optCN.disabled = !hasZH_CN;
+      optCN.textContent = hasZH_CN ? '普通話' : '普通話（未支援）';
+    }
+
+    // 自動切換
+    const current = langSel.value;
+    if ((current === 'zh-HK' && !hasZH_HK) || (current === 'zh-CN' && !hasZH_CN)) {
+      if (hasZH_HK) {
+        langSel.value = 'zh-HK';
+        TTS.lang = 'zh-HK';
+      } else if (hasZH_CN) {
+        langSel.value = 'zh-CN';
+        TTS.lang = 'zh-CN';
+      } else {
+        langSel.value = '';
+        TTS.lang = '';
+      }
+    }
+  }
 
   if(!ppBtn) return;
   if(TTS.paras.length === 0) {
@@ -2154,7 +2264,13 @@ function bindTTSControls() {
   utter.lang = TTS.lang;
   // voice 可能未載入/搵唔到，記得做 guard
   const picked = TTS.pickVoice(TTS.lang);
-  if (picked) utter.voice = picked;
+  if (!picked) {
+    showTTSNotSupportedMessage(TTS.lang);
+    ppBtn.innerHTML = ICON_PLAY;
+    return;
+  }
+
+  utter.voice = picked;
 
   // ==============================
   // 語速計算（語言 baseline + Google bias + 段落微調）
@@ -2218,6 +2334,7 @@ function bindTTSControls() {
   utter.onerror = (e) => {
     if (token !== playToken) return;
     console.error('TTS error:', e.error || e);
+    showTTSNotSupportedMessage(TTS.lang);
     const statusEl = container.querySelector('.statusText');
     if (statusEl) statusEl.textContent = '播放失敗';
     ppBtn.innerHTML = ICON_PLAY;
