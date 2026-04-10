@@ -1744,7 +1744,7 @@ const TTS = {
     const norm = (s) => (s || '').replace('_','-').toLowerCase();
     const want = norm(lang);
 
-    // ✅ 語言可接受集合（避免播錯語言）
+    // 語言可接受集合（避免播錯語言）
     const accepted = (() => {
       if (want === 'zh-hk') return new Set([
         'zh-hk','yue-hk','yue-hant-hk','zh-hant-hk','zh-hant','yue'
@@ -1758,14 +1758,14 @@ const TTS = {
       return new Set([want]);
     })();
 
-    // ✅ 只保留同語言 voice
+    // 只保留同語言 voice
     const sameLang = this.voices.filter(v =>
       accepted.has(norm(v.lang))
     );
 
     if (!sameLang.length) return null;
 
-    // ✅ 你指定的優先名單
+    // 你指定的優先名單
     const preferredNamesByLang = {
       'zh-hk': ['Sin-Ji', 'Ting-Ting', 'Google'],
       'zh-cn': ['Ting-Ting', 'Mei', 'Yu', 'Google'],
@@ -1774,7 +1774,7 @@ const TTS = {
 
     const prefs = preferredNamesByLang[want] || [];
 
-    // ✅ 依優先順序揀
+    // 依優先順序揀
     for (const key of prefs) {
       const found = sameLang.find(v =>
         v.name && v.name.includes(key)
@@ -1782,7 +1782,7 @@ const TTS = {
       if (found) return found;
     }
 
-    // ✅ fallback：該語言系統第一把
+    // fallback：該語言系統第一把
     return sameLang[0];
   },
 
@@ -1796,7 +1796,7 @@ if (TTS.synth) {
   TTS.refresh();
 }
 
-// ✅ 只負責顯示「不支援」提示
+// 只負責顯示「不支援」提示
 function showTTSNotSupportedMessage(lang) {
   const isApple = isAppleDevice();
   let messageText;
@@ -1840,7 +1840,7 @@ function showTTSNotSupportedMessage(lang) {
   }, 3500);
 }
 
-// ✅ UI 用：判斷「系統有冇任何可播語音」
+// UI 用：判斷「系統有冇任何可播語音」
 // ⚠️ 只用於 UI 顯示，唔負責揀靚聲
 TTS.hasAnyVoiceForLang = function (lang) {
   if (!this.voices || !this.voices.length || !lang) return false;
@@ -2159,7 +2159,7 @@ async function bindTTSControls() {
         }, { once: true });
       }
 
-      return; // ✅ 不落下面，避免誤判
+      return; // 不落下面，避免誤判
     }
 
     // === 2️⃣ voices ready ===
@@ -2168,7 +2168,7 @@ async function bindTTSControls() {
       statusEl.textContent = '準備就緒';
     }
 
-    // ✅ 改用「寬鬆判斷」避免誤判
+    // 改用「寬鬆判斷」避免誤判
     const hasZH_HK = TTS.hasAnyVoiceForLang('zh-HK');
     const hasZH_CN = TTS.hasAnyVoiceForLang('zh-CN');
 
@@ -2308,7 +2308,6 @@ async function bindTTSControls() {
   // voice 可能未載入/搵唔到，記得做 guard
   const picked = TTS.pickVoice(TTS.lang);
   if (!picked) {
-    showTTSNotSupportedMessage(TTS.lang);
     ppBtn.innerHTML = ICON_PLAY;
     return;
   }
@@ -2377,7 +2376,12 @@ async function bindTTSControls() {
   utter.onerror = (e) => {
     if (token !== playToken) return;
     console.error('TTS error:', e.error || e);
-    showTTSNotSupportedMessage(TTS.lang);
+    
+    // 只有明確 voice / not-supported 類錯誤先提示
+    if (e.error === 'voice-unavailable' || e.error === 'not-allowed') {
+      showTTSNotSupportedMessage(TTS.lang);
+    }
+
     const statusEl = container.querySelector('.statusText');
     if (statusEl) statusEl.textContent = '播放失敗';
     ppBtn.innerHTML = ICON_PLAY;
