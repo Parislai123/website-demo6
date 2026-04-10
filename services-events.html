@@ -616,7 +616,7 @@
     }
     
     /* ===================================================
-    精選時刻（文字版）：Brand Lab 短段落式
+    精選時刻（文字版）：短段落式
     目的：Hero 與「更多相片」之間的緩衝
     =================================================== */
     /* Moments */
@@ -1344,7 +1344,7 @@ main[data-barba="container"] {
     let __lastFocusLightbox = null;
 
     /* Download single (improved) */
-    async function downloadImg(url, filename='brand-lab-photo.jpg'){
+    async function downloadImg(url, filename='photo.jpg'){
       try{
         const abs = new URL(url, window.location.href);
 
@@ -1708,7 +1708,7 @@ main[data-barba="container"] {
             <img src="${item.thumb}" alt="${item.alt}" loading="lazy"
               data-action="lightbox" data-full="${item.full}">
             <div class="card-dl-btn" title="下載圖片"
-              data-action="download" data-url="${item.full}" data-filename="brand-lab-${item.id}.jpg">
+              data-action="download" data-url="${item.full}" data-filename="${item.id}.jpg">
               ${ICON_DL}
             </div>
             <div class="posterDrawer" aria-hidden="true">
@@ -1793,7 +1793,7 @@ main[data-barba="container"] {
         if(action === "download"){
           // 下載圓形按鈕恢復功能
           const url = el.dataset.url;
-          const filename = el.dataset.filename || "brand-lab-photo.jpg";
+          const filename = el.dataset.filename || "photo.jpg";
           if(url) downloadImg(url, filename);
           return;
         }
@@ -2075,7 +2075,7 @@ function stopTestimonialAutoplay(){
         if(dlBtn){
           e.stopPropagation();
           const url = dlBtn.dataset.url;
-          const filename = dlBtn.dataset.filename || 'brand-lab-photo.jpg';
+          const filename = dlBtn.dataset.filename || 'photo.jpg';
           if(url) downloadImg(url, filename);
           return;
         }

@@ -829,7 +829,7 @@ stories.html - .close-btn*/
 }
 
 /* =========================================================
-   Brand Lab — Global Page Transition (Default: Journey Lite)
+   Global Page Transition (Default: Journey Lite)
    State classes (set by main.js):
      html.is-journey            → default Journey Lite
      html.bl-fallback-fade      → force Fade (low perf / save-data / reduced-motion)
