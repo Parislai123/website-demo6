@@ -602,8 +602,10 @@ section + section{
 }
 
 /* =========================================================
-   Blob system — Component-level emotion (Hero / Card)
-   用途：About / Stories 精選卡
+   Blob system — Component-level emotion (Card)
+   NOTE:
+   Emotion background is intentionally subtle
+   Visibility is designed for list scanning, not decoration
 ========================================================= */
 .emotion-panel{
   position:relative;
@@ -622,20 +624,39 @@ section + section{
   opacity:.18;
   z-index:0;
   mix-blend-mode:normal;
+  filter: blur(4px);
 }
 
 /* calm preset（只管：大小 + 顏色） */
 .emotion-calm::before{
-  width:220px;
-  height:220px;
-  background:var(--color-lavender);
+  width:180px;
+  height:180px;
+  /* Fallback */
+  background: rgba(165, 180, 252, 0.25);
+  background: color-mix( in srgb, var(--color-lavender) 25%, transparent);
+  
 }
 .emotion-calm::after{
-  width:144px;
-  height:144px;
-  background:var(--color-peach);
+  width:124px;
+  height:124px;
+  /* Fallback */
+  background: rgba(254, 215, 170, 0.25);
+  background: color-mix( in srgb, var(--color-peach) 25%, transparent);
 }
-
+/* Desktop / spacious */
+@media (min-width: 901px) {
+  .emotion-calm::before{
+    /* Fallback */
+    background: rgba(165, 180, 252, 0.12);
+    background: color-mix( in srgb, var(--color-lavender) 12%, transparent);
+    
+  }
+  .emotion-calm::after{
+    /* Fallback */
+    background: rgba(254, 215, 170, 0.12);
+    background: color-mix( in srgb, var(--color-peach) 12%, transparent);
+  }
+}
 /* =========================================================
    Emotion Panel — Story Card Positioning (Final Locked)
    右上輕、左下穩（閱讀友善）
@@ -684,6 +705,7 @@ section + section{
   opacity:.24;
 }
 }
+
  /* =========================
     銜接文字區
     ========================= */
