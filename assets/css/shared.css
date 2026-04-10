@@ -180,19 +180,28 @@ body > main {
 }
 
 /* Remove iOS tap highlight */
+
+/* Remove iOS tap highlight */
 a,
-button {
+button,
+label,
+input {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Remove active/focus shadows */
-a:active,
+/* Remove focus / active outline & shadow */
 a:focus,
+a:active,
+button:focus,
 button:active,
-button:focus {
+label:focus,
+label:active,
+input:focus,
+input:active {
   outline: none;
   box-shadow: none;
 }
+
 
 /* Background SVG*/
 /* 基礎容器設定：完全繼承原本 body::after 的邏輯 */
@@ -751,7 +760,7 @@ section + section{
   content: "";
   position: absolute;
   left: 0;
-  top: 8px;
+  top: 11px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -775,6 +784,9 @@ section + section{
   .intro-header{
     margin-bottom: 20px;
     letter-spacing: 0;
+  }
+  .intro-section { 
+    max-width: 66rem; 
   }
 }
 
