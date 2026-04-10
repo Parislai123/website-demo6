@@ -46,11 +46,17 @@
   const FRAGMENT = `
 <style>
 :host{
+  // keep shared.css color for fallback
+  --white-100: var(--white-100, #ffffff);
+  --white-92: var(--white-92, rgba(255,255,255,.92));
+  --bg: var(--bg, #f9f8f6);
+  --muted: var(--muted, #64748b);
+
+  
   /* keep your existing palette sync from JS; these are fallbacks */
-  --msgboxButton-color:#D6B36A;
-  --msgboxButton-color-hover:#C5A45F;
+  --msgboxButton-color:#A8000F;
+  --msgboxButton-color-hover:#8F000C;
   --scrollButton-color:#BE9A43;
-  --scrollButton-color-hover:#BE9A43;
 
 
   --ui-gray:#6B6B6B;            /* NEW: neutral icon gray */
@@ -80,6 +86,11 @@
 
 /* Root is inside host */
 #widget-root{ position:absolute; inset:0; pointer-events:none; }
+
+/* 開 modal 時，允許 overlay 接收 pointer */
+:host([data-open="1"]) #widget-root{
+  pointer-events:auto;
+}
 
 @media (max-width:768px){
   :host{
@@ -162,10 +173,10 @@
   max-height:52px;
 
   background: rgba(255,255,255,.85);
-  border: none;                  
+  border: none;                    /* 關鍵 */
   box-shadow:
     0 8px 24px rgba(0,0,0,.12),
-    0 0 0 2px rgba(218, 204, 173, 0.18);  /* 外圍金色 halo暈圈 */
+    0 0 0 2px rgba(214,179,106,.18);  /* 外圍金色 halo暈圈 */
 
 }
 #openContactBtn svg{
@@ -179,6 +190,7 @@
   transform:translateY(-3px) scale(1.05);
   box-shadow:
     0 10px 28px rgba(0,0,0,.14),
+    0 0 0 1px rgba(168,0,15,.14);
 }
 
 /* subtle pulse still allowed */
@@ -315,7 +327,7 @@
   padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 18px; /* 增加輸入框間距，更好點擊 */
+  gap: 18px; /* spacing between formView / resultView */
 }
 
 /* 輸入框樣式優化 */
@@ -366,6 +378,59 @@
 .contact-submit:hover {
   filter: brightness(1.05);
   transform: translateY(-1px);
+}
+
+.msgbox-hint {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #9a6b2f;
+  background: #fff6e8;
+  border-left: 4px solid #f2b45d;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.formView{
+  display:none;
+  flex-direction: column;
+  gap: 18px;
+}
+.formView:not([hidden]){
+  display:flex;
+}
+
+.resultView{
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  padding: 8px 0 0;
+}
+.resultView:not([hidden]){
+  display:flex;
+}
+
+.resultText{
+  font-size:15px;
+  font-weight:700;
+  color:#333;
+  text-align:center;
+  line-height:1.7;
+}
+
+.okBtn{
+  min-width: 120px;
+  height: 40px;
+  border:0;
+  border-radius: 12px;
+  background: var(--action-primary, #c9a24b);
+  color:#fff;
+  font-weight:800;
+  cursor:pointer;
+}
+.okBtn:hover{
+  background: var(--action-primary-hover, #b68f3f);
 }
 
 /* 4. 針對不同裝置的微調 (Media Queries) */
@@ -446,6 +511,8 @@
     <div class="overlay-bg" id="overlayBg"></div>
 
     <div class="contact-modal" id="contactModal">
+
+      <!-- Header -->
       <div class="contact-modal__header">
         <strong>如需代禱或查詢，歡迎留言給我們。</strong>
         <button id="closeContactBtn" class="contact-modal__close">
@@ -456,17 +523,33 @@
         </button>
       </div>
 
+      <!-- Body（formView & resultView） -->
       <div class="contact-modal__body">
-        <input id="name" placeholder="聯絡名稱" class="contact-input">
-        <input id="email" placeholder="電郵地址" class="contact-input">
-        <textarea id="message" placeholder="留言給我們…" class="contact-textarea"></textarea>
-      </div>
 
-      <div class="contact-modal__footer">
-        <button id="btnSend" class="contact-submit">送出</button>
-      </div>
-    </div>
-  </div>
+        <!-- 表單畫面 -->
+        <div class="formView" id="formView">
+          <input id="name" placeholder="聯絡名稱" class="contact-input">
+          <input id="email" placeholder="電郵地址" class="contact-input">
+          <textarea id="message" placeholder="留言給我們…" class="contact-textarea"></textarea>
+
+          <!-- inline 提示 -->
+          <div class="msgbox-hint" id="msgboxHint" hidden></div>
+
+          <div class="contact-modal__footer">
+            <button id="btnSend" class="contact-submit">送出</button>
+          </div>
+        </div>
+
+        <!-- 成功畫面（預設 hidden，但仍在 modal 裡） -->
+        <div class="resultView" id="resultView" hidden>
+          <div class="resultText" id="resultText"></div>
+          <button class="okBtn" id="btnOk">確定</button>
+        </div>
+
+      </div> <!-- /contact-modal__body -->
+
+    </div> <!-- /contact-modal -->
+  </div> <!-- /overlay -->
 </div>
 `;
 
@@ -524,10 +607,10 @@
     try {
       const root = getComputedStyle(document.documentElement);
       const map = {
-        '--msgboxButton-color': root.getPropertyValue('--msgboxButton-color').trim() || '#f0efef',
-        '--msgboxButton-color-hover': root.getPropertyValue('--msgboxButton-color-hover').trim() || '#f0efef',
-        '--action-primary': root.getPropertyValue('--action-primary').trim() || '#f0efef',
-        '--action-primary-hover': root.getPropertyValue('--action-primary-hover').trim() || '#f0efef'
+        '--msgboxButton-color': root.getPropertyValue('--msgboxButton-color').trim() || '#A8000F',
+        '--msgboxButton-color-hover': root.getPropertyValue('--msgboxButton-color-hover').trim() || '#8F000C',
+        '--action-primary': root.getPropertyValue('--action-primary').trim() || '#D6B36A',
+        '--action-primary-hover': root.getPropertyValue('--action-primary-hover').trim() || '#C5A45F'
       };
       Object.entries(map).forEach(([k,v]) => host.style.setProperty(k, v));
     } catch(e) {
@@ -641,6 +724,44 @@
     const sendBtn = shadow.getElementById("btnSend");
     const nameInput = shadow.getElementById("name");
     const msgInput = shadow.getElementById("message");
+    const msgboxHint = shadow.getElementById("msgboxHint");
+
+    const formView    = shadow.getElementById("formView");
+    const resultView  = shadow.getElementById("resultView");
+    const resultText  = shadow.getElementById("resultText");
+    const btnOk       = shadow.getElementById("btnOk");
+
+    function showHint(text){
+      msgboxHint.textContent = text;
+      msgboxHint.hidden = false;
+    }
+
+    function clearHint(){
+      msgboxHint.textContent = "";
+      msgboxHint.hidden = true;
+    }
+
+    function showResult(text){
+      clearHint();
+      if (resultText) resultText.textContent = text;
+
+      // 隱藏原本欄位
+      if (formView) formView.hidden = true;
+
+      // 顯示成功畫面
+      if (resultView) resultView.hidden = false;
+
+      // 把焦點放到「確定」提升可用性
+      setTimeout(() => btnOk && btnOk.focus(), 30);
+    }
+
+    function resetModalViews(){
+      clearHint();
+      if (resultView) resultView.hidden = true;
+      if (formView) formView.hidden = false;
+      if (resultText) resultText.textContent = "已送出，我們會盡快回覆您！"; // 或留空
+    }
+
 
     // pulse until first open
     if (!shouldPulse()) openBtn.classList.remove("cta-pulse");
@@ -661,6 +782,7 @@
       syncHostPE();
 
       if (open) {
+        resetModalViews();
         openBtn.classList.remove("cta-pulse");
         markPulseDone();
         setTimeout(() => nameInput && nameInput.focus(), 50);
@@ -676,10 +798,62 @@
       if (e.key === "Escape" && host.getAttribute("data-open") === "1") setOpen(false);
     });
 
-    sendBtn && sendBtn.addEventListener("click", () => {
-      const msg = (msgInput?.value || "").trim();
-      if (!msg) { alert("請輸入留言內容"); return; }
+    sendBtn && sendBtn.addEventListener("click", async () => {
+      clearHint();
+
+      const name  = (nameInput?.value || "").trim();
+      const email = (shadow.getElementById("email")?.value || "").trim();
+      const msg   = (msgInput?.value || "").trim();
+
+      // 檢查「所有欄位」
+      if (!name || !email || !msg) {
+        showHint("請輸入所有欄位");
+        return;
+      }
+
+      // preview mode：唔真正送出，但仍然可以展示「成功流程」
+        showResult("（預覽模式）訊息已模擬送出，正式上線後才會真正寄出。");
+
+
+      // 真正送出（Contact Form 7）
+      // try {
+      //   sendBtn.disabled = true;
+
+      //   const formData = new FormData();
+      //   formData.append("your-name", name);
+      //   formData.append("your-email", email);     // CF7 表單要有對應 field name
+      //   formData.append("your-message", msg);
+
+      //   const res = await fetch(
+      //     "/wp-json/contact-form-7/v1/contact-forms/123/feedback",
+      //     { method: "POST", body: formData }
+      //   );
+
+      //   if (!res.ok) throw new Error("network");
+
+      //   // CF7 會回 JSON，你要更嚴謹可 parse 再判斷 status
+      //   showResult("已送出，我們會盡快回覆您！");
+      // } catch (e) {
+      //   showHint("送出失敗，請稍後再試。");
+      // } finally {
+      //   sendBtn.disabled = false;
+      // }
+    });
+
+    // 「確定」先關
+    btnOk && btnOk.addEventListener("click", () => {
       setOpen(false);
+
+      // 下次再開時要回復表單畫面（可選，但建議做）
+      if (resultView) resultView.hidden = true;
+      if (formView) formView.hidden = false;
+
+      // 清空欄位（你想保留就刪呢段）
+      if (nameInput) nameInput.value = "";
+      if (msgInput) msgInput.value = "";
+      const emailInput = shadow.getElementById("email");
+      if (emailInput) emailInput.value = "";
+      clearHint();
     });
 
     // =========================

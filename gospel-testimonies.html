@@ -7,26 +7,26 @@
 
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
 
   <!-- Core styles -->
-  <link rel="stylesheet" href="assets/css/shared.css">
-  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/shared.css">
+  <link rel="stylesheet" href="../assets/css/main.css">
 
   <!-- menu bar -->
-  <link rel="stylesheet" href="assets/css/menu.css">
-  <link rel="stylesheet" href="assets/css/mobile-menu.css">
+  <link rel="stylesheet" href="../assets/css/menu.css">
+  <link rel="stylesheet" href="../assets/css/mobile-menu.css">
 
     
   <!-- JS -->
   <!-- Core scripts -->
-  <script src="assets/js/main.js"></script>
+  <script src="../assets/js/main.js"></script>
 
   <!-- Partials loader -->
-  <script src="assets/js/include-partials.js"></script>
+  <script src="../assets/js/include-partials.js"></script>
 
   <!-- Widget -->
-  <script src="assets/js/widget_msgbox_scrolltop.js" defer></script>
+  <script src="../assets/js/widget_msgbox_scrolltop.js" defer></script>
 
   <style>
     :root{
@@ -896,7 +896,7 @@
   <div id="site-menu"></div>
 
       <!-- HERO -->
-    <section class="hero-section" style="--hero-photo: url('../img/sectionHero_gospel-testimonies.jpg');">
+    <section class="hero-section" style="--hero-photo: url('/assets/img/sectionHero_gospel-testimonies.jpg');">
       <div class="content-wrapper">
         <div class="title-group">
           <span class="en-shadow">Witness</span>
@@ -1570,7 +1570,7 @@ const stories = [
     title: '二十年的管教與祝福',
     cardDesc: '從破碎到更新，見證神在生命、家庭與教會中的管教與祝福。',
     subheaders: [''],
-    youtubeId: SAMPLE_YT_ID,
+    youtubeId: '',
     sections: [
       {
         p: [
@@ -1615,7 +1615,7 @@ const stories = [
     title: '恩典中的更新',
     cardDesc: '從愛世界到悔改更新，見證神的憐憫與信實。',
     subheaders: [''],
-    youtubeId: SAMPLE_YT_ID,
+    youtubeId: '',
     sections: [
       {
         h: '神的恩典與憐憫',
@@ -1635,7 +1635,7 @@ const INTRO_DATA = [
     id: 'intro-1',
     catKey: 'cat04',
     types: ['reading', 'video', 'image'], 
-    coverImg: "assets/gospel/intro-1/cover.jpg",
+    coverImg: "../assets/gospel/intro-1/cover.jpg",
     title: "認識福音的核心",
     introHeading: "神的愛與救恩",
     introSubheading: "了解罪的代價，以及耶穌基督為我們預備愛的禮物，帶領我們回到神裡。",
@@ -1643,7 +1643,7 @@ const INTRO_DATA = [
     steps: [
       {
         question: "為什麼神要將祂的獨生子賜給我們呢？",
-        img: "assets/gospel/intro-1/01.jpg",
+        img: "../assets/gospel/intro-1/01.jpg",
         content: [
           "我們都會因為收到突如其來的禮物而感到驚喜和快樂。創造天地萬物的真神，在二千年前就為我們預備了一份「愛的禮物」要送給我們，祂很希望我們能接受祂。"
         ],
@@ -1653,7 +1653,7 @@ const INTRO_DATA = [
       },
       {
         question: "那麼，人類犯罪的代價是甚麼？",
-        img: "assets/gospel/intro-1/02.jpg",
+        img: "../assets/gospel/intro-1/02.jpg",
         content: [
           "根據聖誕樹的記載，起初神創造人類，神和人是有著相愛、和諧的父子關係。人隨時都能夠體驗到神的同在和慈愛，享受著與神同行的快樂。因為人類的始祖違背了神的吩咐，導致與神隔絕。從此，人類不能夠再經歷與神同在的快樂，這就是人類罪性的源頭。"
         ],
@@ -1663,7 +1663,7 @@ const INTRO_DATA = [
       },
       {
         question: "人死後，還有甚麼事情會發生？",
-        img: "assets/gospel/intro-1/03.jpg",
+        img: "../assets/gospel/intro-1/03.jpg",
         content: [
           "人需要為自己所做的事情付上代價，而罪的代價就是「死亡」。不單只是肉體的死亡，而我們的靈魂也要與神隔絕。"
         ],
@@ -1674,7 +1674,7 @@ const INTRO_DATA = [
       },
       {
         question: "怎樣可以回到神那裡?",
-        img: "assets/gospel/intro-1/04.jpg",
+        img: "../assets/gospel/intro-1/04.jpg",
         content: [
           "歷代以來，人試圖用種種方法，例如:好行為、道德、哲學或宗教...等方法，要回到神那裡去，但總是得不著。於是，神就為我們預備了一份「愛的禮物」送給我們。神差祂的獨生兒子，耶穌基督為我們的罪死於十字架上，修補了人和神之間的深溝。"
         ],
@@ -1686,7 +1686,7 @@ const INTRO_DATA = [
       },
       {
         question: "怎樣才可以得到這份愛的禮物呢？",
-        img: "assets/gospel/intro-1/05.jpg",
+        img: "../assets/gospel/intro-1/05.jpg",
         content: [
           "我們只要承認自己是個罪人，求主耶穌赦免自己所犯的罪，邀請主耶穌進入自己的心裡，做自己個人的救主和生命的主。我們即成為神的兒女，得著永生，並且得著神藉著耶穌基督所賜給我們豐盛的生命。"
         ],
@@ -1716,6 +1716,13 @@ const isIOSSafari = () =>
   /iP(hone|ad|od)/.test(navigator.platform) &&
   /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
+// Apple 裝置（iOS + macOS）
+const isAppleDevice = () =>
+  /Mac|iPod|iPhone|iPad/.test(navigator.platform);
+
+// Apple WebKit（實際影響 TTS 行為）
+const isAppleWebKit = () =>
+  isAppleDevice() && window.speechSynthesis;
 
 /* ========= 3. 語音系統 (TTS) ========= */
 const TTS = {
@@ -1805,11 +1812,13 @@ const TTS = {
         'Google'      // Google 粵語（非 Apple）
       ],
       'zh-cn': [
+        'Ting-Ting',  // Apple 普通話女聲（最自然）
         'Mei',        // Apple 一般女聲（不同版本叫法）
         'Yu',         // Apple 男/女聲備選
         'Google'      // Google 普通話
       ],
       'zh-tw': [
+        'Ting-Ting',  // Apple 普通話女聲（最自然）
         'Mei',        // Apple 一般女聲（不同版本叫法）
         'Google'      // Google 普通話
       ]
@@ -1869,10 +1878,24 @@ if (TTS.synth) {
 
 // 裝置不支援語音時pop up
 function showTTSNotSupportedMessage(lang) {
-  let label;
-  if (lang === 'zh-HK') label = '粵語';
-  else if (lang === 'zh-CN') label = '普通話';
-  else label = '所選語言';
+  const isApple = isAppleDevice();
+  let messageText;
+
+  if (isApple) {
+    // Apple 專用提示（無語言、跟系統）
+    messageText =
+      '你的裝置暫未下載可用語音，請到系統設定（Siri / 語音）下載語音後再試。';
+  } else {
+    // 非 Apple：根據語言顯示
+    let label;
+    if (lang === 'zh-HK') label = '粵語';
+    else if (lang === 'zh-CN') label = '普通話';
+    else label = '所選語言';
+
+    messageText =
+      `你的裝置暫未支援「${label}」語音，` +
+      `請先到系統設定下載語音。`;
+  }
 
   const container = document.getElementById('modalInner');
   if (!container) return;
@@ -1880,12 +1903,12 @@ function showTTSNotSupportedMessage(lang) {
   const bar = container.querySelector('.playerBar');
   if (!bar) return;
 
-  // 確保定位
+  // 確保定位，避免 absolute hint 飛走
   if (getComputedStyle(bar).position === 'static') {
     bar.style.position = 'relative';
   }
 
-  // 使用獨立 class，避免同 keyboard hint 撞
+  // 建立 / 重用 hint
   let hint = bar.querySelector('.tts-support-hint');
   if (!hint) {
     hint = document.createElement('div');
@@ -1893,14 +1916,10 @@ function showTTSNotSupportedMessage(lang) {
     bar.appendChild(hint);
   }
 
-  hint.textContent =
-    `你的裝置暫未支援「${label}」語音，` +
-    `請先到系統設定下載語音。`;
-
-  // 顯示
+  hint.textContent = messageText;
   hint.classList.add('show');
 
-  // 自動淡出（重覆呼叫會 reset timer）
+  // 自動淡出（重覆呼叫會 reset）
   clearTimeout(hint.__hideTimer);
   hint.__hideTimer = setTimeout(() => {
     hint.classList.remove('show');
@@ -2152,11 +2171,15 @@ async function bindTTSControls() {
   
   const ppBtn = container.querySelector('[data-pp-tts]');
   const langSel = container.querySelector('[data-lang-tts]');
+  const isApple = isAppleDevice();
+  if (langSel && isApple) {
+    langSel.style.display = 'none';
+  }
   const prevBtn = container.querySelector('[data-prev-tts]');
   const nextBtn = container.querySelector('[data-next-tts]');
 
   // === 語言可用性檢查（UI 層） ===
-  if (langSel) {
+  if (!isApple && langSel) {
     // 1) 先嘗試等 voices ready（避免 iOS 初期返空造成誤判）
     const ready = TTS.voices.length ? true : await ensureVoicesReady();
     const statusEl = container.querySelector('.statusText');
@@ -2273,10 +2296,32 @@ async function bindTTSControls() {
   };
 
   window.__ttsStopPlayback = stopPlayback;
+    let startWatchdog = null;
+    const startPlayback = () => {
+      const isApple = isAppleDevice();
 
-  let startWatchdog = null;
-  const startPlayback = () => {
-    
+      if (isApple) {
+        if (!speechSynthesis.getVoices().length) {
+          showTTSNotSupportedMessage('');
+          return;
+        }
+
+        const text = TTS.paras[TTS.idx]?.textContent || '';
+        if (!text) return;
+
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = '';
+        utter.voice = null;
+
+        speechSynthesis.cancel();
+        speechSynthesis.speak(utter);
+        return; // 直接完結，唔落入 non-Apple flow
+      }
+
+    // ================================
+    // 非 Apple logic
+    // ================================
+
     // 嚴格語音支援檢查（核心）
     const uiLang = container.querySelector('[data-lang-tts]')?.value;
     const lang = uiLang || TTS.lang;
@@ -2319,6 +2364,11 @@ async function bindTTSControls() {
   };
 
   const restartPlaybackAtCurrentIdx = () => {
+    if (isAppleDevice()) {
+      startPlayback();
+      return;
+    }
+
     isPausedByUser = false;
     playToken++;
     const token = playToken;
@@ -2366,7 +2416,6 @@ async function bindTTSControls() {
       await ensureVoicesReady();
     }
 
-    // ===== iOS safety：voices 有時未 ready =====
     // 語言與語音必須同時對齊
     // 以 UI 選擇為準（最可靠），其次先用 TTS.lang
     const uiLang = container.querySelector('[data-lang-tts]')?.value;
@@ -2380,12 +2429,8 @@ async function bindTTSControls() {
     utter.lang = lang;
 
     const picked = TTS.pickVoice(lang);
-
-    // iOS Safari 特例處理
-    // 普通話在 iOS Safari「唔指定 voice」，避免被鎖入粵語 family
-    if (isIOSSafari() && lang === 'zh-CN') {
-      utter.voice = null;
-    } else if (picked) {
+    
+    if (picked) {
       utter.voice = picked;
     }
 
